@@ -5,12 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-
-import java.net.Inet4Address;
 
 public class MainActivity extends AppCompatActivity {
     TextView singup;
@@ -20,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        singup=(TextView)findViewById(R.id.sign_up);
+        singup=(TextView)findViewById(R.id.sign_up_tv);
         signin=(Button)findViewById(R.id.button_sign_in);
         clicksignup();
         clicksignin();
@@ -46,10 +42,9 @@ public class MainActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Intent mapi = new Intent(".MapsActivity");
-                startActivity(mapi);*/
-                Intent i = new Intent(".sign_up");
-                startActivity(i);
+                Intent mapi = new Intent(".MapsActivity");
+                startActivity(mapi);
+
             }
         });
 

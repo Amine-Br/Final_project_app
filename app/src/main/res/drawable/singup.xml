@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="@color/colorPrimary">
-    <item android:drawable="@drawable/sing_up"></item>
-</ripple>
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="304dp"
+    android:height="61dp"
+    android:viewportWidth="304"
+    android:viewportHeight="61"
+    >
+
+    <group>
+
+        <clip-path
+            android:pathData="M15.5 0.5H288.5C296.784 0.5 303.5 7.21573 303.5 15.5V45.5C303.5 53.7843 296.784 60.5 288.5 60.5H15.5C7.21573 60.5 0.5 53.7843 0.5 45.5V15.5C0.5 7.21573 7.21573 0.5 15.5 0.5Z"
+            />
+
+        <path
+            android:pathData="M0.5 0.5V60.5H303.5V0.5"
+            android:fillColor="#FF6D00"
+            />
+
+    </group>
+
+</vector>
