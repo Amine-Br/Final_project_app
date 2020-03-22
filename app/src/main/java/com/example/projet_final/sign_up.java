@@ -1,7 +1,5 @@
 package com.example.projet_final;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +22,7 @@ public class sign_up extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         myDb=new Data_Base_Helper(this);
-        signup=(Button)findViewById(R.id.button_sign_up);
+        signup=(Button)findViewById(R.id.SU_Button_sign_up);
         name=(EditText)findViewById(R.id.editText_name);
         phone=(EditText)findViewById(R.id.editText_numphone);
         email=(EditText)findViewById(R.id.editText_mail);
