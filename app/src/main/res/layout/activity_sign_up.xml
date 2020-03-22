@@ -40,7 +40,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView_name2"
+                android:id="@+id/SU_Text_User_Name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -70,10 +70,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_name2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_User_Name" />
 
             <TextView
-                android:id="@+id/textView_date2"
+                android:id="@+id/SU_Text_Birthday"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -102,7 +102,7 @@
                 android:inputType="datetime"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_date2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Birthday" />
 
             <TextView
                 android:id="@+id/textView_sexe2"
@@ -136,6 +136,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Male"
+                    android:checked="true"
                     android:textColor="@android:color/white"
                     android:textSize="20dp"
                     android:textStyle="bold" />
@@ -152,7 +153,7 @@
             </RadioGroup>
 
             <TextView
-                android:id="@+id/textView_numphone2"
+                android:id="@+id/SU_Text_Phone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -182,10 +183,10 @@
                 android:paddingLeft="13dip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_numphone2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Phone" />
 
             <TextView
-                android:id="@+id/textView_mail2"
+                android:id="@+id/SU_Text_Email"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -215,10 +216,10 @@
                 android:paddingLeft="13dip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_mail2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Email" />
 
             <TextView
-                android:id="@+id/textView_pass2"
+                android:id="@+id/SU_Text_Password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -249,10 +250,10 @@
                 android:paddingLeft="13dip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_pass2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Password" />
 
             <TextView
-                android:id="@+id/textView_confirmpass2"
+                android:id="@+id/SU_Text_ConfirmPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -285,7 +286,7 @@
                 android:paddingLeft="13dip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_confirmpass2" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
