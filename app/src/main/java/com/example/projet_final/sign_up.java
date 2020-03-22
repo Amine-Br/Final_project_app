@@ -76,7 +76,7 @@ public class sign_up extends AppCompatActivity {
 
 
         }else{
-            //Toast.makeText(sign_up.this,"not confirmed",Toast.LENGTH_SHORT);
+            ///Toast.makeText(sign_up.this,"not confirmed",Toast.LENGTH_SHORT);
             Log.i("addData","not confData");
         }
         Log.i("addData","end");
