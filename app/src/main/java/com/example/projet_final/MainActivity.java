@@ -46,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent mapi = new Intent(".MapsActivity");
-                startActivity(mapi);
+                /*Intent mapi = new Intent(".MapsActivity");
+                startActivity(mapi);*/
+                Intent i = new Intent(".sign_up");
+                startActivity(i);
             }
         });
 
