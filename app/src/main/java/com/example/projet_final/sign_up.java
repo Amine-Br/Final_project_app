@@ -56,7 +56,7 @@ public class sign_up extends AppCompatActivity {
         mAuth= FirebaseAuth.getInstance();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mReference= mFirebaseDatabase.getReference();
-        /*mAuthListener=new FirebaseAuth.AuthStateListener() {
+        mAuthListener=new FirebaseAuth.AuthStateListener() {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -71,7 +71,7 @@ public class sign_up extends AppCompatActivity {
                     mReference.child(userID).child("sex").setValue(sex.getText().toString());
                 }
             }
-        };*/
+        };
 
         //
         Log.i("sign_up_create","end");
