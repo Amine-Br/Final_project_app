@@ -4,6 +4,9 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupMenu;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,6 +20,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     FirebaseAuth mAuth;
+    Button Categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +30,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        Categories=(Button)findViewById(R.id.Category_button);
+        Categories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
+                p.getMenuInflater().inflate(R.menu.categories_menu,p.getMenu());
+                p.show();
+            }
+        });
     }
 
 

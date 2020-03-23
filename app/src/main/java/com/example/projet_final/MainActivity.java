@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clicksignin(){
 
-        signin.setOnClickListener(new View.OnClickListener() {
+        /*signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (email_phone.getText().toString().isEmpty()){
@@ -96,6 +96,12 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
+            }
+        });*/
+        signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
         });
 
