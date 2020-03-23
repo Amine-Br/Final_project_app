@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -17,13 +18,23 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class sign_up extends AppCompatActivity {
-
+    //View
     private Button signup;
     private EditText name,phone,email,pass,confpass;
-    private FirebaseAuth mAuth;
     private RadioGroup groupsex;
+    private String log_email,log_pass;
+
+    //FireBase
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mReference;
+    private FirebaseDatabase mFirebaseDatabase;
 
 
     @Override
@@ -31,6 +42,8 @@ public class sign_up extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         Log.i("sign_up_create","start");
+
+        //View
         signup=(Button)findViewById(R.id.SU_Button_sign_up);
         name=(EditText)findViewById(R.id.SU_User_Name);
         phone=(EditText)findViewById(R.id.SU_Phone);
@@ -38,7 +51,29 @@ public class sign_up extends AppCompatActivity {
         pass=(EditText)findViewById(R.id.SU_Password);
         confpass=(EditText)findViewById(R.id.SU_ConfirmPassword);
         groupsex=(RadioGroup)findViewById(R.id.SU_SexGroup);
+
+        //Firebase
         mAuth= FirebaseAuth.getInstance();
+        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mReference= mFirebaseDatabase.getReference();
+        /*mAuthListener=new FirebaseAuth.AuthStateListener() {
+
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                //currentUser= mAuth.getCurrentUser();
+                if(currentUser != null){
+                    String userID=currentUser.getUid();
+                    mReference.child(userID).child("user_name").setValue(name.getText().toString());
+                    mReference.child(userID).child("phone").setValue(phone.getText().toString());
+                    mReference.child(userID).child("birthday").setValue(name.getText().toString());
+                    RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
+                    mReference.child(userID).child("sex").setValue(sex.getText().toString());
+                }
+            }
+        };*/
+
+        //
         Log.i("sign_up_create","end");
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,8 +90,8 @@ public class sign_up extends AppCompatActivity {
         if(confirmData()){
             Log.i("addData","confData");
             //Toast.makeText(sign_up.this,"confirmed",Toast.LENGTH_SHORT);
-            String log_email=email.getText().toString();
-            String log_pass=pass.getText().toString();
+            log_email=email.getText().toString();
+            log_pass=pass.getText().toString();
             Log.i("addData","log: email: "+log_email+" \n pass:"+log_pass);
             mAuth.createUserWithEmailAndPassword(log_email,log_pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
@@ -68,7 +103,11 @@ public class sign_up extends AppCompatActivity {
                         //Toast.makeText(sign_up.this,"Sign_Up in Successful",Toast.LENGTH_SHORT);!
                         Log.i("addData","sucs");
                         Intent map=new Intent(sign_up.this,MapsActivity.class);
+                        mAuth.signInWithEmailAndPassword(log_email,log_pass);
+                        currentUser= mAuth.getCurrentUser();
+                        saveData();
                         startActivity(map);
+                        finish();
                     }
                 }
             }
@@ -132,6 +171,7 @@ public class sign_up extends AppCompatActivity {
             }
         }
         Log.i("confirmData","confpass same");
+
         Log.i("confirmData","sex valid");
 
         //Toast.makeText(sign_up.this,"data confirmed",Toast.LENGTH_SHORT);
@@ -139,5 +179,29 @@ public class sign_up extends AppCompatActivity {
         return true;
     }
 
+
+    private void saveData(){
+        Log.i("saveData","start");
+        String userID=currentUser.getUid();
+        Log.i("saveData","UID:"+userID);
+        mReference.child(userID).child("user_name").setValue(name.getText().toString());
+        mReference.child(userID).child("phone").setValue(phone.getText().toString());
+        mReference.child(userID).child("birthday").setValue(name.getText().toString());
+        RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
+        mReference.child(userID).child("sex").setValue(sex.getText().toString());
+        Log.i("saveData","end");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAuth.removeAuthStateListener(mAuthListener);;
+    }
 
 }
