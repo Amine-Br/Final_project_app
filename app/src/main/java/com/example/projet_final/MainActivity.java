@@ -15,9 +15,17 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.PhoneAuthCredential;
+import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
     EditText email_phone,pass;
@@ -26,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth  ;
     FirebaseUser currentUser;
     FirebaseAuth.AuthStateListener mAuthListener;
+    DatabaseReference mReference;
+    String password;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         signin=(Button)findViewById(R.id.button_sign_in);
         signup=(TextView)findViewById(R.id.sign_up_tv);
         mAuth=FirebaseAuth.getInstance();
+        mReference= FirebaseDatabase.getInstance().getReference();
         mAuthListener=new FirebaseAuth.AuthStateListener() {
 
             @Override
@@ -70,18 +82,33 @@ public class MainActivity extends AppCompatActivity {
 
     public void clicksignin(){
 
-        /*signin.setOnClickListener(new View.OnClickListener() {
+        signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (email_phone.getText().toString().isEmpty()){
-                    //email vide
+                    email_phone.setError("plz enter you phone or email");
+
                 }else{
                     if(!email_phone.getText().toString().trim().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")){
-                        //email invalide
+                        log_in_with_phone(email_phone.getText().toString());
                     }else{
-                        String email= email_phone.getText().toString();
-                        String psw= pass.getText().toString();
-                        mAuth.signInWithEmailAndPassword(email,psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                try{
+                                    String phone=dataSnapshot.child(email_phone.getText().toString()).getValue(String.class);
+                                    log_in_with_phone(phone);
+                                }catch (Exception f){
+                                        email_phone.setError("email or phone are incorect");
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        /*mAuth.signInWithEmailAndPassword(email,psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
@@ -91,22 +118,66 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(MainActivity.this,"Email or password is invalid",Toast.LENGTH_SHORT);
                                 }
                             }
-                        });
+                        });*/
                     }
                 }
 
 
             }
-        });*/
-        signin.setOnClickListener(new View.OnClickListener() {
+        });
+        /*signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
-        });
+        });*/
 
 
 
+    }
+    private void log_in_with_phone(String s){
+        if(isNumber(s)){
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential("12345", "12345");
+            mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                    if (task.isSuccessful()){
+
+                            mReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    password=dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("password").getValue(String.class);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            if(password.equals(pass.getText().toString())){
+                                startActivity(new Intent(MainActivity.this,MapsActivity.class));
+                                finish();
+                            }else{
+                                mAuth.signOut();
+                                pass.setError("password incorect");
+                            }
+
+                    }else{
+                        email_phone.setError("email or phone is incorect");
+                    }
+                }
+            });
+        }
+    }
+
+    private boolean isNumber(String toString) {
+            try{
+                Integer.parseInt(toString);
+                return true;
+            }catch (Exception e){
+                return false;
+            }
     }
 
     @Override
@@ -121,7 +192,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         Log.i("AntivetyLife","onStop:start");
         super.onStop();
+        currentUser= mAuth.getCurrentUser();
+        if(currentUser != null){
+            startActivity(new Intent(MainActivity.this,MapsActivity.class));
+            finish();
+        }
         mAuth.removeAuthStateListener(mAuthListener);
+
         Log.i("AntivetyLife","onStop:start");
     }
 

@@ -304,18 +304,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/SU_ConfirmPassword" />
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/CB_plumber"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="plumber"
                 android:textColor="@android:color/white"
-                app:layout_constraintEnd_toStartOf="@+id/checkBox2"
+                app:layout_constraintEnd_toStartOf="@+id/CB_electrician"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword3" />
 
             <CheckBox
-                android:id="@+id/checkBox2"
+                android:id="@+id/CB_electrician"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -323,23 +323,23 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/checkBox"
+                app:layout_constraintStart_toEndOf="@+id/CB_plumber"
                 app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword3" />
 
             <CheckBox
-                android:id="@+id/checkBox3"
+                android:id="@+id/CB_House_painter"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="House painter"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@+id/checkBox4"
+                app:layout_constraintEnd_toStartOf="@+id/CB_Builder"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+                app:layout_constraintTop_toBottomOf="@+id/CB_plumber" />
 
             <CheckBox
-                android:id="@+id/checkBox4"
+                android:id="@+id/CB_Builder"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -347,23 +347,23 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/checkBox3"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+                app:layout_constraintStart_toEndOf="@+id/CB_House_painter"
+                app:layout_constraintTop_toBottomOf="@+id/CB_electrician" />
 
             <CheckBox
-                android:id="@+id/checkBox5"
+                android:id="@+id/CB_air_conditioner"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="air conditioner"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@+id/checkBox6"
+                app:layout_constraintEnd_toStartOf="@+id/CB_gardening"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+                app:layout_constraintTop_toBottomOf="@+id/CB_House_painter" />
 
             <CheckBox
-                android:id="@+id/checkBox6"
+                android:id="@+id/CB_gardening"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -371,23 +371,23 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/checkBox5"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+                app:layout_constraintStart_toEndOf="@+id/CB_air_conditioner"
+                app:layout_constraintTop_toBottomOf="@+id/CB_Builder" />
 
             <CheckBox
-                android:id="@+id/checkBox7"
+                android:id="@+id/CB_housework"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="housework"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@+id/checkBox8"
+                app:layout_constraintEnd_toStartOf="@+id/CB_Moving"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox5" />
+                app:layout_constraintTop_toBottomOf="@+id/CB_air_conditioner" />
 
             <CheckBox
-                android:id="@+id/checkBox8"
+                android:id="@+id/CB_Moving"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -395,8 +395,8 @@
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/checkBox7"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox6" />
+                app:layout_constraintStart_toEndOf="@+id/CB_housework"
+                app:layout_constraintTop_toBottomOf="@+id/CB_gardening" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
