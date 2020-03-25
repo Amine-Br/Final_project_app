@@ -62,7 +62,7 @@ public class sign_up extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         Log.i("sign_up_create","start");
 
-        //View
+        ///View
         signup=(Button)findViewById(R.id.SU_Button_sign_up);
         name=(EditText)findViewById(R.id.SU_User_Name);
         phone=(EditText)findViewById(R.id.SU_Phone);
