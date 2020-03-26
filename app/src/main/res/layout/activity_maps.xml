@@ -73,7 +73,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="70dp"
                 android:layout_gravity="bottom"
                 android:scaleType="centerCrop"
                 map:srcCompat="@drawable/bottom" />

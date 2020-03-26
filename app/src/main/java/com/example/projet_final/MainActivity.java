@@ -10,12 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Log.i("AntivetyLife","onCreat:start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        email_phone=(EditText)findViewById(R.id.em_ph_et);
+        email_phone=(EditText)findViewById(R.id.em_et);
         pass=(EditText)findViewById(R.id.pass_et);
         signin=(Button)findViewById(R.id.button_sign_in);
         signup=(TextView)findViewById(R.id.sign_up_tv);
@@ -82,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void clicksignin(){
 
-        signin.setOnClickListener(new View.OnClickListener() {
+       /* signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (email_phone.getText().toString().isEmpty()){
@@ -118,19 +115,19 @@ public class MainActivity extends AppCompatActivity {
                                     Toast.makeText(MainActivity.this,"Email or password is invalid",Toast.LENGTH_SHORT);
                                 }
                             }
-                        });*/
+                        });
                     }
                 }
 
 
             }
-        });
-        /*signin.setOnClickListener(new View.OnClickListener() {
+        });*/
+        signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this,MapsActivity.class));
             }
-        });*/
+        });
 
 
 
