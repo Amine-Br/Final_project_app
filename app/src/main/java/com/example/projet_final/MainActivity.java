@@ -1,6 +1,7 @@
 package com.example.projet_final;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,26 +14,30 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
-    EditText email_phone,pass;
+    private AlertDialog alertDialog;
+    EditText email,phone,pass;
     Button signin;
     TextView signup;
     FirebaseAuth mAuth  ;
     FirebaseUser currentUser;
     FirebaseAuth.AuthStateListener mAuthListener;
     DatabaseReference mReference;
-    String password;
+    String codeSent,code;
+    private PhoneAuthCredential credential;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
 
     @Override
@@ -40,24 +45,35 @@ public class MainActivity extends AppCompatActivity {
         Log.i("AntivetyLife","onCreat:start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        email_phone=(EditText)findViewById(R.id.em_et);
+        email=(EditText)findViewById(R.id.em_et);
+        phone=(EditText)findViewById(R.id.ph_et);
         pass=(EditText)findViewById(R.id.pass_et);
         signin=(Button)findViewById(R.id.button_sign_in);
         signup=(TextView)findViewById(R.id.sign_up_tv);
         mAuth=FirebaseAuth.getInstance();
         mReference= FirebaseDatabase.getInstance().getReference();
-        mAuthListener=new FirebaseAuth.AuthStateListener() {
+        mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+            @Override
+            public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
+                Log.i("code","onVerificationCompleted:star; ");
+                signInWithPhoneAuthCredential(phoneAuthCredential);
+            }
 
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onVerificationFailed(FirebaseException e) {
+                Log.i("code","onVerificationFailed:star; ");
+            }
 
-                currentUser= mAuth.getCurrentUser();
-                if(currentUser != null){
-                    startActivity(new Intent(MainActivity.this,MapsActivity.class));
-                    finish();
-                }
+            @Override
+            public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                Log.i("code","onCodeSend:start; s=  "+s);
+                super.onCodeSent(s, forceResendingToken);
+                codeSent=s;
+                showConfrmDialog();
+                Log.i("code","onCodeSend:end;   codeSent="+codeSent+"    s="+s);
             }
         };
+
 
         clicksignup();
         clicksignin();
@@ -78,94 +94,104 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void clicksignin(){
-
-       /* signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (email_phone.getText().toString().isEmpty()){
-                    email_phone.setError("plz enter you phone or email");
-
-                }else{
-                    if(!email_phone.getText().toString().trim().matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")){
-                        log_in_with_phone(email_phone.getText().toString());
-                    }else{
-                        mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                try{
-                                    String phone=dataSnapshot.child(email_phone.getText().toString()).getValue(String.class);
-                                    log_in_with_phone(phone);
-                                }catch (Exception f){
-                                        email_phone.setError("email or phone are incorect");
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                        /*mAuth.signInWithEmailAndPassword(email,psw).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if(task.isSuccessful()){
-                                    startActivity(new Intent(MainActivity.this,MapsActivity.class));
-                                    finish();
-                                }else{
-                                    Toast.makeText(MainActivity.this,"Email or password is invalid",Toast.LENGTH_SHORT);
-                                }
-                            }
-                        });
-                    }
-                }
-
-
-            }
-        });*/
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,MapsActivity.class));
+                if(confData()){
+                    if (!phone.getText().toString().isEmpty()){
+                        logInWithPhone(phone.getText().toString());
+                    }else {
+                        logInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
+                    }
+                }
             }
         });
 
 
 
     }
-    private void log_in_with_phone(String s){
-        if(isNumber(s)){
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential("12345", "12345");
-            mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+    private void logInWithPhone(String phone){
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
+                phone,        // Phone number to verify
+                60,                 // Timeout duration
+                TimeUnit.SECONDS,   // Unit of timeout
+                this,               // Activity (for callback binding)
+                mCallbacks          // OnVerificationStateChangedCallbacks
+        );
 
-                    if (task.isSuccessful()){
 
-                            mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    password=dataSnapshot.child(mAuth.getCurrentUser().getUid()).child("password").getValue(String.class);
-                                }
+    }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+    private void logInWithEmailAndPassword(String email,String password){
+        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()){
+                    startActivity(new Intent(MainActivity.this,MapsActivity.class));
+                    finish();
+                }else{
 
-                                }
-                            });
-                            if(password.equals(pass.getText().toString())){
-                                startActivity(new Intent(MainActivity.this,MapsActivity.class));
-                                finish();
-                            }else{
-                                mAuth.signOut();
-                                pass.setError("password incorect");
-                            }
-
-                    }else{
-                        email_phone.setError("email or phone is incorect");
-                    }
                 }
-            });
-        }
+            }
+        });
+
+    }
+
+
+    protected void showConfrmDialog(){
+        Log.i("dialog","start");
+        AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+        final View mView=getLayoutInflater().inflate(R.layout.confirm_phone_dialog,null);
+        builder.setView(mView);
+        alertDialog=builder.create();
+        mView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        mView.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("code","credential:star; ");
+                code=((EditText) mView.findViewById(R.id.code)).getText().toString();
+                credential = PhoneAuthProvider.getCredential(codeSent, code);
+                Log.i("code","credential:end;   credential= "+credential +"  credentialSmsCode= "+credential.getSmsCode()+"  credentialSignInMethod= "+credential.getSignInMethod()+"  credentialProvider= "+credential.getProvider());
+                signInWithPhoneAuthCredential(credential);
+
+
+
+            }
+        });
+        Log.i("dialog","show");
+        alertDialog.show();
+        Log.i("dialog","end");
+    }
+
+
+    private boolean confData(){
+        return true;
+    }
+
+    private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
+        Log.i("code","signIn  start; ");
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.i("code","signIn  succ; ");
+                            //saveData(mAuth.getCurrentUser());
+                            Log.i("code","signIn  credential; "+credential);
+
+                            Intent map=new Intent(MainActivity.this,MapsActivity.class);
+                            startActivity(map);
+
+                        } else {
+                            Log.i("code","signIn not succ; ");
+                        }
+                    }
+                });
     }
 
     private boolean isNumber(String toString) {
@@ -181,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         Log.i("AntivetyLife","onStart:start");
         super.onStart();
-        mAuth.addAuthStateListener(mAuthListener);
+        //mAuth.addAuthStateListener(mAuthListener);
         Log.i("AntivetyLife","onStart:end");
     }
 
@@ -189,13 +215,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         Log.i("AntivetyLife","onStop:start");
         super.onStop();
-        currentUser= mAuth.getCurrentUser();
-        if(currentUser != null){
-            startActivity(new Intent(MainActivity.this,MapsActivity.class));
-            finish();
-        }
-        mAuth.removeAuthStateListener(mAuthListener);
-
+        //mAuth.removeAuthStateListener(mAuthListener);
         Log.i("AntivetyLife","onStop:start");
     }
 

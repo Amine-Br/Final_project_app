@@ -20,7 +20,9 @@ import androidx.fragment.app.Fragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthSettings;
@@ -39,21 +41,19 @@ import static java.lang.Thread.sleep;
 
 public class sign_up extends AppCompatActivity {
     //View
+    private AlertDialog alertDialog;
     private Button signup;
     private EditText name,phone,email,pass,confpass,birthday;
     private RadioGroup groupsex;
-    private String log_email,log_pass;
-    private static CheckBox CB_Builder,CB_air_conditioner,CB_electrician,CB_gardening,CB_House_painter,CB_housework,CB_Moving,CB_plumber;
+    private CheckBox CB_Builder,CB_air_conditioner,CB_electrician,CB_gardening,CB_House_painter,CB_housework,CB_Moving,CB_plumber;
     private String code,codeSent;
     //FireBase
     private FirebaseAuth mAuth;
-    private FirebaseUser currentUser;
-    //private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mReference;
     private FirebaseDatabase mFirebaseDatabase;
-    private boolean emailUsed,phoneUsed;
-    PhoneAuthCredential credential;
-    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private PhoneAuthCredential credential;
+    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
 
 
     @Override
@@ -90,6 +90,12 @@ public class sign_up extends AppCompatActivity {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
                 Log.i("code","onVerificationCompleted:star; ");
+                /*if (!email.getText().toString().isEmpty()){
+                    signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
+                    link(phoneAuthCredential);
+                    mAuth.signOut();
+                }*/
+                signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
@@ -102,6 +108,7 @@ public class sign_up extends AppCompatActivity {
                 Log.i("code","onCodeSend:start; s=  "+s);
                 super.onCodeSent(s, forceResendingToken);
                 codeSent=s;
+                showConfrmDialog();
                 Log.i("code","onCodeSend:end;   codeSent="+codeSent+"    s="+s);
             }
 
@@ -112,90 +119,35 @@ public class sign_up extends AppCompatActivity {
             }
         };
 
-       /*mAuthListener=new FirebaseAuth.AuthStateListener() {
-
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                //currentUser= mAuth.getCurrentUser();
-                if(currentUser != null){
-                    String userID=currentUser.getUid();
-                    mReference.child(userID).child("user_name").setValue(name.getText().toString());
-                    mReference.child(userID).child("phone").setValue(phone.getText().toString());
-                    mReference.child(userID).child("birthday").setValue(name.getText().toString());
-                    RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
-                    mReference.child(userID).child("sex").setValue(sex.getText().toString());
-                }
-            }
-        };*/
 
         //
         Log.i("sign_up_create","end");
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addData();
-
-                /*AlertDialog.Builder builder=new AlertDialog.Builder(sign_up.this);
-                View mView=getLayoutInflater().inflate(R.layout.confirm_phone_dialog,null);
-                builder.setView(mView);
-                AlertDialog alertDialog=builder.create();
-                alertDialog.show();*/
-
-
+                if (confirmData())  signUp();
             }
         });
 
 
     }
 
-    private void addData() {
+    private void signUp() {
         Log.i("addData","start");
-        if(confirmData()){
-            /*Log.i("addData","confData");
-            //Toast.makeText(sign_up.this,"confirmed",Toast.LENGTH_SHORT);
-            log_email=email.getText().toString();
-            log_pass=pass.getText().toString();
-            Log.i("addData","log: email: "+log_email+" \n pass:"+log_pass);
-            mAuth.createUserWithEmailAndPassword(log_email,log_pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(!task.isSuccessful()){
-                        Log.i("addData","not sucs");
-                        //Toast.makeText(sign_up.this,"Sign_Up in Unsuccessful",Toast.LENGTH_SHORT);
-                    }else{
-                        //Toast.makeText(sign_up.this,"Sign_Up in Successful",Toast.LENGTH_SHORT);!
-                        Log.i("addData","sucs");
-                        Intent map=new Intent(sign_up.this,MapsActivity.class);
-                        mAuth.signInWithEmailAndPassword(log_email,log_pass);
-                        currentUser= mAuth.getCurrentUser();
-                        saveData();
-                        startActivity(map);
-                        finish();
-                    }
-                }
-            }
-            );*/
-            PhoneAuthProvider.getInstance().verifyPhoneNumber(
+
+        PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phone.getText().toString(),        // Phone number to verify
                     60,                 // Timeout duration
                     TimeUnit.SECONDS,   // Unit of timeout
                     this,               // Activity (for callback binding)
-                    mCallbacks);        // OnVerificationStateChangedCallbacks
-            showConfrmDialog();
-            Log.i("code","code have :"+code);
+                    mCallbacks          // OnVerificationStateChangedCallbacks
+        );
 
+        Log.i("code","code have :"+code);
 
-
-
-
-        }else{
-            ///Toast.makeText(sign_up.this,"not confirmed",Toast.LENGTH_SHORT);
-            Log.i("addData","not confData");
-        }
         Log.i("addData","end");
+        Log.i("addData","start");
     }
-
 
      public boolean confirmData() {
         Log.i("confirmData","confirmData_start");
@@ -299,19 +251,21 @@ public class sign_up extends AppCompatActivity {
     }
 
 
-    private void saveData(){
-        currentUser= mAuth.getCurrentUser();
+    private void saveData(FirebaseUser currentUser){
         Log.i("saveData","start");
         String userID=currentUser.getUid();
         Log.i("saveData","UID:"+userID);
-        if(!email.getText().toString().isEmpty()) mReference.child(email.getText().toString()).setValue(phone.getText().toString());
-        mReference.child(userID).child("password").setValue(pass.getText().toString());
+        mReference.child("usedPhone").child(phone.getText().toString()).setValue(true);
+        RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
+        //set Vals
         mReference.child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child(userID).child("phone").setValue(phone.getText().toString());
         mReference.child(userID).child("birthday").setValue(birthday.getText().toString());
-        RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
         mReference.child(userID).child("sex").setValue(sex.getText().toString());
-        mReference.child(userID).child("credential").setValue(credential);
+
+        if (!email.getText().toString().isEmpty()){
+            mReference.child(userID).child("email").setValue(email.getText().toString());
+        }
         if(CB_Builder.isChecked()){
             mReference.child(userID).child(CB_Builder.getText().toString()).setValue(true);
         }else{
@@ -355,24 +309,12 @@ public class sign_up extends AppCompatActivity {
         Log.i("saveData","end");
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //mAuth.removeAuthStateListener(mAuthListener);;
-    }
-
     protected void showConfrmDialog(){
         Log.i("dialog","start");
         AlertDialog.Builder builder=new AlertDialog.Builder(sign_up.this);
         final View mView=getLayoutInflater().inflate(R.layout.confirm_phone_dialog,null);
         builder.setView(mView);
-        final AlertDialog alertDialog=builder.create();
+        alertDialog=builder.create();
         mView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -389,47 +331,50 @@ public class sign_up extends AppCompatActivity {
                 signInWithPhoneAuthCredential(credential);
 
 
+
             }
         });
         Log.i("dialog","show");
         alertDialog.show();
         Log.i("dialog","end");
-        //return code;
     }
 
-
-    /*PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-        @Override
-        public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-
-        }
-
-        @Override
-        public void onVerificationFailed(FirebaseException e) {
-
-        }
-
-        @Override
-        public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-            super.onCodeSent(s, forceResendingToken);
-            codeSent=s;
-            Log.i("code","code send:"+codeSent);
-        }
-    };*/
-
-
     private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
+        Log.i("code","signIn  start; ");
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            Log.i("code","signIn  succ; ");
+                            saveData(mAuth.getCurrentUser());
                             Log.i("code","signIn  credential; "+credential);
+                            if (!email.getText().toString().isEmpty()){
+                               // signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
+                                link(EmailAuthProvider.getCredential(email.getText().toString(),pass.getText().toString()));
+                                //mAuth.signOut();
+                            }
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
-                            saveData();
                             startActivity(map);
 
                         } else {
+                            Log.i("code","signIn not succ; ");
+                        }
+                    }
+                });
+    }
+
+    public void link(AuthCredential credential){
+        mAuth.getCurrentUser().linkWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("code", "linkWithCredential:success");
+                            FirebaseUser user = task.getResult().getUser();
+                        } else {
+                            Log.w("code", "linkWithCredential:failure", task.getException());
+
 
                         }
                     }
