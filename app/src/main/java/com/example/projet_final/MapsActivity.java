@@ -25,10 +25,12 @@ import android.widget.PopupMenu;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +38,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
     FirebaseAuth mAuth;
     Button Categories;
     private DrawerLayout drawer;
@@ -108,6 +111,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng Tipaza = new LatLng(36.592606, 2.442341);
         mMap.addMarker(new MarkerOptions().position(Tipaza).title("Marker in Tipaza"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(Tipaza));
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(Tipaza)      // Sets the center of the map to Tipaza
+                .zoom(15)                   // Sets the zoom to 15 (city zoom)
+                .build();                   // Creates a CameraPosition from the builder
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
     }
 
 

@@ -9,8 +9,7 @@
         >
         <item
             android:id="@+id/login_item"
-            android:title="login"
-            />
+            android:title="Login" />
     </group>
     <group
         android:checkableBehavior="single"
@@ -18,16 +17,14 @@
         >
         <item
             android:id="@+id/signup_item"
-            android:title="login"
-            />
+            android:title="Signup" />
     </group><group
     android:checkableBehavior="single"
     android:id="@+id/group_divider3"
     >
     <item
         android:id="@+id/lang_item"
-        android:title="change language"
-        />
+        android:title="Change Language" />
 </group>
 
 </menu>
