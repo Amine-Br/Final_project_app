@@ -97,13 +97,15 @@ public class MainActivity extends AppCompatActivity {
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(confData()){
+                /*if(confData()){
                     if (!phone.getText().toString().isEmpty()){
                         logInWithPhone(phone.getText().toString());
                     }else {
                         logInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
                     }
-                }
+                }*/
+                Intent map=new Intent(".MapsActivity");
+                startActivity(map);
             }
         });
 

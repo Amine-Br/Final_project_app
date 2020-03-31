@@ -17,6 +17,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,8 @@ import android.widget.PopupMenu;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +36,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -45,6 +50,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Toolbar toolbar;
     private static boolean mPermissions=false;
     private static final String[]  permissions={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
+    private FusedLocationProviderClient mFusedLocationClient;
+
 
 
     @Override
@@ -71,6 +78,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 R.string.nav_draw_open, R.string.nav_draw_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
+
         //map
         if(checkServeur()){
             checkPermissions();
@@ -107,15 +117,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng Tipaza = new LatLng(36.592606, 2.442341);
-        mMap.addMarker(new MarkerOptions().position(Tipaza).title("Marker in Tipaza"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(Tipaza));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(Tipaza)      // Sets the center of the map to Tipaza
-                .zoom(15)                   // Sets the zoom to 15 (city zoom)
-                .build();                   // Creates a CameraPosition from the builder
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        getLastKnownLocation();
+
+
+    }
+    public void getLastKnownLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()) {
+                    Location location = task.getResult();
+                    LatLng Tipaza = new LatLng(location.getLatitude(), location.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(Tipaza).title("Marker in your location"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(Tipaza));
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(Tipaza)      // Sets the center of the map to Tipaza
+                            .zoom(15)                   // Sets the zoom to 15 (city zoom)
+                            .build();                   // Creates a CameraPosition from the builder
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+                }
+            }
+        });
 
     }
 
