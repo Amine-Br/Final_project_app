@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     String codeSent,code;
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+
 
 
     @Override
@@ -104,8 +106,11 @@ public class MainActivity extends AppCompatActivity {
                         logInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
                     }
                 }*/
+
+
                 Intent map=new Intent(".MapsActivity");
                 startActivity(map);
+
             }
         });
 
