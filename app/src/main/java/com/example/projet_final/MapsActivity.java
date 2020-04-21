@@ -248,7 +248,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             navigationView.inflateMenu(R.menu.drawer_menu);
         }else{
             navigationView.getMenu().clear();
-            navigationView.inflateMenu(R.menu.categories_menu);
+            navigationView.inflateMenu(R.menu.drawer_menu_two);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.welcome_tv).setVisibility(View.GONE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.profile_photo).setVisibility(View.VISIBLE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.name).setVisibility(View.VISIBLE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.star).setVisibility(View.VISIBLE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.email).setVisibility(View.VISIBLE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.rating).setVisibility(View.VISIBLE);
         }
 
     }
