@@ -127,7 +127,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onComplete(@NonNull Task<Location> task) {
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
-                    LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+                    //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng user_location = new LatLng(36.637549, 2.767185);
                     mMap.addMarker(new MarkerOptions().position(user_location).title("Marker in your location"));
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
                     CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -230,8 +231,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivity(new Intent(".sign_up"));
                         break;
                     case R.id.lang_item:
-                        Toast.makeText(getApplicationContext(),"...", Toast.LENGTH_SHORT)
-                                .show();
+                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
                         break;
                 }
 
