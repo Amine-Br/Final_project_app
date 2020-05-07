@@ -231,7 +231,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         startActivity(new Intent(".sign_up"));
                         break;
                     case R.id.lang_item:
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                        startActivity(new Intent(MapsActivity.this,Profile.class));
                         break;
                 }
 
