@@ -62,8 +62,12 @@
                 <action android:name=".MainActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
         </activity>
-    </application>
 
+        <service
+            android:name=".saveLocation"
+            android:exported="false" />
+    </application>
 </manifest>

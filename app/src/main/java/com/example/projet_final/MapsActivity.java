@@ -42,6 +42,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -55,7 +62,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String[]  permissions={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
     private FusedLocationProviderClient mFusedLocationClient;
     private NavigationView navigationView;
-
+    private Intent saveL;
+    private DatabaseReference mReference;
+    private ArrayList<User> users;
+    private ArrayList<MarkerOptions> markers;
 
 
 
@@ -83,7 +93,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             checkPermissions();
         }
 
+        mReference=FirebaseDatabase.getInstance().getReference();
+        mReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                remouveMarkers();
+                addMarkers(dataSnapshot.child("users"));
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
 
@@ -116,12 +138,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Toast.makeText(this,"mapReady",Toast.LENGTH_SHORT).show();
         getLastKnownLocation();
     }
+
+
+    private void addMarkers(DataSnapshot dataSnapshot) {
+        for(DataSnapshot ds: dataSnapshot.getChildren()){
+            users.add(ds.getValue(User.class));
+
+
+        }
+        for(int i=0;i<users.size();i++){
+            markers.add((new MarkerOptions().
+                    position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())).
+                    title(users.get(i).getUser_name())));
+            mMap.addMarker(markers.get(i));
+
+        }
+    }
+
+
+
+    private void remouveMarkers() {
+        mMap.clear();
+        for(int i=0;i<markers.size();i++){
+            mMap.clear();
+            markers.remove(i);
+            users.remove(i);
+        }
+    }
+
+
     public void getLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+        if(mAuth.getCurrentUser()!=null){
+            Toast.makeText(this,"have User",Toast.LENGTH_SHORT).show();
+            Log.i("seveLocation","have user");
+            saveLocation.setMmap(mMap);
+            saveLocation.setUserID(mAuth.getCurrentUser().getUid());
+            saveL=new Intent(this, com.example.projet_final.saveLocation.class);
+            startService(saveL);
+        }else{
+            Log.i("seveLocation","no user");
+            Toast.makeText(this,"no User",Toast.LENGTH_SHORT).show();
+
+        }
+        /*Intent saveLocation=new Intent(this, com.example.projet_final.saveLocation.class);
+        startService(saveLocation);
         mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
@@ -140,7 +206,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 }
             }
-        });
+        });*/
 
     }
 
@@ -194,7 +260,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Categories=(Button)findViewById(R.id.Category_button);
         toolbar = findViewById(R.id.toolbar);
         drawer = findViewById(R.id.drawer_layout);
-         navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
     }
     public void categories_click(){
         Categories.setOnClickListener(new View.OnClickListener() {
@@ -259,5 +325,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
+    @Override
+    protected void onDestroy() {
+        if(mAuth.getCurrentUser()!=null){
+            mReference.child(mAuth.getCurrentUser().getUid()).child("stat").setValue("ofline");
+            stopService(saveL);
+        }
+        super.onDestroy();
+    }
 }

@@ -258,53 +258,53 @@ public class sign_up extends AppCompatActivity {
         mReference.child("usedPhone").child(phone.getText().toString()).setValue(true);
         RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
         //set Vals
-        mReference.child(userID).child("user_name").setValue(name.getText().toString());
-        mReference.child(userID).child("phone").setValue(phone.getText().toString());
-        mReference.child(userID).child("birthday").setValue(birthday.getText().toString());
-        mReference.child(userID).child("sex").setValue(sex.getText().toString());
+        mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
+        mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
+        mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
+        mReference.child("users").child(userID).child("sex").setValue(sex.getText().toString());
 
         if (!email.getText().toString().isEmpty()){
-            mReference.child(userID).child("email").setValue(email.getText().toString());
+            mReference.child("users").child(userID).child("email").setValue(email.getText().toString());
         }
         if(CB_Builder.isChecked()){
-            mReference.child(userID).child(CB_Builder.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_Builder.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_Builder.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_Builder.getText().toString()).setValue(false);
         }
         if(CB_air_conditioner.isChecked()){
-            mReference.child(userID).child(CB_air_conditioner.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_air_conditioner.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_air_conditioner.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_air_conditioner.getText().toString()).setValue(false);
         }
         if(CB_electrician.isChecked()){
-            mReference.child(userID).child(CB_electrician.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_electrician.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_electrician.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_electrician.getText().toString()).setValue(false);
         }
         if(CB_gardening.isChecked()){
-            mReference.child(userID).child(CB_gardening.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_gardening.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_gardening.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_gardening.getText().toString()).setValue(false);
         }
         if(CB_House_painter.isChecked()){
-            mReference.child(userID).child(CB_House_painter.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_House_painter.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_House_painter.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_House_painter.getText().toString()).setValue(false);
         }
         if(CB_housework.isChecked()){
-            mReference.child(userID).child(CB_housework.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_housework.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_housework.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_housework.getText().toString()).setValue(false);
         }
         if(CB_Moving.isChecked()){
-            mReference.child(userID).child(CB_Moving.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_Moving.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_Moving.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_Moving.getText().toString()).setValue(false);
         }
         if(CB_plumber.isChecked()){
-            mReference.child(userID).child(CB_plumber.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child(CB_plumber.getText().toString()).setValue(true);
         }else{
-            mReference.child(userID).child(CB_plumber.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child(CB_plumber.getText().toString()).setValue(false);
         }
         Log.i("saveData","end");
     }
