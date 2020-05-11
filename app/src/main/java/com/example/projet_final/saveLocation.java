@@ -66,8 +66,8 @@ public class saveLocation extends Service {
 
                             //Toast.makeText(saveLocation.this,"Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude(),Toast.LENGTH_SHORT).show();
                             Log.i("seveLocation","Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude());
-                            mReference.child(userID).child("Latitude").setValue(location.getLatitude());
-                            mReference.child(userID).child("Longitude").setValue(location.getLongitude());
+                            mReference.child("users").child(userID).child("Latitude").setValue(location.getLatitude());
+                            mReference.child("users").child(userID).child("Longitude").setValue(location.getLongitude());
                             Log.i("seveLocation","saved");
 
                         }else{

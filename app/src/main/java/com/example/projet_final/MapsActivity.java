@@ -83,6 +83,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //navigation drawer items
         nav_view_items_actions();
 
+        //ArratList
+        users= new ArrayList<>();
+
         //change menu if user login/logout
         change_menu();
 
@@ -93,12 +96,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             checkPermissions();
         }
 
-        mReference=FirebaseDatabase.getInstance().getReference();
+        mReference=FirebaseDatabase.getInstance().getReference("users");
         mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                remouveMarkers();
-                addMarkers(dataSnapshot.child("users"));
+                users.clear();
+                ArrayList <String> IDs=new ArrayList<>();
+                for (DataSnapshot ID:dataSnapshot.getChildren()){
+                    IDs.add(ID.getKey());
+                    User user=ID.getValue(User.class);
+                    users.add(user);
+                };
+                addMarkers();
             }
 
             @Override
@@ -143,17 +152,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 
-    private void addMarkers(DataSnapshot dataSnapshot) {
-        for(DataSnapshot ds: dataSnapshot.getChildren()){
-            users.add(ds.getValue(User.class));
-
-
-        }
+    private void addMarkers() {
+        mMap.clear();
         for(int i=0;i<users.size();i++){
-            markers.add((new MarkerOptions().
-                    position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())).
-                    title(users.get(i).getUser_name())));
-            mMap.addMarker(markers.get(i));
+            mMap.addMarker(new MarkerOptions()
+                    .title(users.get(i).getUser_name())
+                    .position(new LatLng(users.get(i).getLatitude(),users.get(i).getLongitude())));
+
 
         }
     }
@@ -315,12 +320,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }else{
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.welcome_tv).setVisibility(View.GONE);
+            /*navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.welcome_tv).setVisibility(View.GONE);
             navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.profile_photo).setVisibility(View.VISIBLE);
             navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.name).setVisibility(View.VISIBLE);
             navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.star).setVisibility(View.VISIBLE);
             navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.email).setVisibility(View.VISIBLE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.rating).setVisibility(View.VISIBLE);
+            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.rating).setVisibility(View.VISIBLE);*/
         }
 
     }

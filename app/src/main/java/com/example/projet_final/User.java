@@ -1,44 +1,24 @@
 package com.example.projet_final;
 
 public class User {
-    private String userID,
-        birthday,
-        phone,
-        sex,
-        user_name;
-    private boolean Builder,
-            painter,
-            Moving,
-            air_conditioner,
-            electrician,
-            gardening,
-            housework,
-            plumber;
-    private Long Latitude,
-            Longitude;
+    private String stat,
+            birthday,
+            phone,
+            sex,
+            user_name,
+            email
+            ;
+    private boolean Builder;
+    private boolean painter;
+    private boolean Moving;
+    private boolean air_conditioner;
 
-    public Long getLatitude() {
-        return Latitude;
+    public String getStat() {
+        return stat;
     }
 
-    public void setLatitude(Long latitude) {
-        Latitude = latitude;
-    }
-
-    public Long getLongitude() {
-        return Longitude;
-    }
-
-    public void setLongitude(Long longitude) {
-        Longitude = longitude;
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setStat(String stat) {
+        this.stat = stat;
     }
 
     public String getBirthday() {
@@ -71,6 +51,14 @@ public class User {
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public boolean isBuilder() {
@@ -136,6 +124,30 @@ public class User {
     public void setPlumber(boolean plumber) {
         this.plumber = plumber;
     }
+
+    public double getLatitude() {
+        return Latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        Latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return Longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        Longitude = longitude;
+    }
+
+    private boolean electrician;
+    private boolean gardening;
+    private boolean housework;
+    private boolean plumber;
+    private double Latitude,
+            Longitude;
+
 }
 
 
