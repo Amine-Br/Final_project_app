@@ -24,7 +24,7 @@
     android:id="@+id/group_divider3"
     >
     <item
-        android:id="@+id/lang_item"
+        android:id="@+id/change_lang_item"
         android:title="Change Language" />
     </group>
 

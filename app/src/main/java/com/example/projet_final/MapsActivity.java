@@ -17,8 +17,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +28,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -293,23 +290,42 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
+
+                        switch (item.getItemId()) {
                     case R.id.login_item:
                        startActivity(new Intent(".MainActivity"));
                         break;
+
                     case R.id.signup_item:
 
                         startActivity(new Intent(".sign_up"));
                         break;
-                    case R.id.lang_item:
-                        startActivity(new Intent(MapsActivity.this,Profile.class));
+
+                    case R.id.change_lang_item:
+                        multi_activity.s="language_page";
+                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
+
+                        break;
+
+                    case R.id.about_us_item:
+                        multi_activity.s="about_us_page";
+                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                        break;
+
+                    case R.id.Rate_us_item:
+                        multi_activity.s="rate_us_page";
+                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
                         break;
                 }
 
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             }
-        });
+        }
+
+
+        );
+
 
     }
     public void change_menu(){
@@ -317,6 +333,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(mAuth.getCurrentUser() == null){
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu);
+
         }else{
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
