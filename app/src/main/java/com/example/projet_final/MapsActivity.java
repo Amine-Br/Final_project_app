@@ -63,6 +63,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mReference;
     private ArrayList<User> users;
     private ArrayList<MarkerOptions> markers;
+    Dialog d;
 
 
 
@@ -113,7 +114,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-
+        d=new Dialog(this);
 
     }
 
@@ -151,6 +152,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void addMarkers() {
         mMap.clear();
+        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if (task.isSuccessful()) {
+                    Location location = task.getResult();
+                    //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng user_location = new LatLng(36.637549, 2.767185);
+                    mMap.addMarker(new MarkerOptions().position(user_location).title("Marker in your location"));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(user_location)      // Sets the center of the map to user_location
+                            .zoom(10)                   // Sets the zoom to 15 (city zoom)
+                            .build();                   // Creates a CameraPosition from the builder
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+                }
+            }
+        });
         for(int i=0;i<users.size();i++){
             mMap.addMarker(new MarkerOptions()
                     .title(users.get(i).getUser_name())
@@ -158,6 +178,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         }
+
     }
 
 
@@ -188,27 +209,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             Toast.makeText(this,"no User",Toast.LENGTH_SHORT).show();
 
         }
-        /*Intent saveLocation=new Intent(this, com.example.projet_final.saveLocation.class);
-        startService(saveLocation);
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Location location = task.getResult();
-                    //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
-                    LatLng user_location = new LatLng(36.637549, 2.767185);
-                    mMap.addMarker(new MarkerOptions().position(user_location).title("Marker in your location"));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(user_location)      // Sets the center of the map to user_location
-                            .zoom(15)                   // Sets the zoom to 15 (city zoom)
-                            .build();                   // Creates a CameraPosition from the builder
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
-                }
-            }
-        });*/
 
     }
 
@@ -273,6 +275,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 p.show();
             }
         });
+
     }
     public void build_button_drawer_mneu(){
 
