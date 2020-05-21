@@ -44,7 +44,7 @@ public class saveLocation extends Service {
         public void run() {
             Log.i("seveLocation","theredRun");
             int i=0;
-            mReference.child(userID).child("stat").setValue("online");
+            mReference.child("users").child(userID).child("stat").setValue("online");
             while (true){
                 i++;
                 Log.i("seveLocation","while i="+i);

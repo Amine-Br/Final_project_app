@@ -6,12 +6,17 @@ public class User {
             phone,
             sex,
             user_name,
-            email
+            email="no email"
             ;
     private boolean Builder;
     private boolean painter;
     private boolean Moving;
     private boolean air_conditioner;
+    private boolean electrician;
+    private boolean gardening;
+    private boolean housework;
+    private boolean plumber;
+    private double Latitude,Longitude;
 
     public String getStat() {
         return stat;
@@ -141,12 +146,9 @@ public class User {
         Longitude = longitude;
     }
 
-    private boolean electrician;
-    private boolean gardening;
-    private boolean housework;
-    private boolean plumber;
-    private double Latitude,
-            Longitude;
+    //public  jabs()
+
+
 
 }
 

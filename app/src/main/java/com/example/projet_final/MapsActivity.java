@@ -2,6 +2,7 @@ package com.example.projet_final;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +35,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,12 +49,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-
-    FirebaseAuth mAuth;
-    Button Categories;
+    private FirebaseAuth mAuth;
+    private Button Categories;
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private static boolean mPermissions=false;
@@ -63,7 +64,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mReference;
     private ArrayList<User> users;
     private ArrayList<MarkerOptions> markers;
-    Dialog d;
+    //private Dialog d;
+    private String flter="no_filter";
+    private PopupMenu menu;
 
 
 
@@ -114,7 +117,88 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        d=new Dialog(this);
+        menuRedy();
+
+
+        //d=new Dialog(this);
+
+    }
+
+    private void menuRedy() {
+        menu=new PopupMenu(MapsActivity.this,Categories);
+        menu.getMenuInflater().inflate(R.menu.categories_menu,menu.getMenu());
+        menu.getMenu().findItem(R.id.no_filter).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="no filter";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Plumber).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Plumber";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Electrician).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Electrician";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.House_painter).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="House painter";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Builder).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Builder";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Air_conditioner).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Air conditioner";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Gardening).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Gardening";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.House_work).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="House workr";
+                return false;
+            }
+        });
+
+        menu.getMenu().findItem(R.id.Moving).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                flter="Moving";
+                return false;
+            }
+        });
+
 
     }
 
@@ -145,6 +229,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMarkerClickListener(this);
         Toast.makeText(this,"mapReady",Toast.LENGTH_SHORT).show();
         getLastKnownLocation();
     }
@@ -172,6 +257,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
         for(int i=0;i<users.size();i++){
+            MarkerOptions m=new MarkerOptions()
+                    .title(users.get(i).getUser_name())
+                    .position(new LatLng(users.get(i).getLatitude(),users.get(i).getLongitude()));
             mMap.addMarker(new MarkerOptions()
                     .title(users.get(i).getUser_name())
                     .position(new LatLng(users.get(i).getLatitude(),users.get(i).getLongitude())));
@@ -179,17 +267,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }
 
-    }
-
-
-
-    private void remouveMarkers() {
-        mMap.clear();
-        for(int i=0;i<markers.size();i++){
-            mMap.clear();
-            markers.remove(i);
-            users.remove(i);
-        }
     }
 
 
@@ -270,9 +347,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Categories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
+                /*PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
                 p.getMenuInflater().inflate(R.menu.categories_menu,p.getMenu());
-                p.show();
+                p.show();*/
+                menu.show();
             }
         });
 
@@ -353,9 +431,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         if(mAuth.getCurrentUser()!=null){
-            mReference.child(mAuth.getCurrentUser().getUid()).child("stat").setValue("ofline");
+            mReference.child(mAuth.getCurrentUser().getUid()).child("users").child("stat").setValue("ofline");
             stopService(saveL);
         }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        AlertDialog.Builder builder=new AlertDialog.Builder(MapsActivity.this);
+        final View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
+        builder.setView(mView);
+        AlertDialog alertDialog=builder.create();
+        alertDialog.show();
+        return false;
     }
 }

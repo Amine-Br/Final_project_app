@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:title="Plumber" />
-    <item android:title="Electrician" />
-    <item android:title="House painter" />
-    <item android:title="Builder" />
-    <item android:title="Air conditioner" />
-    <item android:title="Gardening" />
-    <item android:title="House work" />
-    <item android:title="Moving" />
+    <item
+        android:title="no flter"
+        android:id="@+id/no_filter"/>
+    <item
+        android:id="@+id/Plumber"
+        android:title="Plumber" />
+    <item
+        android:title="Electrician"
+        android:id="@+id/Electrician"/>
+    <item
+        android:title="House painter"
+         android:id="@+id/House_painter"/>
+    <item
+        android:title="Builder"
+        android:id="@+id/Builder"/>
+    <item
+        android:title="Air conditioner"
+        android:id="@+id/Air_conditioner"/>
+    <item
+        android:title="Gardening"
+        android:id="@+id/Gardening"/>
+    <item
+        android:title="House work"
+        android:id="@+id/House_work"/>
+    <item
+        android:title="Moving"
+        android:id="@+id/Moving"/>
 </menu>

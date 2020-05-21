@@ -260,7 +260,7 @@ public class sign_up extends AppCompatActivity {
         //set Vals
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
-        mReference.child("").child(userID).child("birthday").setValue(birthday.getText().toString());
+        mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
         mReference.child("users").child(userID).child("sex").setValue(sex.getText().toString());
 
         if (!email.getText().toString().isEmpty()){
