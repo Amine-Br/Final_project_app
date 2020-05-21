@@ -64,7 +64,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mReference;
     private ArrayList<User> users;
     private ArrayList<MarkerOptions> markers;
-    //private Dialog d;
+    private Dialog d;
     private String flter="no_filter";
     private PopupMenu menu;
 
@@ -109,6 +109,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     users.add(user);
                 };
                 addMarkers();
+
             }
 
             @Override
@@ -439,11 +440,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        AlertDialog.Builder builder=new AlertDialog.Builder(MapsActivity.this);
+        /*AlertDialog.Builder builder=new AlertDialog.Builder(MapsActivity.this);
         final View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
         builder.setView(mView);
         AlertDialog alertDialog=builder.create();
         alertDialog.show();
+        return false; */
+        d=new Dialog(this);
+        d.setContentView(R.layout.activity_popup);
+        d.show();
         return false;
+
     }
 }
