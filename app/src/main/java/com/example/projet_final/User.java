@@ -1,5 +1,7 @@
 package com.example.projet_final;
 
+import java.util.HashMap;
+
 public class User {
     private String stat,
             birthday,
@@ -9,7 +11,7 @@ public class User {
             email="no email"
             ;
     private boolean Builder;
-    private boolean painter;
+    private boolean House_painter;
     private boolean Moving;
     private boolean air_conditioner;
     private boolean electrician;
@@ -75,11 +77,11 @@ public class User {
     }
 
     public boolean isPainter() {
-        return painter;
+        return House_painter;
     }
 
     public void setPainter(boolean painter) {
-        this.painter = painter;
+        this.House_painter = House_painter;
     }
 
     public boolean isMoving() {
@@ -146,7 +148,22 @@ public class User {
         Longitude = longitude;
     }
 
-    //public  jabs()
+    public HashMap<String,Boolean> jabs(){
+        HashMap<String,Boolean> Hm=new HashMap<String, Boolean>();
+        Hm.put("no_filter",true);
+        Hm.put("Builder",Builder);
+        Hm.put("House_painter",House_painter);
+        Hm.put("Moving",Moving);
+        Hm.put("air_conditioner",air_conditioner);
+        Hm.put("electrician",electrician);
+        Hm.put("gardening",gardening);
+        Hm.put("housework",housework);
+        Hm.put("plumber",plumber);
+
+
+
+        return Hm;
+    }
 
 
 
