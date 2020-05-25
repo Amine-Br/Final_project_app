@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -481,6 +483,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             break;
                         case R.id.sign_out_item:
                             Toast.makeText(MapsActivity.this,"clicked",Toast.LENGTH_SHORT);
+                            stopService(saveL);
+                            mAuth.signOut();
+                            //recreate();
+                            Intent i=getIntent();
+                            finish();
+                            startActivity(i);
                             break;
                         case R.id.about_us_item:
                             multi_activity.s="about_us_page";
@@ -504,7 +512,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onDestroy() {
         if(mAuth.getCurrentUser()!=null){
-            mReference.child(mAuth.getCurrentUser().getUid()).child("users").child("stat").setValue("ofline");
             stopService(saveL);
         }
         super.onDestroy();
