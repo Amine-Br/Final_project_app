@@ -254,15 +254,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onComplete(@NonNull Task<Location> task) {
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
-                    //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
-                    LatLng user_location = new LatLng(36.637549, 2.767185);
-                    mMap.addMarker(new MarkerOptions().position(user_location).title("Marker in your location"));
+                    LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+
+
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(user_location)      // Sets the center of the map to user_location
                             .zoom(10)                   // Sets the zoom to 15 (city zoom)
                             .build();                   // Creates a CameraPosition from the builder
                     mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    mMap.setMyLocationEnabled(true);
 
 
                 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:title="no flter"
-        android:id="@+id/no_filter"/>
+        android:id="@+id/no_filter"
+        android:title="No filter" />
     <item
         android:id="@+id/Plumber"
         android:title="Plumber" />
