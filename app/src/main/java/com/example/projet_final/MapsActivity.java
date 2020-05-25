@@ -1,10 +1,8 @@
 package com.example.projet_final;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -55,9 +53,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private FirebaseAuth mAuth;
-    private Button Categories;
+    private Button Categories,humberger;
     private DrawerLayout drawer;
-    private Toolbar toolbar;
     private static boolean mPermissions=false;
     private static final String[]  permissions={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
     private FusedLocationProviderClient mFusedLocationClient;
@@ -82,7 +79,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //categories button menus
         categories_click();
         //button of navigation drawer
-        build_button_drawer_mneu();
+        button_drawer_menu();
         //navigation drawer items
         nav_view_items_actions();
 
@@ -354,9 +351,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public  void init_objects(){
 
         Categories=(Button)findViewById(R.id.Category_button);
-        toolbar = findViewById(R.id.toolbar);
+        humberger = (Button) findViewById(R.id.humberger_button);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+
+
     }
     public void categories_click(){
         Categories.setOnClickListener(new View.OnClickListener() {
@@ -370,18 +369,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
-    public void build_button_drawer_mneu(){
+    public void button_drawer_menu(){
+        humberger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.openDrawer(GravityCompat.START);
 
-            setSupportActionBar(toolbar);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                    R.string.nav_draw_open, R.string.nav_draw_close);
-            drawer.addDrawerListener(toggle);
-            toggle.syncState();
+            }
+        });
 
     }
     public void nav_view_items_actions(){
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+       /* navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -420,7 +420,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         );
 
-
+        */
     }
     public void change_menu(){
 
@@ -428,15 +428,75 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu);
 
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                                                                 @Override
+                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                             switch (item.getItemId()) {
+                                     case R.id.login_item:
+                                          startActivity(new Intent(".MainActivity"));
+                                          break;
+
+                                     case R.id.signup_item:
+
+                                          startActivity(new Intent(".sign_up"));
+                                          break;
+
+                                     case R.id.change_lang_item:
+                                          multi_activity.s="language_page";
+                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                                          break;
+
+                                     case R.id.about_us_item:
+                                          multi_activity.s="about_us_page";
+                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                                          break;
+
+                                     case R.id.Rate_us_item:
+                                          multi_activity.s="rate_us_page";
+                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                                          break;
+                                                    }
+                             drawer.closeDrawer(GravityCompat.START);
+                             return true; }
+            }
+
+
+            );
+
+
         }else{
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
-            /*navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.welcome_tv).setVisibility(View.GONE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.profile_photo).setVisibility(View.VISIBLE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.name).setVisibility(View.VISIBLE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.star).setVisibility(View.VISIBLE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.email).setVisibility(View.VISIBLE);
-            navigationView.getHeaderView(R.layout.drawer_head).findViewById(R.id.rating).setVisibility(View.VISIBLE);*/
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.Profile_item:
+                            startActivity(new Intent(MapsActivity.this,Profile.class));
+                            break;
+                        case R.id.change_lang_item:
+                            multi_activity.s="language_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                        case R.id.sign_out_item:
+                            Toast.makeText(MapsActivity.this,"clicked",Toast.LENGTH_SHORT);
+                            break;
+                        case R.id.about_us_item:
+                            multi_activity.s="about_us_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                        case R.id.Rate_us_item:
+                            multi_activity.s="rate_us_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+
+                    }
+                    drawer.closeDrawer(GravityCompat.START);
+                    return false;
+                }
+            });
+
         }
 
     }

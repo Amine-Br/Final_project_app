@@ -22,17 +22,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@android:color/holo_orange_dark"
-                android:elevation="4dp"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            <Button
+                android:id="@+id/humberger_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/humberger_button"
+                map:layout_constraintBottom_toTopOf="@+id/Category_button"
                 map:layout_constraintEnd_toEndOf="parent"
+                map:layout_constraintHorizontal_bias="0.0"
                 map:layout_constraintStart_toStartOf="parent"
                 map:layout_constraintTop_toTopOf="parent"
-                map:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                map:layout_constraintVertical_bias="0.0" />
 
             <fragment
                 android:id="@+id/map"
@@ -42,7 +42,7 @@
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toBottomOf="@+id/toolbar"
+                map:layout_constraintTop_toTopOf="parent"
                 tools:context=".MapsActivity" />
 
             <Button
