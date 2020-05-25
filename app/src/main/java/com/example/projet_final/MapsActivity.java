@@ -66,7 +66,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DatabaseReference mReference;
     private ArrayList<User> users;
     private ArrayList<MarkerOptions> markers;
-    private Dialog d;
+    private Dialog dialog;
     private String flter="no_filter";
     private PopupMenu menu;
 
@@ -458,20 +458,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         alertDialog.show();
         return false; */
         int tag=(Integer)marker.getTag();
-        d=new Dialog(this);
-        /*View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
-        TextView t=mView.findViewById(R.id.username_popup);
+        dialog=new Dialog(this);
+        //View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
+        dialog.setContentView(R.layout.activity_popup);
+        TextView t=dialog.findViewById(R.id.username_popup);
         t.setText(users.get(tag).getUser_name());
-        t=findViewById(R.id.user_phone_popup);
+        t=(TextView) dialog.findViewById(R.id.user_phone_popup);
         t.setText(users.get(tag).getPhone());
-        t=findViewById(R.id.user_mail_popup);
+        t=(TextView)dialog.findViewById(R.id.user_mail_popup);
         t.setText(users.get(tag).getEmail());
-        t=findViewById(R.id.user_jobs_popup);
-        t.setText(users.get(tag).getPhone());*/
-        d.setContentView(R.layout.activity_popup);
-
-
-        d.show();
+        t=(TextView)dialog.findViewById(R.id.user_jobs_popup);
+        t.setText(users.get(tag).getPhone());
+        dialog.show();
         return false;
 
     }
