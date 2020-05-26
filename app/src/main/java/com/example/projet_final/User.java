@@ -208,7 +208,7 @@ public class User {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Log.i("bitmap","secc");
                     bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
-                    Picas
+
                     //return bitmap;
                 }
             });
