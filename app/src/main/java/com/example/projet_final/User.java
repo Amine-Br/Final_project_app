@@ -1,8 +1,20 @@
 package com.example.projet_final;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class User {
+    private Bitmap bitmap;
     private String stat,
             birthday,
             phone,
@@ -19,6 +31,15 @@ public class User {
     private boolean housework;
     private boolean plumber;
     private double Latitude,Longitude;
+    private String icone="";
+
+    public String getIcone() {
+        return icone;
+    }
+
+    public void setIcone(String icone) {
+        this.icone = icone;
+    }
 
     public String getStat() {
         return stat;
@@ -148,6 +169,15 @@ public class User {
         Longitude = longitude;
     }
 
+    public boolean isHouse_painter() {
+        return House_painter;
+    }
+
+    public void setHouse_painter(boolean house_painter) {
+        House_painter = house_painter;
+    }
+
+
     public HashMap<String,Boolean> jabs(){
         HashMap<String,Boolean> Hm=new HashMap<String, Boolean>();
         Hm.put("no_filter",true);
@@ -159,10 +189,31 @@ public class User {
         Hm.put("gardening",gardening);
         Hm.put("housework",housework);
         Hm.put("plumber",plumber);
-
-
-
         return Hm;
+    }
+
+    public Bitmap getIconeBitmap() {
+        //StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(icone);
+        final File file[] = new File[1];
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                .child("default").child("default_men_img.png");
+
+        try {
+            file[0]=File.createTempFile("image","png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        storageReference.getFile(file[0]).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.i("bitmap","secc");
+                    bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+                    Picas
+                    //return bitmap;
+                }
+            });
+        bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+        return bitmap;
     }
 
 

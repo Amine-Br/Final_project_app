@@ -249,7 +249,14 @@ public class sign_up extends AppCompatActivity {
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
         mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
-        mReference.child("users").child(userID).child("sex").setValue(sex.getText().toString());
+        if(groupsex.getCheckedRadioButtonId()==R.id.SU_Male){
+            mReference.child("users").child(userID).child("sex").setValue("Male");
+            mReference.child("users").child(userID).child("icone").setValue("gs://finalprojectapp-153c6.appspot.com/default/default_men_img.png");
+        }else {
+            mReference.child("users").child(userID).child("sex").setValue("Female");
+            mReference.child("users").child(userID).child("icone").setValue("gs://finalprojectapp-153c6.appspot.com/default/default_women_img.png");
+        }
+
 
         //set email
         if (!email.getText().toString().isEmpty()){
