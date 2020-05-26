@@ -2,30 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 
     >
-    <group
-        android:checkableBehavior="single"
-        android:id="@+id/group_divider"
 
-        >
-        <item
-            android:id="@+id/login_item"
-            android:title="Login" />
-    </group>
-    <group
-        android:checkableBehavior="single"
-        android:id="@+id/group_divider2"
-        >
-        <item
-            android:id="@+id/signup_item"
-            android:title="Signup" />
-    </group>
     <group
     android:checkableBehavior="single"
     android:id="@+id/group_divider3"
     >
     <item
         android:id="@+id/change_lang_item"
-        android:title="Change Language" />
+        android:title="Change Language"
+        android:icon="@drawable/menuitem_changelang"
+
+
+        />
     </group>
 
     <group
@@ -34,7 +22,9 @@
         >
         <item
             android:id="@+id/about_us_item"
-            android:title="About Us" />
+            android:title="About Us"
+            android:icon="@drawable/menuitem_aboutus"
+            />
     </group>
     <group
         android:checkableBehavior="single"
@@ -42,8 +32,11 @@
         >
         <item
             android:id="@+id/Rate_us_item"
-            android:title="Rate Us" />
+            android:title="Rate Us"
+            android:icon="@drawable/menuitem_rateus"
+            />
     </group>
+
 
 
 

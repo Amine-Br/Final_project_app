@@ -151,7 +151,7 @@
         android:id="@+id/rateus_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/singup"
+        android:background="@drawable/orange_button"
         android:text="Send Rating"
         android:textAlignment="center"
         android:textAllCaps="false"

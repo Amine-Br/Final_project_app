@@ -9,7 +9,9 @@
     >
         <item
         android:id="@+id/Profile_item"
-        android:title="Profile" />
+        android:title="Profile"
+            android:icon="@drawable/menuitem_profile"
+            />
     </group>
 
     <group
@@ -19,7 +21,9 @@
         >
         <item
             android:id="@+id/change_lang_item"
-            android:title="Change Language" />
+            android:title="Change Language"
+            android:icon="@drawable/menuitem_changelang"
+            />
     </group>
     <group
     android:checkableBehavior="single"
@@ -27,7 +31,9 @@
     >
     <item
         android:id="@+id/sign_out_item"
-        android:title="Sign out" />
+        android:title="Sign out"
+        android:icon="@drawable/menuitem_signout"
+        />
     </group>
     <group
         android:checkableBehavior="single"
@@ -35,7 +41,9 @@
         >
         <item
             android:id="@+id/about_us_item"
-            android:title="About Us" />
+            android:title="About Us"
+            android:icon="@drawable/menuitem_aboutus"
+            />
     </group>
     <group
         android:checkableBehavior="single"
@@ -43,7 +51,9 @@
         >
         <item
             android:id="@+id/Rate_us_item"
-            android:title="Rate Us" />
+            android:title="Rate Us"
+            android:icon="@drawable/menuitem_rateus"
+            />
     </group>
 
 

@@ -438,14 +438,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                  public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                              switch (item.getItemId()) {
-                                     case R.id.login_item:
-                                          startActivity(new Intent(".MainActivity"));
-                                          break;
-
-                                     case R.id.signup_item:
-
-                                          startActivity(new Intent(".sign_up"));
-                                          break;
 
                                      case R.id.change_lang_item:
                                           multi_activity.s="language_page";
@@ -468,6 +460,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             );
+
+           /* drawer_head.visibility="user_mode";
+            drawer_head d=new drawer_head();
+            d.init();
+            d.change_visibility();*/
 
 
         }else{
@@ -507,6 +504,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return false;
                 }
             });
+
+            /*drawer_head.visibility="worker_mode";
+            drawer_head d=new drawer_head();
+            d.init();
+            d.change_visibility();*/
 
         }
 
