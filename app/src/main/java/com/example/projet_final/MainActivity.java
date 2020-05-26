@@ -28,15 +28,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
+
+    private String codeSent,code;
     private AlertDialog alertDialog;
-    EditText email,phone,pass;
-    Button signin;
-    TextView signup;
-    FirebaseAuth mAuth  ;
-    FirebaseUser currentUser;
-    FirebaseAuth.AuthStateListener mAuthListener;
-    DatabaseReference mReference;
-    String codeSent,code;
+
+    //view
+    private EditText email,phone,pass;
+    private Button signin;
+    private TextView signup;
+
+    //firebase
+    private FirebaseAuth mAuth  ;
+    private DatabaseReference mReference;
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
@@ -44,9 +47,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i("AntivetyLife","onCreat:start");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i("Activity","MainActivity");
+        Log.i("MainActivity","onCreate");
+
+        init();
+        clicksignup();
+        clicksignin();
+    }
+
+    private void  init(){
+
+        Log.i("MainActivity","init");
+
         email=(EditText)findViewById(R.id.em_et);
         phone=(EditText)findViewById(R.id.ph_et);
         pass=(EditText)findViewById(R.id.pass_et);
@@ -76,33 +90,38 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
-        clicksignup();
-        clicksignin();
-        Log.i("AntivetyLife","onCreat:end");
     }
+
     public void clicksignup(){
-       Log.i("SignUp","start");
        signup.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
+
+               Log.i("MainActivity","sign_up clicked");
+
                Intent i = new Intent(".sign_up");
                startActivity(i);
            }
        });
-        Log.i("SignUp","end");
     }
-
-
 
     public void clicksignin(){
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.i("MainActivity","log_in clicked");
+
                 if(confData()){
                     if (!phone.getText().toString().isEmpty()){
+
+                        Log.i("MainActivity","log_in with phone");
+
                         logInWithPhone(phone.getText().toString());
                     }else {
+
+                        Log.i("MainActivity","log_in with email and password");
+
                         logInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
                     }
                 }
@@ -117,7 +136,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
     private void logInWithPhone(String phone){
+
+        Log.i("MainActivity","send code");
+
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phone,        // Phone number to verify
                 60,                 // Timeout duration
@@ -144,9 +167,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     protected void showConfrmDialog(){
-        Log.i("dialog","start");
+
+        Log.i("MainActivity","dialog show");
+
         AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
         final View mView=getLayoutInflater().inflate(R.layout.confirm_phone_dialog,null);
         builder.setView(mView);
@@ -160,23 +184,21 @@ public class MainActivity extends AppCompatActivity {
         mView.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("code","credential:star; ");
                 code=((EditText) mView.findViewById(R.id.code)).getText().toString();
                 credential = PhoneAuthProvider.getCredential(codeSent, code);
-                Log.i("code","credential:end;   credential= "+credential +"  credentialSmsCode= "+credential.getSmsCode()+"  credentialSignInMethod= "+credential.getSignInMethod()+"  credentialProvider= "+credential.getProvider());
                 signInWithPhoneAuthCredential(credential);
 
 
 
             }
         });
-        Log.i("dialog","show");
         alertDialog.show();
-        Log.i("dialog","end");
     }
 
-
     private boolean confData(){
+
+        Log.i("MainActivity","data confermed");
+
         return true;
     }
 
@@ -210,40 +232,44 @@ public class MainActivity extends AppCompatActivity {
             }
     }
 
-    @Override
-    protected void onStart() {
-        Log.i("AntivetyLife","onStart:start");
-        super.onStart();
-        //mAuth.addAuthStateListener(mAuthListener);
-        Log.i("AntivetyLife","onStart:end");
-    }
+
+
+
+
+
+
+
+
+
+    //Activity lifecycle
 
     @Override
-    protected void onStop() {
-        Log.i("AntivetyLife","onStop:start");
-        super.onStop();
-        //mAuth.removeAuthStateListener(mAuthListener);
-        Log.i("AntivetyLife","onStop:start");
+    protected void onStart() {
+        Log.i("MainActivity","onStart");
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
-        Log.i("AntivetyLife","onResume:start");
+        Log.i("MainActivity","onResume");
         super.onResume();
-        Log.i("AntivetyLife","onResume:end");
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i("MainActivity","onStop");
+        super.onStop();
     }
 
     @Override
     protected void onPause() {
-        Log.i("AntivetyLife","onPause:start");
+        Log.i("MainActivity","onPause");
         super.onPause();
-        Log.i("AntivetyLife","onPause:end");
     }
 
     @Override
     protected void onDestroy() {
-        Log.i("AntivetyLife","onDestroy:start");
+        Log.i("MainActivity","onDestroy");
         super.onDestroy();
-        Log.i("AntivetyLife","onDestroy:end");
     }
 }

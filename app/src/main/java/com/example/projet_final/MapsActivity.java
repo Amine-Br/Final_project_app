@@ -55,6 +55,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private GoogleMap mMap;
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private Button Categories,humberger;
     private DrawerLayout drawer;
     private static boolean mPermissions=false;
@@ -64,70 +65,56 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Intent saveL;
     private DatabaseReference mReference;
     private ArrayList<User> users;
-    private ArrayList<MarkerOptions> markers;
     private Dialog dialog;
     private String flter="no_filter";
     private PopupMenu menu;
+    private Bundle bundle;
+    private SupportMapFragment supportMapFragment;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle=savedInstanceState;
         setContentView(R.layout.activity_maps);
-        //init all vars
-        init_objects();
-        mAuth = FirebaseAuth.getInstance();
-        //categories button menus
-        categories_click();
-        //button of navigation drawer
-        button_drawer_menu();
-        //navigation drawer items
-        nav_view_items_actions();
-
-        //ArratList
-        users= new ArrayList<>();
-
-        //change menu if user login/logout
-        change_menu();
-
-        mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
-
-        //map
+        Log.i("Activity","MapsActivity");
+        Log.i("MapsActivity","onCreate");
+        init();
         if(checkServeur()){
             checkPermissions();
         }
-
-        mReference=FirebaseDatabase.getInstance().getReference("users");
-        mReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                users.clear();
-                ArrayList <String> IDs=new ArrayList<>();
-                for (DataSnapshot ID:dataSnapshot.getChildren()){
-                    IDs.add(ID.getKey());
-                    User user=ID.getValue(User.class);
-                    users.add(user);
-                };
-                addMarkers();
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        categories_click();
+        button_drawer_menu();
+        nav_view_items_actions();
+        change_menu();
         menuRedy();
+    }
+
+    private void init(){
+        Log.i("MapsActivity","init");
+
+        users= new ArrayList<>();
+
+        //view
+        menu=new PopupMenu(MapsActivity.this,Categories);
+        Categories=(Button)findViewById(R.id.Category_button);
+        humberger = (Button) findViewById(R.id.humberger_button);
+        drawer = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
+        supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
 
 
-        //d=new Dialog(this);
+        //firebase
+        mAuth = FirebaseAuth.getInstance();
+        mReference=FirebaseDatabase.getInstance().getReference("users");
 
     }
 
     private void menuRedy() {
-        menu=new PopupMenu(MapsActivity.this,Categories);
+
         menu.getMenuInflater().inflate(R.menu.categories_menu,menu.getMenu());
         menu.getMenu().findItem(R.id.no_filter).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -223,32 +210,54 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void initMap(){
+        Log.i("MapsActivity","initMap");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near User Location
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.i("MapsActivity","mapReady");
+
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        Toast.makeText(this,"mapReady",Toast.LENGTH_SHORT).show();
+        mReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                users.clear();
+                ArrayList <String> IDs=new ArrayList<>();
+                for (DataSnapshot ID:dataSnapshot.getChildren()){
+                    IDs.add(ID.getKey());
+                    User user=ID.getValue(User.class);
+                    users.add(user);
+                };
+                addMarkers();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         getLastKnownLocation();
     }
 
-
     private void addMarkers() {
-        mMap.clear();
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+        Log.i("MapsActivity","start clear");
+        try {
+            mMap.clear();
+        }catch (Exception e){
+            Intent i=getIntent();
+            finish();
+            startActivity(i);
+        }
+
+        Log.i("MapsActivity","cleared");
+       /* mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 if (task.isSuccessful()) {
@@ -267,7 +276,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 }
             }
-        });
+        });*/
         Marker m;
         HashMap<String,Boolean> Hm;
         for(int i=0;i<users.size();i++){
@@ -283,21 +292,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
     public void getLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         if(mAuth.getCurrentUser()!=null){
-            Toast.makeText(this,"have User",Toast.LENGTH_SHORT).show();
-            Log.i("seveLocation","have user");
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
             saveL=new Intent(this, com.example.projet_final.saveLocation.class);
             startService(saveL);
         }else{
-            Log.i("seveLocation","no user");
-            Toast.makeText(this,"no User",Toast.LENGTH_SHORT).show();
 
         }
 
@@ -305,32 +309,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
     private void checkPermissions() {
 
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),permissions[0])== PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this.getApplicationContext(),permissions[1])== PackageManager.PERMISSION_GRANTED ){
+
+            Log.i("MapsActivity","checked Permission");
+
             mPermissions= true;
             initMap();
         }else{
+
+            Log.i("MapsActivity","not checked Permission");
+
             ActivityCompat.requestPermissions(this,permissions,99);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.i("Permission","result:start");
         mPermissions=false;
         switch (requestCode){
             case 99:{
                 for (int i=0;i<grantResults.length;i++){
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
                         mPermissions=false;
-                        Log.i("Permission","result:not Accept");
+                        Log.i("MapsActivity","not checked Permission");
                         return;
                     }
                 }
-                Log.i("Permission","result:Accept");
                 mPermissions=true;
+                Log.i("MapsActivity","checked Permission");
                 initMap();
 
             }
@@ -340,25 +348,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean checkServeur(){
         int available= GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MapsActivity.this);
         if(available== ConnectionResult.SUCCESS){
-            Log.i("serverOk","case1");
+            Log.i("MapsActivity","serveur case 1");
             return true;
         }else if(GoogleApiAvailability.getInstance().isUserResolvableError(available)){
-            Log.i("serverOk","case2");
+            Log.i("MapsActivity","serveur case 2");
             Dialog dialog=GoogleApiAvailability.getInstance().getErrorDialog(MapsActivity.this,available,9001);
         }else{
-            Log.i("serverOk","case3");
+            Log.i("MapsActivity","serveur case 3");
         }
         return false;
     }
-    public  void init_objects(){
 
-        Categories=(Button)findViewById(R.id.Category_button);
-        humberger = (Button) findViewById(R.id.humberger_button);
-        drawer = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-
-
-    }
     public void categories_click(){
         Categories.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -371,6 +371,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+
     public void button_drawer_menu(){
         humberger.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -381,6 +382,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+
     public void nav_view_items_actions(){
 
        /* navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -424,6 +426,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         */
     }
+
     public void change_menu(){
 
         if(mAuth.getCurrentUser() == null){
@@ -484,11 +487,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         case R.id.sign_out_item:
                             Toast.makeText(MapsActivity.this,"clicked",Toast.LENGTH_SHORT);
                             stopService(saveL);
+
+                            Log.i("MapsActivity","sign_out");
+
                             mAuth.signOut();
-                            //recreate();
-                            Intent i=getIntent();
-                            finish();
-                            startActivity(i);
+                            recreate();
                             break;
                         case R.id.about_us_item:
                             multi_activity.s="about_us_page";
@@ -510,24 +513,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    protected void onDestroy() {
-        if(mAuth.getCurrentUser()!=null){
-            stopService(saveL);
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onMarkerClick(Marker marker) {
-        /*AlertDialog.Builder builder=new AlertDialog.Builder(MapsActivity.this);
-        final View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
-        builder.setView(mView);
-        AlertDialog alertDialog=builder.create();
-        alertDialog.show();
-        return false; */
+        Log.i("MapsActivity","merker clicked");
+
         int tag=(Integer)marker.getTag();
         dialog=new Dialog(this);
-        //View mView=getLayoutInflater().inflate(R.layout.activity_popup,null);
         dialog.setContentView(R.layout.activity_popup);
         TextView t=dialog.findViewById(R.id.username_popup);
         t.setText(users.get(tag).getUser_name());
@@ -540,5 +530,61 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         dialog.show();
         return false;
 
+    }
+
+
+
+
+
+
+
+    //Activity lifecycle
+
+    @Override
+    protected void onStart() {
+        Log.i("MapsActivity","onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("MapsActivity","onResume");
+
+        super.onResume();
+        if(mMap==null){
+            Log.i("MapsActivity","mMap=null");
+            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
+                @Override
+                public void onMapReady(GoogleMap googleMap) {
+                    mMap=googleMap;
+                }
+            });
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i("MapsActivity","onStop");
+        super.onStop();
+
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i("MapsActivity","onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        Log.i("MapsActivity","onDestroy");
+
+        if(mAuth.getCurrentUser()!=null){
+            stopService(saveL);
+
+        }
+        super.onDestroy();
     }
 }

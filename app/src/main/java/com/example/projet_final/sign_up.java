@@ -40,13 +40,16 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.Thread.sleep;
 
 public class sign_up extends AppCompatActivity {
+
+    private String code,codeSent;
+
     //View
     private AlertDialog alertDialog;
     private Button signup;
     private EditText name,phone,email,pass,confpass,birthday;
     private RadioGroup groupsex;
     private CheckBox CB_Builder,CB_air_conditioner,CB_electrician,CB_gardening,CB_House_painter,CB_housework,CB_Moving,CB_plumber;
-    private String code,codeSent;
+
     //FireBase
     private FirebaseAuth mAuth;
     private DatabaseReference mReference;
@@ -54,13 +57,26 @@ public class sign_up extends AppCompatActivity {
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        Log.i("sign_up_create","start");
+        Log.i("Activity","sign_up");
+        Log.i("sign_up","onCreate");
+        init();
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (confirmData())  signUp();
+            }
+        });
+
+
+    }
+
+    private void init(){
+
+        Log.i("sign_up","init");
 
         ///View
         signup=(Button)findViewById(R.id.SU_Button_sign_up);
@@ -85,16 +101,10 @@ public class sign_up extends AppCompatActivity {
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mReference= mFirebaseDatabase.getReference();
 
-
+        //mCallbacks
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
-                Log.i("code","onVerificationCompleted:star; ");
-                /*if (!email.getText().toString().isEmpty()){
-                    signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
-                    link(phoneAuthCredential);
-                    mAuth.signOut();
-                }*/
                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
@@ -120,21 +130,10 @@ public class sign_up extends AppCompatActivity {
         };
 
 
-        //
-        Log.i("sign_up_create","end");
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (confirmData())  signUp();
-            }
-        });
-
-
     }
 
     private void signUp() {
-        Log.i("addData","start");
-
+        Log.i("sign_up","send Config code");
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                     phone.getText().toString(),        // Phone number to verify
                     60,                 // Timeout duration
@@ -142,15 +141,9 @@ public class sign_up extends AppCompatActivity {
                     this,               // Activity (for callback binding)
                     mCallbacks          // OnVerificationStateChangedCallbacks
         );
-
-        Log.i("code","code have :"+code);
-
-        Log.i("addData","end");
-        Log.i("addData","start");
     }
 
-     public boolean confirmData() {
-        Log.i("confirmData","confirmData_start");
+    public boolean confirmData() {
         if (name.getText().toString().isEmpty()){
             name.setError("Please Enter email");
             //Toast.makeText(sign_up.this,"Please Enter email",Toast.LENGTH_SHORT);
@@ -242,30 +235,28 @@ public class sign_up extends AppCompatActivity {
             return false;
         }
         Log.i("confirmData","confpass same");
-
         Log.i("confirmData","sex valid");
-
-        //Toast.makeText(sign_up.this,"data confirmed",Toast.LENGTH_SHORT);
-        Log.i("confirmData","confirmData_end");
+        Log.i("sign_up","data confermed");
         return true;
     }
 
-
     private void saveData(FirebaseUser currentUser){
-        Log.i("saveData","start");
         String userID=currentUser.getUid();
-        Log.i("saveData","UID:"+userID);
         mReference.child("usedPhone").child(phone.getText().toString()).setValue(true);
         RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
-        //set Vals
+
+        //set Values
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
         mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
         mReference.child("users").child(userID).child("sex").setValue(sex.getText().toString());
 
+        //set email
         if (!email.getText().toString().isEmpty()){
             mReference.child("users").child(userID).child("email").setValue(email.getText().toString());
         }
+
+        //set jobs
         if(CB_Builder.isChecked()){
             mReference.child("users").child(userID).child(CB_Builder.getText().toString()).setValue(true);
         }else{
@@ -306,11 +297,14 @@ public class sign_up extends AppCompatActivity {
         }else{
             mReference.child("users").child(userID).child(CB_plumber.getText().toString()).setValue(false);
         }
-        Log.i("saveData","end");
+
+        Log.i("sign_up","data saved on firebase");
     }
 
     protected void showConfrmDialog(){
-        Log.i("dialog","start");
+
+        Log.i("sign_up","dialog show");
+
         AlertDialog.Builder builder=new AlertDialog.Builder(sign_up.this);
         final View mView=getLayoutInflater().inflate(R.layout.confirm_phone_dialog,null);
         builder.setView(mView);
@@ -324,31 +318,24 @@ public class sign_up extends AppCompatActivity {
         mView.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("code","credential:star; ");
                 code=((EditText) mView.findViewById(R.id.code)).getText().toString();
                 credential = PhoneAuthProvider.getCredential(codeSent, code);
-                Log.i("code","credential:end;   credential= "+credential +"  credentialSmsCode= "+credential.getSmsCode()+"  credentialSignInMethod= "+credential.getSignInMethod()+"  credentialProvider= "+credential.getProvider());
                 signInWithPhoneAuthCredential(credential);
-
-
-
             }
         });
-        Log.i("dialog","show");
         alertDialog.show();
-        Log.i("dialog","end");
     }
 
     private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
-        Log.i("code","signIn  start; ");
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.i("code","signIn  succ; ");
+
+                            Log.i("sign_up","sign_up secsseful");
+
                             saveData(mAuth.getCurrentUser());
-                            Log.i("code","signIn  credential; "+credential);
                             if (!email.getText().toString().isEmpty()){
                                // signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
                                 link(EmailAuthProvider.getCredential(email.getText().toString(),pass.getText().toString()));
@@ -358,7 +345,9 @@ public class sign_up extends AppCompatActivity {
                             startActivity(map);
 
                         } else {
-                            Log.i("code","signIn not succ; ");
+
+                            Log.i("sign_up"," sign_up not secsseful");
+
                         }
                     }
                 });
@@ -370,14 +359,59 @@ public class sign_up extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d("code", "linkWithCredential:success");
                             FirebaseUser user = task.getResult().getUser();
-                        } else {
-                            Log.w("code", "linkWithCredential:failure", task.getException());
 
+                            Log.i("sign_up","link secsseful");
+
+                        } else {
+
+                            Log.i("sign_up","link not secsseful");
 
                         }
                     }
                 });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    //Activity lifecycle
+
+    @Override
+    protected void onStart() {
+        Log.i("sign_up","onStart");
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i("sign_up","onResume");
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.i("sign_up","onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i("sign_up","onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i("sign_up","onDestroy");
+        super.onDestroy();
     }
 }

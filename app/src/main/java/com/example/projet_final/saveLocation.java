@@ -42,8 +42,7 @@ public class saveLocation extends Service {
     /*private NotificationManager maneger;
     private final String channelID="channel_ID";*/
 
-    //theread class
-    final class theTheread implements Runnable{
+    /*final class theTheread implements Runnable{
 
 
         public theTheread(){
@@ -74,9 +73,9 @@ public class saveLocation extends Service {
                                     .target(user_location)      // Sets the center of the map to user_location
                                     .zoom(15)                   // Sets the zoom to 15 (city zoom)
                                     .build();                   // Creates a CameraPosition from the builder
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));*/
-                            //Toast.makeText(saveLocation.this,"Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude(),Toast.LENGTH_SHORT).show();
-                            Log.i("seveLocation","Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude());
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            Toast.makeText(saveLocation.this,"Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude(),Toast.LENGTH_SHORT).show();*/
+                            /*Log.i("seveLocation","Latitude:"+location.getLatitude()+"   Longitude:"+location.getLongitude());
                             mReference.child("users").child(userID).child("Latitude").setValue(location.getLatitude());
                             mReference.child("users").child(userID).child("Longitude").setValue(location.getLongitude());
                             Log.i("seveLocation","saved");
@@ -84,7 +83,7 @@ public class saveLocation extends Service {
                             /*while (System.currentTimeMillis()< time[0]){
 
                             }
-                            time[0] +=1000;*/
+                            time[0] +=1000;
 
                         }else{
                             Log.i("seveLocation","not succ");
@@ -97,31 +96,23 @@ public class saveLocation extends Service {
 
 
 
-    }
+    }*/
 
-    //the therad end
+
 
 
     private Thread saveL;
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("seveLocation","serviceCreat");
+        Log.i("Activity","saveLocation");
+        Log.i("saveLocation","onCreate");
         init();
-        //creatNotification();
     }
 
-   /* private void creatNotification() {
-        if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.O){
-            NotificationChannel notificationChannel= new NotificationChannel(channelID
-                    , "channelName"
-                    , NotificationManager.IMPORTANCE_DEFAULT);
-            maneger=getSystemService(NotificationManager.class);
-            maneger.createNotificationChannel(notificationChannel);
-        }
-    }*/
 
     public void init(){
+        Log.i("saveLocation","init");
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mReference=mFirebaseDatabase.getReference();
         mFusedLocationClient= LocationServices.getFusedLocationProviderClient(saveLocation.this);
@@ -129,17 +120,52 @@ public class saveLocation extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i("saveLocation","onStartCommand");
         Toast.makeText(this,"thereadStart",Toast.LENGTH_SHORT).show();
-        Log.i("seveLocation","serviceStart");
-        saveL=new Thread(new theTheread());
+        //saveL=new Thread(new theTheread());
+        saveL= new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("saveLocation","thread run");
+                int i=0;
+                mReference.child("users").child(userID).child("stat").setValue("online");
+                while (true){
+                    i++;
+                    Log.i("saveLocation","while i="+i);
+
+                    //save Location
+                    mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Location> task) {
+                            if (task.isSuccessful()) {
+                                location = task.getResult();
+                                //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+                                mReference.child("users").child(userID).child("Latitude").setValue(location.getLatitude());
+                                mReference.child("users").child(userID).child("Longitude").setValue(location.getLongitude());
+                            }else{
+
+                            }
+                        }
+                    });
+
+                    //SystemClock.sleep(1000);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
         saveL.start();
-        notication();
+        notification();
         return START_NOT_STICKY;
-        //return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
     public void onDestroy() {
+        Log.i("saveLocation","onDestroy");
         saveL.interrupt();
         mReference.child("users").child(userID).child("stat").setValue("offline");
         super.onDestroy();
@@ -159,7 +185,8 @@ public class saveLocation extends Service {
         saveLocation.userID = userID;
     }
 
-    private void notication() {
+    private void notification() {
+        Log.i("saveLocation","notification");
         Intent NIntent=new Intent(saveLocation.this,MapsActivity.class);
         PendingIntent pendingIntent=PendingIntent.getActivities(saveLocation.this,0, new Intent[]{NIntent},0);
         final String channelID="channel_ID";
