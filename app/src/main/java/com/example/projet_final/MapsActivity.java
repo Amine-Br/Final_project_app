@@ -3,6 +3,7 @@ package com.example.projet_final;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -20,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,7 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         categories_click();
         button_drawer_menu();
-        nav_view_items_actions();
+
         change_menu();
         menuRedy();
     }
@@ -97,7 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         users= new ArrayList<>();
 
         //view
-        menu=new PopupMenu(MapsActivity.this,Categories);
+
         Categories=(Button)findViewById(R.id.Category_button);
         humberger = (Button) findViewById(R.id.humberger_button);
         drawer = findViewById(R.id.drawer_layout);
@@ -110,6 +112,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //firebase
         mAuth = FirebaseAuth.getInstance();
         mReference=FirebaseDatabase.getInstance().getReference("users");
+
+        menu=new PopupMenu(MapsActivity.this,Categories);
 
     }
 
@@ -383,49 +387,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void nav_view_items_actions(){
 
-       /* navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                        switch (item.getItemId()) {
-                    case R.id.login_item:
-                       startActivity(new Intent(".MainActivity"));
-                        break;
-
-                    case R.id.signup_item:
-
-                        startActivity(new Intent(".sign_up"));
-                        break;
-
-                    case R.id.change_lang_item:
-                        multi_activity.s="language_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-
-                        break;
-
-                    case R.id.about_us_item:
-                        multi_activity.s="about_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-
-                    case R.id.Rate_us_item:
-                        multi_activity.s="rate_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-                }
-
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-
-        );
-
-        */
-    }
 
     public void change_menu(){
 
@@ -465,6 +427,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             drawer_head d=new drawer_head();
             d.init();
             d.change_visibility();*/
+            View header = navigationView.getHeaderView(0);
+
+            Button signin=header.findViewById(R.id.drawer_h_signin);
+            Button signup=header.findViewById(R.id.drawer_h_signup);
+            ImageView logo_img=header.findViewById(R.id.drawer_h_image1);
+            TextView logo_tv=header.findViewById(R.id.drawer_h_tv1);
+            ConstraintLayout main=header.findViewById(R.id.drawer_head_id);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            signup.setVisibility(View.VISIBLE);
+            signin.setVisibility(View.VISIBLE);
+            logo_tv.setVisibility(View.VISIBLE);
+            logo_img.setVisibility(View.VISIBLE);
+            worker.setVisibility(View.GONE);
+
+            signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".MainActivity"));
+                }
+            });
+            signup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".sign_up"));
+                }
+            });
+
+
+
 
 
         }else{
@@ -509,6 +501,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             drawer_head d=new drawer_head();
             d.init();
             d.change_visibility();*/
+            View header = navigationView.getHeaderView(0);
+
+            Button signin=header.findViewById(R.id.drawer_h_signin);
+            Button signup=header.findViewById(R.id.drawer_h_signup);
+            ImageView logo_img=header.findViewById(R.id.drawer_h_image1);
+            TextView logo_tv=header.findViewById(R.id.drawer_h_tv1);
+            ConstraintLayout main=header.findViewById(R.id.drawer_head_id);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            signup.setVisibility(View.GONE);
+            signin.setVisibility(View.GONE);
+            logo_tv.setVisibility(View.GONE);
+            logo_img.setVisibility(View.GONE);
+            worker.setVisibility(View.VISIBLE);
+
+
 
         }
 
