@@ -5,7 +5,9 @@
     android:layout_width="200dp"
     android:layout_height="225dp"
     android:layout_gravity="center"
+    android:background="@drawable/popupbg"
     tools:context=".popup">
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/image_container_popup"
@@ -44,7 +46,6 @@
         android:id="@+id/username_popup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:text="User name"
         android:textColor="#3E4958"
         android:textSize="12sp"
@@ -63,6 +64,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_popup"
         app:layout_constraintVertical_bias="0.100000024">
+
 
         <TextView
             android:id="@+id/user_phone_popup"
@@ -143,6 +145,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

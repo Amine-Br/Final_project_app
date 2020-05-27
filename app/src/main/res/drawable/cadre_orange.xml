@@ -19,7 +19,7 @@
     <path
         android:pathData="M15.5 0.5H335.5C343.784 0.5 350.5 7.21573 350.5 15.5V135.5C350.5 143.784 343.784 150.5 335.5 150.5H15.5C7.21573 150.5 0.5 143.784 0.5 135.5V15.5C0.5 7.21573 7.21573 0.5 15.5 0.5Z"
         android:strokeWidth="7"
-
+        android:fillColor="@color/colorAccent"
         android:strokeColor="#FF6D00"
         />
 
