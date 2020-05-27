@@ -3,6 +3,7 @@ package com.example.projet_final;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -470,6 +471,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             );
 
+            View header = navigationView.getHeaderView(0);
+
+            Button signin=header.findViewById(R.id.drawer_h_signin);
+            Button signup=header.findViewById(R.id.drawer_h_signup);
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            user.setVisibility(View.VISIBLE);
+            worker.setVisibility(View.GONE);
+
+            signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".MainActivity"));
+                }
+            });
+            signup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".sign_up"));
+                }
+            });
 
         }else{
             navigationView.getMenu().clear();
@@ -508,6 +531,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return false;
                 }
             });
+
+            View header = navigationView.getHeaderView(0);
+
+
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            user.setVisibility(View.GONE);
+            worker.setVisibility(View.VISIBLE);
 
         }
 
