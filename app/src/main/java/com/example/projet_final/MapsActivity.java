@@ -423,23 +423,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             );
 
-           /* drawer_head.visibility="user_mode";
-            drawer_head d=new drawer_head();
-            d.init();
-            d.change_visibility();*/
+
             View header = navigationView.getHeaderView(0);
 
             Button signin=header.findViewById(R.id.drawer_h_signin);
             Button signup=header.findViewById(R.id.drawer_h_signup);
-            ImageView logo_img=header.findViewById(R.id.drawer_h_image1);
-            TextView logo_tv=header.findViewById(R.id.drawer_h_tv1);
-            ConstraintLayout main=header.findViewById(R.id.drawer_head_id);
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
 
-            signup.setVisibility(View.VISIBLE);
-            signin.setVisibility(View.VISIBLE);
-            logo_tv.setVisibility(View.VISIBLE);
-            logo_img.setVisibility(View.VISIBLE);
+            user.setVisibility(View.VISIBLE);
             worker.setVisibility(View.GONE);
 
             signin.setOnClickListener(new View.OnClickListener() {
@@ -454,6 +446,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(new Intent(".sign_up"));
                 }
             });
+
 
 
 
@@ -497,23 +490,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
-            /*drawer_head.visibility="worker_mode";
-            drawer_head d=new drawer_head();
-            d.init();
-            d.change_visibility();*/
+
             View header = navigationView.getHeaderView(0);
 
-            Button signin=header.findViewById(R.id.drawer_h_signin);
-            Button signup=header.findViewById(R.id.drawer_h_signup);
-            ImageView logo_img=header.findViewById(R.id.drawer_h_image1);
-            TextView logo_tv=header.findViewById(R.id.drawer_h_tv1);
-            ConstraintLayout main=header.findViewById(R.id.drawer_head_id);
+
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
 
-            signup.setVisibility(View.GONE);
-            signin.setVisibility(View.GONE);
-            logo_tv.setVisibility(View.GONE);
-            logo_img.setVisibility(View.GONE);
+            user.setVisibility(View.VISIBLE);
             worker.setVisibility(View.VISIBLE);
 
 

@@ -15,7 +15,9 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        tools:openDrawer="start">
+        tools:openDrawer="start"
+
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout"
@@ -61,12 +63,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:theme="@style/PopupMenuListView"
+            android:verticalScrollbarPosition="right"
             android:visibility="visible"
             map:headerLayout="@layout/drawer_head"
             map:menu="@menu/drawer_menu"
@@ -75,10 +79,12 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="wrap_content"
-                android:layout_height="70dp"
+                android:layout_height="60dp"
                 android:layout_gravity="bottom"
                 android:scaleType="centerCrop"
-                map:srcCompat="@drawable/bottom" />
+                map:srcCompat="@drawable/bottom"
+
+                />
         </com.google.android.material.navigation.NavigationView>
 
 
