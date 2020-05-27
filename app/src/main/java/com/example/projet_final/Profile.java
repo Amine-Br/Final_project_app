@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +32,8 @@ public class Profile extends AppCompatActivity {
 
     private String userID;
     private User user;
+    private Uri s;
+
 
     //firebase
     private DatabaseReference mReference;
@@ -68,12 +74,18 @@ public class Profile extends AppCompatActivity {
                 user_name.setText(user.getUser_name());
                 user_phone.setText(user.getPhone());
                 Bitmap bitmap=user.getIconeBitmap();
-                if(bitmap==null){
-                    Toast.makeText(Profile.this,"bitmap ==null", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(Profile.this,"bitmap !=null", Toast.LENGTH_SHORT).show();
-                }
-                user_image.setImageBitmap(bitmap);
+                //user_image.setImageBitmap(bitmap);
+                final Uri[] s = new Uri[1];
+                StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                        .child("default").child("default_men_img.png");
+                storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        s[0] =task.getResult();
+                        Picasso.get().load(s[0]).into(user_image);
+                    }
+                });
+                //Picasso.get().load(user.getUri()).into(user_image);
                 }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

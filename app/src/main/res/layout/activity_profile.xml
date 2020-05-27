@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/user_img_profile"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -40,7 +40,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/user_name_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -60,11 +60,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@+id/user_name_profile"
         app:layout_constraintVertical_bias="0.100000024">
 
         <TextView
-            android:id="@+id/user_phone"
+            android:id="@+id/user_phone_profile"
             android:layout_width="0dp"
 
             android:layout_height="wrap_content"
@@ -90,13 +90,13 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/user_mail"
+            app:layout_constraintBottom_toTopOf="@+id/user_mail_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_phone" />
+            app:layout_constraintTop_toBottomOf="@+id/user_phone_profile" />
 
         <TextView
-            android:id="@+id/user_mail"
+            android:id="@+id/user_mail_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -121,13 +121,13 @@
             android:layout_marginEnd="40dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/darker_gray"
-            app:layout_constraintBottom_toTopOf="@+id/user_jobs"
+            app:layout_constraintBottom_toTopOf="@+id/user_jobs_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_mail" />
+            app:layout_constraintTop_toBottomOf="@+id/user_mail_profile" />
 
         <TextView
-            android:id="@+id/user_jobs"
+            android:id="@+id/user_jobs_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

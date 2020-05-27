@@ -2,15 +2,21 @@ package com.example.projet_final;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
 public class User {
@@ -32,6 +38,20 @@ public class User {
     private boolean plumber;
     private double Latitude,Longitude;
     private String icone="";
+
+    public Uri getUri(){
+        final Uri[] s = new Uri[1];
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                .child("default").child("default_men_img.png");
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                s[0] =task.getResult();
+                //return s;
+            }
+        });
+        return s[0];
+    }
 
     public String getIcone() {
         return icone;
@@ -177,7 +197,6 @@ public class User {
         House_painter = house_painter;
     }
 
-
     public HashMap<String,Boolean> jabs(){
         HashMap<String,Boolean> Hm=new HashMap<String, Boolean>();
         Hm.put("no_filter",true);
@@ -208,7 +227,6 @@ public class User {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Log.i("bitmap","secc");
                     bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
-
                     //return bitmap;
                 }
             });
