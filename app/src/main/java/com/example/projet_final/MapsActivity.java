@@ -3,6 +3,7 @@ package com.example.projet_final;
 import androidx.annotation.NonNull;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
@@ -14,17 +15,13 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,13 +35,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,12 +48,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,8 +56,8 @@ import java.util.Map;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    private StorageReference storageReference;
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener authStateListener;
     private Button Categories,humberger;
     private DrawerLayout drawer;
     private static boolean mPermissions=false;
@@ -80,19 +70,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Dialog dialog;
     private String flter="no_filter";
     private PopupMenu menu;
+    private Bundle bundle;
     private SupportMapFragment supportMapFragment;
-    private ArrayList <String> IDs;
-    private User user;
-    private File file;
-    private Drawable drawable;
-    private Bitmap bitmap;
-
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle=savedInstanceState;
         setContentView(R.layout.activity_maps);
         Log.i("Activity","MapsActivity");
         Log.i("MapsActivity","onCreate");
@@ -102,7 +88,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         categories_click();
         button_drawer_menu();
-        nav_view_items_actions();
+
         change_menu();
         menuRedy();
     }
@@ -111,28 +97,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("MapsActivity","init");
 
         users= new ArrayList<>();
-        IDs=new ArrayList<>();
 
         //view
+
         Categories=(Button)findViewById(R.id.Category_button);
         humberger = (Button) findViewById(R.id.humberger_button);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
-        supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        menu=new PopupMenu(MapsActivity.this,Categories);
+        supportMapFragment=(SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
 
         //firebase
-        storageReference= FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mReference=FirebaseDatabase.getInstance().getReference("users");
+
+        menu=new PopupMenu(MapsActivity.this,Categories);
 
     }
 
     private void menuRedy() {
-        /*PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
-                p.getMenuInflater().inflate(R.menu.categories_menu,p.getMenu());
-                p.show();*/
 
         menu.getMenuInflater().inflate(R.menu.categories_menu,menu.getMenu());
         menu.getMenu().findItem(R.id.no_filter).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -239,17 +224,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         Log.i("MapsActivity","mapReady");
+
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
         mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 users.clear();
-                IDs.clear();
-
+                ArrayList <String> IDs=new ArrayList<>();
                 for (DataSnapshot ID:dataSnapshot.getChildren()){
                     IDs.add(ID.getKey());
-                    user=ID.getValue(User.class);
+                    User user=ID.getValue(User.class);
                     users.add(user);
                 };
                 addMarkers();
@@ -262,7 +247,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+        getLastKnownLocation();
+    }
+
+    private void addMarkers() {
+        Log.i("MapsActivity","start clear");
+        try {
+            mMap.clear();
+        }catch (Exception e){
+            Intent i=getIntent();
+            finish();
+            startActivity(i);
+        }
+
+        Log.i("MapsActivity","cleared");
+       /* mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 if (task.isSuccessful()) {
@@ -281,33 +280,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 }
             }
-        });
-
-        serviceLocation();
-    }
-
-    private void addMarkers() {
-        mMap.clear();
+        });*/
         Marker m;
-
         HashMap<String,Boolean> Hm;
         for(int i=0;i<users.size();i++){
             Hm=users.get(i).jabs();
             if(Hm.get(flter)) {
-                if( mAuth.getCurrentUser()!=null && mAuth.getCurrentUser().getUid().equals(IDs.get(i))) {
+                m = mMap.addMarker(new MarkerOptions()
+                        .title(users.get(i).getUser_name())
+                        .position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())));
 
-                    m = mMap.addMarker(new MarkerOptions()
-                            .title(users.get(i).getUser_name())
-                            .position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())));
-
-                    m.setTag(i);
-                }
+                m.setTag(i);
             }
         }
 
     }
 
-    public void serviceLocation() {
+    public void getLastKnownLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -378,9 +367,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Categories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
+                p.getMenuInflater().inflate(R.menu.categories_menu,p.getMenu());
+                p.show();*/
                 menu.show();
             }
         });
+
     }
 
     public void button_drawer_menu(){
@@ -394,49 +387,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void nav_view_items_actions(){
 
-       /* navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                        switch (item.getItemId()) {
-                    case R.id.login_item:
-                       startActivity(new Intent(".MainActivity"));
-                        break;
-
-                    case R.id.signup_item:
-
-                        startActivity(new Intent(".sign_up"));
-                        break;
-
-                    case R.id.change_lang_item:
-                        multi_activity.s="language_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-
-                        break;
-
-                    case R.id.about_us_item:
-                        multi_activity.s="about_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-
-                    case R.id.Rate_us_item:
-                        multi_activity.s="rate_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-                }
-
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-
-        );
-
-        */
-    }
 
     public void change_menu(){
 
@@ -449,14 +400,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                  public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                              switch (item.getItemId()) {
-                                     case R.id.login_item:
-                                          startActivity(new Intent(".MainActivity"));
-                                          break;
-
-                                     case R.id.signup_item:
-
-                                          startActivity(new Intent(".sign_up"));
-                                          break;
 
                                      case R.id.change_lang_item:
                                           multi_activity.s="language_page";
@@ -479,6 +422,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             );
+
+
+            View header = navigationView.getHeaderView(0);
+
+            Button signin=header.findViewById(R.id.drawer_h_signin);
+            Button signup=header.findViewById(R.id.drawer_h_signup);
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            user.setVisibility(View.VISIBLE);
+            worker.setVisibility(View.GONE);
+
+            signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".MainActivity"));
+                }
+            });
+            signup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(".sign_up"));
+                }
+            });
+
+
+
+
 
 
         }else{
@@ -519,6 +490,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
+
+            View header = navigationView.getHeaderView(0);
+
+
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+
+            user.setVisibility(View.VISIBLE);
+            worker.setVisibility(View.VISIBLE);
+
+
+
         }
 
     }
@@ -546,22 +529,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
 
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(
-                bm, 0, 0, width, height, matrix, false);
-        bm.recycle();
-        return resizedBitmap;
-    }
 
 
     //Activity lifecycle

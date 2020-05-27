@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/up"
             android:layout_width="match_parent"
-            android:layout_height="600dp"
+            android:layout_height="675dp"
             android:background="@drawable/oval"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,15 +40,32 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/welcome_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:gravity="center"
+                android:text="WELCOME"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textScaleX="1.5"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
             <ImageView
                 android:id="@+id/user_img"
                 android:layout_width="wrap_content"
                 android:layout_height="200dp"
-                android:scaleType="fitXY"
+                android:scaleType="centerInside"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/welcome_tv"
                 app:srcCompat="@drawable/logo" />
 
             <TextView
@@ -167,7 +184,7 @@
             android:id="@+id/button_sign_in"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/singup"
+            android:background="@drawable/orange_button"
             android:text="SIGN IN"
             android:textColor="@android:color/white"
             android:textSize="20sp"
