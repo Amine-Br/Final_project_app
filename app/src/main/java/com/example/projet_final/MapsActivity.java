@@ -559,7 +559,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         t=(TextView)dialog.findViewById(R.id.user_mail_popup);
         t.setText(users.get(tag).getEmail());
         t=(TextView)dialog.findViewById(R.id.user_jobs_popup);
-        t.setText(users.get(tag).getPhone());
+        t.setText(users.get(tag).getJobsString());
         dialog.show();
         return false;
 

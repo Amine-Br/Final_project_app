@@ -70,7 +70,7 @@ public class Profile extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user=dataSnapshot.getValue(User.class);
                 user_email.setText(user.getEmail());
-                user_jobs.setText("jobs .....");
+                user_jobs.setText(user.getJobsString());
                 user_name.setText(user.getUser_name());
                 user_phone.setText(user.getPhone());
                 Bitmap bitmap=user.getIconeBitmap();

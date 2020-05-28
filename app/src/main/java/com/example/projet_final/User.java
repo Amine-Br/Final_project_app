@@ -235,6 +235,37 @@ public class User {
     }
 
 
+    public String getJobsString(){
+        StringBuffer jobs=new StringBuffer();
+        if (Builder){
+            jobs.append("Builder-");
+        }
+        if (House_painter){
+            jobs.append("House_painter-");
+        }
+        if (Moving){
+            jobs.append("Moving-");
+        }
+        if (air_conditioner){
+            jobs.append("air_conditioner-");
+        }
+        if (electrician){
+            jobs.append("electrician-");
+        }
+        if (gardening){
+            jobs.append("gardening-");
+        }
+        if (housework){
+            jobs.append("housework-");
+        }
+        if (plumber){
+            jobs.append("plumber-");
+        }
+        jobs.deleteCharAt(jobs.length()-1);
+        return jobs.toString();
+    }
+
+
 
 }
 
