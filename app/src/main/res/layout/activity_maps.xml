@@ -13,11 +13,12 @@
         android:fitsSystemWindows="true"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        tools:openDrawer="start"
 
-        >
+        map:layout_constraintVertical_bias="1.0"
+        tools:openDrawer="start">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout"
@@ -26,15 +27,14 @@
 
             <Button
                 android:id="@+id/humberger_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/humberger_button"
-                map:layout_constraintBottom_toTopOf="@+id/Category_button"
-                map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintHorizontal_bias="0.0"
+                map:layout_constraintBottom_toTopOf="@+id/map"
                 map:layout_constraintStart_toStartOf="parent"
                 map:layout_constraintTop_toTopOf="parent"
-                map:layout_constraintVertical_bias="0.0" />
+                map:layout_constraintVertical_bias="0.57" />
 
             <fragment
                 android:id="@+id/map"
@@ -44,22 +44,33 @@
                 map:layout_constraintBottom_toBottomOf="parent"
                 map:layout_constraintEnd_toEndOf="parent"
                 map:layout_constraintStart_toStartOf="parent"
-                map:layout_constraintTop_toTopOf="parent"
+                map:layout_constraintTop_toBottomOf="@+id/imageView"
                 tools:context=".MapsActivity" />
 
             <Button
                 android:id="@+id/Category_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/orange_button"
-                android:text="categories"
+                android:layout_width="25dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/categories_button"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                map:layout_constraintBottom_toBottomOf="parent"
+                map:layout_constraintBottom_toTopOf="@+id/map"
                 map:layout_constraintEnd_toEndOf="parent"
-                map:layout_constraintStart_toStartOf="parent" />
+                map:layout_constraintTop_toTopOf="parent"
+                map:layout_constraintVertical_bias="0.57" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="225dp"
+                android:layout_height="50dp"
+                android:scaleType="centerInside"
+                map:layout_constraintEnd_toStartOf="@+id/Category_button"
+                map:layout_constraintStart_toEndOf="@+id/humberger_button"
+                map:layout_constraintTop_toTopOf="parent"
+                map:srcCompat="@drawable/activity_maps_logo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
