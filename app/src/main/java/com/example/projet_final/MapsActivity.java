@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -551,15 +552,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         int tag=(Integer)marker.getTag();
         dialog=new Dialog(this);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.activity_popup);
         TextView t=dialog.findViewById(R.id.username_popup);
         t.setText(users.get(tag).getUser_name());
-        t=(TextView) dialog.findViewById(R.id.user_phone_popup);
-        t.setText(users.get(tag).getPhone());
-        t=(TextView)dialog.findViewById(R.id.user_mail_popup);
+        /*t=(TextView) dialog.findViewById(R.id.user_phone_popup);
+        t.setText(users.get(tag).getPhone());*/
+        t=(TextView)dialog.findViewById(R.id.email_tv2);
         t.setText(users.get(tag).getEmail());
-        t=(TextView)dialog.findViewById(R.id.user_jobs_popup);
+        t=(TextView)dialog.findViewById(R.id.jobs_tv2);
         t.setText(users.get(tag).getJobsString());
+
         dialog.show();
         return false;
 
