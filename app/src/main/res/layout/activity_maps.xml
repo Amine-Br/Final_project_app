@@ -72,6 +72,21 @@
                 map:layout_constraintTop_toTopOf="parent"
                 map:srcCompat="@drawable/activity_maps_logo" />
 
+            <Button
+                android:id="@+id/service_req_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/orange_stroke_button"
+                android:drawableLeft="@drawable/plus_button_res"
+                android:drawablePadding="15dp"
+                android:paddingLeft="20dp"
+                android:text="Service Request"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/holo_orange_dark"
+                map:layout_constraintBottom_toBottomOf="parent"
+                map:layout_constraintEnd_toEndOf="parent"
+                map:layout_constraintStart_toStartOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

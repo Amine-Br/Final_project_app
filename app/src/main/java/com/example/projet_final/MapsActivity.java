@@ -26,8 +26,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +72,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private StorageReference storageReference;
     private FirebaseAuth mAuth;
-    private Button Categories,humberger;
+    private Button Categories,humberger,lunch_service_button;
     private DrawerLayout drawer;
     private static boolean mPermissions=false;
     private static final String[]  permissions={Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -104,7 +106,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         categories_click();
         button_drawer_menu();
-        nav_view_items_actions();
+        Lunch_service_button_click();
+
         change_menu();
         menuRedy();
     }
@@ -122,6 +125,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         navigationView = findViewById(R.id.nav_view);
         mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        lunch_service_button=findViewById(R.id.service_req_button);
         menu=new PopupMenu(MapsActivity.this,Categories);
 
         //firebase
@@ -394,50 +398,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void nav_view_items_actions(){
-
-       /* navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-                        switch (item.getItemId()) {
-                    case R.id.login_item:
-                       startActivity(new Intent(".MainActivity"));
-                        break;
-
-                    case R.id.signup_item:
-
-                        startActivity(new Intent(".sign_up"));
-                        break;
-
-                    case R.id.change_lang_item:
-                        multi_activity.s="language_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-
-                        break;
-
-                    case R.id.about_us_item:
-                        multi_activity.s="about_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-
-                    case R.id.Rate_us_item:
-                        multi_activity.s="rate_us_page";
-                        startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                        break;
-                }
-
-                drawer.closeDrawer(GravityCompat.START);
-                return true;
-            }
-        }
-
-
-        );
-
-        */
-    }
-
     public void change_menu(){
 
         if(mAuth.getCurrentUser() == null){
@@ -586,6 +546,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 bm, 0, 0, width, height, matrix, false);
         bm.recycle();
         return resizedBitmap;
+    }
+
+    public void Lunch_service_button_click(){
+        lunch_service_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog d=new Dialog(MapsActivity.this);
+                d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                d.setContentView(R.layout.request_popup);
+                Spinner spinner=d.findViewById(R.id.spinner);
+                ArrayAdapter<String>adapter = new ArrayAdapter<String>(MapsActivity.this,
+                        android.R.layout.simple_spinner_item,new String[]{"Plumber","Electrician"
+                        ,"House painter","Builder","Air conditioner","Gardening","House work","Moving"});
+
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+                d.show();
+            }
+        });
     }
 
 
