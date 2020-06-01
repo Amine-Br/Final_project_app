@@ -22,6 +22,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -81,7 +82,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Intent saveL;
     private DatabaseReference mReference;
     private ArrayList<User> users;
-    private Dialog dialog;
+    private Dialog dialog,d;
     private String flter="no_filter";
     private PopupMenu menu;
     private SupportMapFragment supportMapFragment;
@@ -90,6 +91,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private File file;
     private Drawable drawable;
     private Bitmap bitmap;
+    private int tag;
 
 
 
@@ -274,8 +276,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (task.isSuccessful()) {
                     Location location = task.getResult();
                     LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
-
-
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(user_location)      // Sets the center of the map to user_location
@@ -510,10 +510,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(Marker marker) {
         Log.i("MapsActivity","merker clicked");
 
-        int tag=(Integer)marker.getTag();
+         tag=(Integer)marker.getTag();
         dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.activity_popup);
+        //init objects
         TextView t=dialog.findViewById(R.id.username_popup);
         t.setText(users.get(tag).getUser_name());
         /*t=(TextView) dialog.findViewById(R.id.user_phone_popup);
@@ -522,6 +523,40 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         t.setText(users.get(tag).getEmail());
         t=(TextView)dialog.findViewById(R.id.jobs_tv2);
         t.setText(users.get(tag).getJobsString());
+        t=(TextView)dialog.findViewById(R.id.sex_tv2);
+        t.setText(users.get(tag).getSex());
+        t=(TextView)dialog.findViewById(R.id.birthday_tv2);
+        t.setText(users.get(tag).getBirthday());
+        TextView Call,SMS,Cancel,Prechedule;
+        Call=dialog.findViewById(R.id.Call_button);
+        Call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(Intent.ACTION_DIAL);
+                String s="tel:"+users.get(tag).getPhone();
+                i.setData(Uri.parse(s));
+                startActivity(i);
+            }
+        });
+        SMS=dialog.findViewById(R.id.SMS_button);
+        SMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i=new Intent(Intent.ACTION_VIEW,Uri.fromParts("sms",users.get(tag).getPhone(),null));
+                startActivity(i);
+            }
+        });
+        Cancel=dialog.findViewById(R.id.cancel_button_popup);
+        Cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+
+
 
         dialog.show();
         return false;
@@ -552,7 +587,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         lunch_service_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog d=new Dialog(MapsActivity.this);
+                d=new Dialog(MapsActivity.this);
                 d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 d.setContentView(R.layout.request_popup);
                 Spinner spinner=d.findViewById(R.id.spinner);
@@ -562,6 +597,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
+                TextView cancel,send;
+                cancel=d.findViewById(R.id.cancel_button);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        d.dismiss();
+                    }
+                });
+
+
                 d.show();
             }
         });
