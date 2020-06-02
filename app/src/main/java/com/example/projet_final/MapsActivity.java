@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -92,7 +93,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Drawable drawable;
     private Bitmap bitmap;
     private int tag;
-
+    private ImageView nvimg;
 
 
 
@@ -125,10 +126,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         humberger = (Button) findViewById(R.id.humberger_button);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         mFusedLocationClient= LocationServices.getFusedLocationProviderClient(this);
         supportMapFragment=(SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         lunch_service_button=findViewById(R.id.service_req_button);
         menu=new PopupMenu(MapsActivity.this,Categories);
+        nvimg=findViewById(R.id.nav_view_img);
 
         //firebase
         storageReference= FirebaseStorage.getInstance().getReference();
@@ -401,6 +404,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void change_menu(){
 
         if(mAuth.getCurrentUser() == null){
+            nvimg.setVisibility(View.VISIBLE);
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu);
 
@@ -456,6 +460,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
         }else{
+            nvimg.setVisibility(View.GONE);
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -485,6 +490,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         case R.id.Rate_us_item:
                             multi_activity.s="rate_us_page";
                             startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                        case R.id.task_item:
+                            startActivity(new Intent(MapsActivity.this,tasks.class));
                             break;
 
                     }
@@ -658,6 +666,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         if(mAuth.getCurrentUser()!=null){
             stopService(saveL);
+
 
         }
         super.onDestroy();

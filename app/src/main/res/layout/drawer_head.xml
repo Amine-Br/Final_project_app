@@ -94,7 +94,6 @@
             android:id="@+id/cardView2"
             android:layout_width="125dp"
             android:layout_height="125dp"
-            app:cardBackgroundColor="#F7F8F9"
             app:cardCornerRadius="75dp"
             app:cardPreventCornerOverlap="true"
             app:layout_constraintBottom_toBottomOf="parent"

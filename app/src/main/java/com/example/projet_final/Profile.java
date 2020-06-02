@@ -7,10 +7,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseListOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -19,6 +25,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,10 +42,13 @@ public class Profile extends AppCompatActivity {
     private Uri s;
 
 
+
     //firebase
     private DatabaseReference mReference;
     private FirebaseAuth mAuth;
     private StorageReference storageReference;
+
+
 
     //view
     private TextView user_name,user_phone,user_jobs,user_email;
@@ -50,6 +60,9 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         init();
+
+
+
     }
     public void init(){
 
@@ -93,5 +106,17 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+
+
+
+    }
+
+
+
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
     }
 }
