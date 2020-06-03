@@ -111,7 +111,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:scrollbarSize="4sp"
-                android:text="Sexe"
+                android:text="Sex"
                 android:textColor="@android:color/white"
                 android:textSize="20dp"
                 android:textStyle="bold"
