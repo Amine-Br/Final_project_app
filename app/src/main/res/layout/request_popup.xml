@@ -59,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@+id/type_service" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/phone_Req"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_marginTop="30dp"
@@ -78,10 +78,10 @@
         android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/date"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/phone_Req" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/date_Req"
         android:layout_width="0dp"
         android:layout_height="35dp"
         android:layout_marginTop="30dp"
@@ -94,7 +94,7 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/details_Req"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:ems="10"
@@ -105,7 +105,7 @@
         app:layout_constraintBottom_toTopOf="@+id/send_request_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/details"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/date_Req" />
 
     <TextView
         android:id="@+id/send_request_button"
@@ -118,11 +118,11 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancel_button"
+        app:layout_constraintStart_toEndOf="@+id/cancel_button_req"
         app:layout_constraintTop_toBottomOf="@+id/details" />
 
     <TextView
-        android:id="@+id/cancel_button"
+        android:id="@+id/cancel_button_req"
         android:layout_width="85dp"
         android:layout_height="25dp"
         android:background="@drawable/black_stroke_button_popup"

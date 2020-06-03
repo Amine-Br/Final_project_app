@@ -126,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-
                 /*Intent map=new Intent(".MapsActivity");
                 startActivity(map);*/
 
@@ -188,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
                 credential = PhoneAuthProvider.getCredential(codeSent, code);
                 signInWithPhoneAuthCredential(credential);
 
-
-
             }
         });
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
     }
 
@@ -212,9 +211,12 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("code","signIn  succ; ");
                             //saveData(mAuth.getCurrentUser());
                             Log.i("code","signIn  credential; "+credential);
-
                             Intent map=new Intent(MainActivity.this,MapsActivity.class);
                             startActivity(map);
+                            Intent servic=new Intent(MainActivity.this,WorkerService.class);
+                            servic.putExtra("workerID",mAuth.getCurrentUser().getUid());
+                            startService(servic);
+                            finish();
 
                         } else {
                             Log.i("code","signIn not succ; ");

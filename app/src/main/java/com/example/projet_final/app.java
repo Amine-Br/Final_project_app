@@ -24,7 +24,7 @@ public class app extends Application {
         if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.O){
             NotificationChannel notificationChannel= new NotificationChannel(channelID
                     , "channelName"
-                    , NotificationManager.IMPORTANCE_DEFAULT);
+                    , NotificationManager.IMPORTANCE_HIGH);
             maneger=getSystemService(NotificationManager.class);
             maneger.createNotificationChannel(notificationChannel);
         }

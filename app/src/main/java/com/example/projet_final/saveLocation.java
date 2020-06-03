@@ -1,11 +1,13 @@
 package com.example.projet_final;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -39,6 +42,7 @@ public class saveLocation extends Service {
     private FirebaseDatabase mFirebaseDatabase;
     private Location location;
     private Notification notification;
+    boolean mStatus = true;
     /*private NotificationManager maneger;
     private final String channelID="channel_ID";*/
 
@@ -99,42 +103,50 @@ public class saveLocation extends Service {
     }*/
 
 
-
-
     private Thread saveL;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Activity","saveLocation");
-        Log.i("saveLocation","onCreate");
+        Log.i("Activity", "saveLocation");
+        Log.i("saveLocation", "onCreate");
         init();
     }
 
 
-    public void init(){
-        Log.i("saveLocation","init");
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mReference=mFirebaseDatabase.getReference();
-        mFusedLocationClient= LocationServices.getFusedLocationProviderClient(saveLocation.this);
+    public void init() {
+        Log.i("saveLocation", "init");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mReference = mFirebaseDatabase.getReference();
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(saveLocation.this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i("saveLocation","onStartCommand");
-        Toast.makeText(this,"thereadStart",Toast.LENGTH_SHORT).show();
+        Log.i("saveLocation", "onStartCommand");
         //saveL=new Thread(new theTheread());
-        saveL= new Thread(new Runnable() {
+        saveL = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.i("saveLocation","thread run");
-                int i=0;
+                Log.i("saveLocation", "thread run");
+                int i = 0;
                 mReference.child("users").child(userID).child("stat").setValue("online");
-                while (true){
+                while (mStatus) {
                     i++;
-                    Log.i("saveLocation","while i="+i);
+                    Log.i("saveLocation", "while i=" + i);
 
                     //save Location
-                    mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    if (ActivityCompat.checkSelfPermission(saveLocation.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(saveLocation.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                         @Override
                         public void onComplete(@NonNull Task<Location> task) {
                             if (task.isSuccessful()) {
@@ -142,11 +154,11 @@ public class saveLocation extends Service {
                                 //LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
                                 mReference.child("users").child(userID).child("Latitude").setValue(location.getLatitude());
                                 mReference.child("users").child(userID).child("Longitude").setValue(location.getLongitude());
-                            }else{
+                            } else {
 
                             }
                         }
-                    });
+                    });*/
 
                     //SystemClock.sleep(1000);
                     try {
@@ -166,6 +178,7 @@ public class saveLocation extends Service {
     @Override
     public void onDestroy() {
         Log.i("saveLocation","onDestroy");
+        mStatus = false;
         saveL.interrupt();
         mReference.child("users").child(userID).child("stat").setValue("offline");
         super.onDestroy();
@@ -198,4 +211,6 @@ public class saveLocation extends Service {
                 .build();
         startForeground(123,notification);
     }
+
+
 }

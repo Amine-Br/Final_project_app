@@ -234,7 +234,6 @@ public class User {
         return bitmap;
     }
 
-
     public String getJobsString(){
         StringBuffer jobs=new StringBuffer();
         if (Builder){

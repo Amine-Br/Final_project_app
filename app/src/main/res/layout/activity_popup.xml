@@ -174,7 +174,7 @@
             app:layout_constraintTop_toBottomOf="@+id/image_container_popup" />
 
         <TextView
-            android:id="@+id/Call_button"
+            android:id="@+id/textView3"
             android:layout_width="65dp"
             android:layout_height="20dp"
             android:background="@drawable/white_stroke_button"
@@ -186,12 +186,12 @@
             android:textColor="@android:color/white"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/SMS_button"
+            app:layout_constraintEnd_toStartOf="@+id/textView4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username_popup" />
 
         <TextView
-            android:id="@+id/SMS_button"
+            android:id="@+id/textView4"
             android:layout_width="65dp"
             android:layout_height="20dp"
             android:background="@drawable/white_stroke_button"
@@ -204,12 +204,12 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/Call_button"
+            app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toBottomOf="@+id/username_popup" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
-        android:id="@+id/cancel_button_popup"
+        android:id="@+id/cancel_button"
         android:layout_width="70dp"
         android:layout_height="20dp"
         android:background="@drawable/black_stroke_button_popup"
@@ -232,7 +232,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cancel_button_popup"
+        app:layout_constraintStart_toEndOf="@+id/cancel_button"
         app:layout_constraintTop_toBottomOf="@+id/jobs_tv"
         app:layout_constraintVertical_bias="0.52" />
 
