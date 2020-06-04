@@ -1,7 +1,7 @@
 package com.example.projet_final;
 
 public class Notification {
-    private long Latitude,Longitude;
+    private double Latitude,Longitude;
     private String job="no",phone,date,details,taked;
     private boolean watched;
 
@@ -9,19 +9,19 @@ public class Notification {
 
     }
 
-    public long getLatitude() {
+    public double getLatitude() {
         return Latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(double latitude) {
         Latitude = latitude;
     }
 
-    public long getLongitude() {
+    public double getLongitude() {
         return Longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(double longitude) {
         Longitude = longitude;
     }
 
