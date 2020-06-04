@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".update_profile">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Change Image"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/image_container"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_container_orange"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="1dp"
+                android:layout_marginBottom="1dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="75dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/user_img_update_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/tools" />
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Change User Name:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_container" />
+
+        <EditText
+            android:id="@+id/change_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Change Birthday:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/change_username" />
+
+        <EditText
+            android:id="@+id/change_birthday"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Change Sex:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/change_birthday" />
+
+        <RadioGroup
+            android:id="@+id/update_profile_radio_g"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView8">
+
+            <RadioButton
+                android:id="@+id/Male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/Female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Change Jobs:"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_radio_g" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_plumber"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="plumber"
+            android:textColor="@android:color/black"
+            app:layout_constraintEnd_toStartOf="@+id/update_profile_CB_electrician"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_electrician"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="electrician"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_profile_CB_plumber"
+            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_House_painter"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="House_painter"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toStartOf="@+id/update_profile_CB_Builder"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_plumber" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_Builder"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="Builder"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_profile_CB_House_painter"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_electrician" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_air_conditioner"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="air_conditioner"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toStartOf="@+id/update_profile_CB_gardening"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_House_painter" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_gardening"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="gardening"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_profile_CB_air_conditioner"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_Builder" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_housework"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="housework"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/Update_profile_Cancel_button"
+            app:layout_constraintEnd_toStartOf="@+id/update_profile_CB_Moving"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_air_conditioner" />
+
+        <CheckBox
+            android:id="@+id/update_profile_CB_Moving"
+            android:layout_width="125dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:text="Moving"
+            android:textColor="@android:color/black"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/Update_profile_Confirm_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/update_profile_CB_housework"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_gardening" />
+
+        <Button
+            android:id="@+id/Update_profile_Cancel_button"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/black_stroke_button"
+            android:text="Cancel"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/Update_profile_Confirm_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_housework" />
+
+        <Button
+            android:id="@+id/Update_profile_Confirm_button"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/black_stroke_button"
+            android:text="Confirm"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/Update_profile_Cancel_button"
+            app:layout_constraintTop_toBottomOf="@+id/update_profile_CB_Moving" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
