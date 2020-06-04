@@ -40,6 +40,7 @@ public class User {
     private String icone="";
 
     public Uri getUri(){
+        final boolean[] end = {false};
         final Uri[] s = new Uri[1];
         StorageReference storageReference= FirebaseStorage.getInstance().getReference()
                 .child("default").child("default_men_img.png");
@@ -47,9 +48,12 @@ public class User {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
                 s[0] =task.getResult();
+                end[0] =true;
                 //return s;
             }
         });
+        while (!end[0]){
+        }
         return s[0];
     }
 

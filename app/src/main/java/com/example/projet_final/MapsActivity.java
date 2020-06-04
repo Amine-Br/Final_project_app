@@ -325,7 +325,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        if(mAuth.getCurrentUser()!=null){
+        if(LogStat()==3){
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
             saveL=new Intent(this, com.example.projet_final.saveLocation.class);

@@ -36,6 +36,7 @@ public class WorkerService extends Service {
     private double distance;
     private Location correntLoc;
     private Location notLoc;
+    private boolean readDataComplet=false;
     public WorkerService() {
     }
 
@@ -162,8 +163,10 @@ public class WorkerService extends Service {
                 databaseReferenceSpesWorker.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
                         if (dataSnapshot.hasChild(needNotisGlobal.get(finalI))) {
                             haveChilsGlobal = true;
+
                         } else {
                             haveChilsGlobal = false;
                         }
@@ -175,9 +178,13 @@ public class WorkerService extends Service {
                     }
                 });
             }
+            while (!readDataComplet){
+
+            }
             if(!haveChilsGlobal){
                 databaseReferenceSpesWorker.child(needNotisGlobal.get(i)).setValue(allNotificationGlobal.get(index));
             }
+            readDataComplet=false;
         }
         allNotificationGlobal.clear();
         notificationIDGlobal.clear();

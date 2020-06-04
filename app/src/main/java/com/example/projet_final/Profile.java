@@ -3,12 +3,14 @@ package com.example.projet_final;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -36,7 +38,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Profile extends AppCompatActivity {
-
+    private Button update;
     private String userID;
     private User user;
     private Uri s;
@@ -67,6 +69,14 @@ public class Profile extends AppCompatActivity {
     public void init(){
 
         //view
+        update=findViewById(R.id.Update_account);
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(Profile.this,update_profile.class);
+                startActivity(intent);
+            }
+        });
         user_name=(TextView) findViewById(R.id.user_name_profile);
         user_email=(TextView) findViewById(R.id.user_mail_profile);
         user_jobs=(TextView) findViewById(R.id.user_jobs_profile);
