@@ -481,10 +481,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             break;
                         case R.id.sign_out_item:
                             Toast.makeText(MapsActivity.this,"clicked",Toast.LENGTH_SHORT);
-                            stopService(saveL);
-
                             Log.i("MapsActivity","sign_out");
-                            stopService(saveL);
+                            //stopService(saveL);
                             mAuth.signOut();
                             recreate();
                             break;

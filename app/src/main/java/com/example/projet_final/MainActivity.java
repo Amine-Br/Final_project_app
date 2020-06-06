@@ -213,9 +213,9 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("code","signIn  credential; "+credential);
                             Intent map=new Intent(MainActivity.this,MapsActivity.class);
                             startActivity(map);
-                            //Intent servic=new Intent(MainActivity.this,WorkerService.class);
-                            //servic.putExtra("workerID",mAuth.getCurrentUser().getUid());
-                            //startService(servic);
+                            Intent servic=new Intent(MainActivity.this,WorkerService.class);
+                            servic.putExtra("workerID",mAuth.getCurrentUser().getUid());
+                            startService(servic);
                             finish();
 
                         } else {

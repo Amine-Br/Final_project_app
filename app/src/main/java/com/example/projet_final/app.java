@@ -13,9 +13,6 @@ public class app extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("Activity","app");
-        Log.i("app","onCreate");
-
         creatNotification();
     }
 
