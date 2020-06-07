@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
@@ -20,7 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
 
 public class WorkerService extends Service {
@@ -39,6 +44,7 @@ public class WorkerService extends Service {
     private Location notLoc;
     private boolean readDataComplet=false;
     private int ondata=0,whileI=0,notI=0;
+    private User user;
     public WorkerService() {
     }
 
@@ -131,6 +137,7 @@ public class WorkerService extends Service {
             notLoc.setLongitude(allNotificationGlobal.get(i).getLongitude());
             distance=correntLoc.distanceTo(notLoc);
             final CountDownLatch done=new CountDownLatch(1);
+
             //final boolean haveChilde=false;
             final int finalI = i;
             databaseReferenceSpes.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -154,7 +161,27 @@ public class WorkerService extends Service {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            if(/*distance<=10 &&*/ allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild){
+
+            final CountDownLatch done2=new CountDownLatch(1);
+            DatabaseReference userRef=FirebaseDatabase.getInstance().getReference().child("users").child(workerID);
+            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    user =dataSnapshot.getValue(User.class);
+                    done2.countDown();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+
+            try {
+                done2.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if(distance<=10 && allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild /*&& user.jabs().get(allNotificationGlobal.get(i).getJob())*/){
                 databaseReferenceSpes.child(notificationIDGlobal.get(i)).setValue(allNotificationGlobal.get(i));
             }
             haveChild=false;
@@ -180,6 +207,26 @@ public class WorkerService extends Service {
                     NotificationManagerCompat.from(this).notify(IdForNot,builder.build());
                     IdForNot++;
                     databaseReferenceSpes.child(notificationID.get(i)).child("watched").setValue(true);
+
+                DatabaseReference tasckRef=FirebaseDatabase.getInstance().getReference().child("task").child(workerID).child(notificationID.get(i));
+                Geocoder geocoder=new Geocoder(WorkerService.this, Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses= geocoder.getFromLocation(getCourrentLocation().latitude,getCourrentLocation().longitude,1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(addresses!=null) {
+                    String city = addresses.get(0).getAddressLine(0);
+                    String state = addresses.get(0).getAddressLine(1);
+                    String country = addresses.get(0).getAddressLine(2);
+                    tasckRef.setValue(country + "," + state + "," + country + "at:" + allNotification.get(i).getDate());
+                }else{
+                    String city = addresses.get(0).getAddressLine(0);
+                    String state = addresses.get(0).getAddressLine(1);
+                    String country = addresses.get(0).getAddressLine(2);
+                    tasckRef.setValue(country + "," + state + "," + country + "at:" + allNotification.get(i).getDate());
+                }
             }
         }
     }

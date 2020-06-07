@@ -38,7 +38,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Profile extends AppCompatActivity {
-    private Button update;
+    private Button update,delete;
     private String userID;
     private User user;
     private Uri s;
@@ -62,6 +62,7 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         init();
+        change_language();
 
 
 
@@ -77,6 +78,7 @@ public class Profile extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        delete=findViewById(R.id.Delete_account);
         user_name=(TextView) findViewById(R.id.user_name_profile);
         user_email=(TextView) findViewById(R.id.user_mail_profile);
         user_jobs=(TextView) findViewById(R.id.user_jobs_profile);
@@ -129,4 +131,23 @@ public class Profile extends AppCompatActivity {
 
         super.onStart();
     }
+    public  void change_language(){
+        switch (multi_activity.lang){
+
+            case "en":
+
+                update.setText("Update Account");
+                delete.setText("Delete Account");
+
+
+                break;
+            case "fr":
+
+                update.setText ("Mettre à jour le compte");
+                delete.setText ("Supprimer le compte");
+
+                break;
+        }
+    }
+
 }

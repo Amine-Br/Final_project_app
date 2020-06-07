@@ -18,14 +18,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/up"
             android:layout_width="0dp"
-            android:layout_height="1000dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/oval"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/sign_up_"
+                android:id="@+id/sign_up_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -50,7 +50,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sign_up_" />
+                app:layout_constraintTop_toBottomOf="@+id/sign_up_tv" />
 
             <EditText
                 android:id="@+id/SU_User_Name"
@@ -63,10 +63,10 @@
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/email"
                 android:drawableLeft="@drawable/user"
+                android:drawablePadding="8dp"
                 android:ems="10"
-                android:gravity="center"
                 android:inputType="text"
-                android:paddingLeft="13dip"
+                android:paddingLeft="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,6 @@
                 android:layout_marginEnd="20dp"
                 android:background="@drawable/email"
                 android:ems="10"
-                android:gravity="center"
                 android:inputType="datetime"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -177,10 +176,10 @@
 
 
                 android:drawableLeft="@drawable/phone"
+                android:drawablePadding="8dp"
                 android:ems="10"
-                android:gravity="center"
                 android:inputType="phone"
-                android:paddingLeft="13dip"
+                android:paddingLeft="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/SU_Text_Phone" />
@@ -210,86 +209,16 @@
 
 
                 android:drawableLeft="@drawable/mail"
+                android:drawablePadding="8dp"
                 android:ems="10"
-                android:gravity="center"
                 android:inputType="textEmailAddress"
-                android:paddingLeft="13dip"
+                android:paddingLeft="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/SU_Text_Email" />
 
             <TextView
-                android:id="@+id/SU_Text_Password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:text="Password"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Email" />
-
-            <EditText
-                android:id="@+id/SU_Password"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/email"
-                android:drawableLeft="@drawable/lock"
-
-
-                android:drawableRight="@drawable/ic_visibility"
-                android:ems="10"
-                android:gravity="center"
-                android:inputType="textPassword"
-                android:paddingLeft="13dip"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Password" />
-
-            <TextView
-                android:id="@+id/SU_Text_ConfirmPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:text="Confirm Password"
-                android:textAlignment="viewStart"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Password" />
-
-            <EditText
-                android:id="@+id/SU_ConfirmPassword"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/email"
-                android:drawableLeft="@drawable/lock"
-                android:drawableRight="@drawable/ic_visibility"
-                android:ems="10"
-
-
-                android:gravity="center"
-                android:inputType="textPassword"
-                android:paddingLeft="13dip"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword" />
-
-            <TextView
-                android:id="@+id/SU_Text_ConfirmPassword3"
+                android:id="@+id/SU_Text_Jobs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -301,7 +230,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_ConfirmPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Email" />
 
             <CheckBox
                 android:id="@+id/CB_plumber"
@@ -312,7 +241,7 @@
                 android:textColor="@android:color/white"
                 app:layout_constraintEnd_toStartOf="@+id/CB_electrician"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword3" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Jobs" />
 
             <CheckBox
                 android:id="@+id/CB_electrician"
@@ -324,7 +253,7 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/CB_plumber"
-                app:layout_constraintTop_toBottomOf="@+id/SU_Text_ConfirmPassword3" />
+                app:layout_constraintTop_toBottomOf="@+id/SU_Text_Jobs" />
 
             <CheckBox
                 android:id="@+id/CB_House_painter"
@@ -379,9 +308,11 @@
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="50dp"
                 android:text="housework"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/CB_Moving"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/CB_air_conditioner" />
@@ -391,9 +322,11 @@
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="50dp"
                 android:text="Moving"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/CB_housework"
                 app:layout_constraintTop_toBottomOf="@+id/CB_gardening" />

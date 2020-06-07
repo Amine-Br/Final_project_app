@@ -2,11 +2,27 @@ package com.example.projet_final;
 
 public class Notification {
     private double Latitude,Longitude;
-    private String job="no",phone,date,details,taked;
+    private String job="no",phone,date,details,taked,senderID,accepterID;
     private boolean watched;
 
     public Notification(){
 
+    }
+
+    public String getSenderID() {
+        return senderID;
+    }
+
+    public void setSenderID(String senderID) {
+        this.senderID = senderID;
+    }
+
+    public String getAccepterID() {
+        return accepterID;
+    }
+
+    public void setAccepterID(String accepterID) {
+        this.accepterID = accepterID;
     }
 
     public double getLatitude() {
@@ -72,4 +88,5 @@ public class Notification {
     public void setWatched(boolean watched) {
         this.watched = watched;
     }
+
 }

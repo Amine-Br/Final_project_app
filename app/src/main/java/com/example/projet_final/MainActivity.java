@@ -33,9 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
 
     //view
-    private EditText email,phone,pass;
+    private EditText phone;
     private Button signin;
-    private TextView signup;
+    private TextView signup,phone_tv,signin_tv,welcome,info;
 
     //firebase
     private FirebaseAuth mAuth  ;
@@ -55,17 +55,21 @@ public class MainActivity extends AppCompatActivity {
         init();
         clicksignup();
         clicksignin();
+        change_language();
     }
 
     private void  init(){
 
         Log.i("MainActivity","init");
-
-        email=(EditText)findViewById(R.id.em_et);
+        //view
         phone=(EditText)findViewById(R.id.ph_et);
-        pass=(EditText)findViewById(R.id.pass_et);
+        phone_tv=findViewById(R.id.ph_tv);
         signin=(Button)findViewById(R.id.button_sign_in);
         signup=(TextView)findViewById(R.id.sign_up_tv);
+        signin_tv=findViewById(R.id.sign_in_tv);
+        welcome=findViewById(R.id.welcome_tv);
+        info=findViewById(R.id.info_tv);
+        //firebase
         mAuth=FirebaseAuth.getInstance();
         mReference= FirebaseDatabase.getInstance().getReference();
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -122,12 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.i("MainActivity","log_in with email and password");
 
-                        logInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
+
                     }
                 }
 
-                /*Intent map=new Intent(".MapsActivity");
-                startActivity(map);*/
 
             }
         });
@@ -274,4 +276,30 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity","onDestroy");
         super.onDestroy();
     }
+    public  void change_language(){
+        switch (multi_activity.lang){
+
+            case "en":
+                //signup,phone_tv,signin_tv,welcome,info,signin
+                signin_tv.setText("Sign in");
+                welcome.setText("WELCOME");
+                phone_tv.setText("Phone number");
+                signin.setText("SIGN IN");
+                info.setText("Don’t have an account?");
+                signup.setText("Sign up");
+
+
+                break;
+            case "fr":
+                signin_tv.setText("Se Connecter");
+                welcome.setText("BIENVENU");
+                phone_tv.setText("Numéro de téléphone");
+                signin.setText("SE CONNECTER");
+                info.setText("Vous n'avez pas de compte?");
+                signup.setText("s'inscrire");
+
+                break;
+        }
+    }
+
 }

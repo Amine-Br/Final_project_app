@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,7 +47,9 @@ public class sign_up extends AppCompatActivity {
     //View
     private AlertDialog alertDialog;
     private Button signup;
-    private EditText name,phone,email,pass,confpass,birthday;
+    private EditText name,phone,email,birthday;
+    private TextView signup_tv,username_tv,birthday_tv,sex_tv,phone_tv,email_tv,jobs_tv;
+    private RadioButton male,female;
     private RadioGroup groupsex;
     private CheckBox CB_Builder,CB_air_conditioner,CB_electrician,CB_gardening,CB_House_painter,CB_housework,CB_Moving,CB_plumber;
 
@@ -70,6 +73,8 @@ public class sign_up extends AppCompatActivity {
                 if (confirmData())  signUp();
             }
         });
+        change_language();
+
 
 
     }
@@ -79,12 +84,19 @@ public class sign_up extends AppCompatActivity {
         Log.i("sign_up","init");
 
         ///View
+        signup_tv=findViewById(R.id.sign_up_tv);
+        username_tv=findViewById(R.id.SU_Text_User_Name);
+        birthday_tv=findViewById(R.id.SU_Text_Birthday);
+        sex_tv=findViewById(R.id.textView_sexe2);
+        phone_tv =findViewById(R.id.SU_Text_Phone);
+        email_tv=findViewById(R.id.SU_Text_Email);
+        jobs_tv=findViewById(R.id.SU_Text_Jobs);
+        male=findViewById(R.id.SU_Male);
+        female=findViewById(R.id.SU_Female);
         signup=(Button)findViewById(R.id.SU_Button_sign_up);
         name=(EditText)findViewById(R.id.SU_User_Name);
         phone=(EditText)findViewById(R.id.SU_Phone);
         email=(EditText)findViewById(R.id.SU_Email);
-        pass=(EditText)findViewById(R.id.SU_Password);
-        confpass=(EditText)findViewById(R.id.SU_ConfirmPassword);
         groupsex=(RadioGroup)findViewById(R.id.SU_SexGroup);
         birthday=(EditText)findViewById(R.id.SU_Birthday);
         CB_Builder=(CheckBox)findViewById(R.id.CB_Builder);
@@ -208,7 +220,7 @@ public class sign_up extends AppCompatActivity {
             }*/
         }
         Log.i("confirmData","mail valid");
-        if (pass.getText().toString().isEmpty()){
+        /*if (pass.getText().toString().isEmpty()){
             pass.setError("Please Enter password");
             //Toast.makeText(sign_up.this,"Please Enter password",Toast.LENGTH_SHORT);
             Log.i("confirmData","pass invalid");
@@ -229,7 +241,7 @@ public class sign_up extends AppCompatActivity {
                 Log.i("confirmData","confpass note same");
                 return  false;
             }
-        }
+        }*/
         if(birthday.getText().toString().isEmpty()){
             birthday.setError("Please Enter your birthday");
             return false;
@@ -265,44 +277,44 @@ public class sign_up extends AppCompatActivity {
 
         //set jobs
         if(CB_Builder.isChecked()){
-            mReference.child("users").child(userID).child(CB_Builder.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("Builder").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_Builder.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("Builder").setValue(false);
         }
         if(CB_air_conditioner.isChecked()){
-            mReference.child("users").child(userID).child(CB_air_conditioner.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("air_conditioner").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_air_conditioner.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("air_conditioner").setValue(false);
         }
         if(CB_electrician.isChecked()){
-            mReference.child("users").child(userID).child(CB_electrician.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("electrician").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_electrician.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("electrician").setValue(false);
         }
         if(CB_gardening.isChecked()){
-            mReference.child("users").child(userID).child(CB_gardening.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("gardening").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_gardening.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("gardening").setValue(false);
         }
         if(CB_House_painter.isChecked()){
-            mReference.child("users").child(userID).child(CB_House_painter.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("House_painter").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_House_painter.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("House_painter").setValue(false);
         }
         if(CB_housework.isChecked()){
-            mReference.child("users").child(userID).child(CB_housework.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("housework").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_housework.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("housework").setValue(false);
         }
         if(CB_Moving.isChecked()){
-            mReference.child("users").child(userID).child(CB_Moving.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("Moving").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_Moving.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("Moving").setValue(false);
         }
         if(CB_plumber.isChecked()){
-            mReference.child("users").child(userID).child(CB_plumber.getText().toString()).setValue(true);
+            mReference.child("users").child(userID).child("plumber").setValue(true);
         }else{
-            mReference.child("users").child(userID).child(CB_plumber.getText().toString()).setValue(false);
+            mReference.child("users").child(userID).child("plumber").setValue(false);
         }
 
         Log.i("sign_up","data saved on firebase");
@@ -343,11 +355,11 @@ public class sign_up extends AppCompatActivity {
                             Log.i("sign_up","sign_up secsseful");
 
                             saveData(mAuth.getCurrentUser());
-                            if (!email.getText().toString().isEmpty()){
+                            /*if (!email.getText().toString().isEmpty()){
                                // signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
                                 link(EmailAuthProvider.getCredential(email.getText().toString(),pass.getText().toString()));
                                 //mAuth.signOut();
-                            }
+                            }*/
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
                             startActivity(map);
 
@@ -420,5 +432,56 @@ public class sign_up extends AppCompatActivity {
     protected void onDestroy() {
         Log.i("sign_up","onDestroy");
         super.onDestroy();
+    }
+    public  void change_language(){
+        switch (multi_activity.lang){
+
+            case "en":
+                signup_tv.setText("Sign Up");
+                username_tv.setText("User_Name");
+                birthday_tv.setText("Birthday");
+                sex_tv.setText("Sex");
+                phone_tv.setText("Phone");
+                email_tv.setText("Email");
+                jobs_tv.setText("Jobs");
+                male.setText("Male");
+                female.setText("Female");
+                CB_plumber.setText("plumber");
+                CB_electrician.setText("electrician");
+                CB_House_painter.setText("House_painter");
+                CB_Builder.setText("Builder");
+                CB_air_conditioner.setText("air_conditioner");
+                CB_gardening.setText("gardening");
+                CB_housework.setText("housework");
+                CB_Moving.setText("Moving");
+                signup.setText("SIGN UP");
+
+
+
+
+                break;
+            case "fr":
+                signup_tv.setText ("Inscription");
+                username_tv.setText ("Nom d'utilisateur");
+                birthday_tv.setText ("Anniversaire");
+                sex_tv.setText ("Sexe");
+                phone_tv.setText ("Téléphone");
+                email_tv.setText ("Email");
+                jobs_tv.setText ("Travaux");
+                male.setText ("Homme");
+                female.setText ("Femme");
+                CB_plumber.setText ("plombier");
+                CB_electrician.setText ("électricien");
+                CB_House_painter.setText ("Peintre en bâtiment");
+                CB_Builder.setText ("constructeur");
+                CB_air_conditioner.setText ("climatisation");
+                CB_gardening.setText ("jardinage");
+                CB_housework.setText ("travaux ménagers");
+                CB_Moving.setText ("Déplacement");
+                signup.setText ("INSCRIPTION");
+
+
+                break;
+        }
     }
 }

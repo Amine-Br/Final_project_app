@@ -11,23 +11,21 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -38,18 +36,12 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -57,22 +49,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     private StorageReference storageReference;
     private FirebaseAuth mAuth;
-    private Button Categories, humberger, lunch_service_button;
+    private Button Categories, humberger, lunch_service_button,signin,signup;
     private DrawerLayout drawer;
     private static boolean mPermissions = false;
     private static final String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -91,7 +80,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Drawable drawable;
     private Bitmap bitmap;
     private String sendTo="global";
-
+    private ImageView nvimg;
+    private int tag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +99,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         change_menu();
         menuRedy();
+        change_language();
     }
 
     private void init() {
@@ -122,10 +113,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         humberger = (Button) findViewById(R.id.humberger_button);
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         lunch_service_button = findViewById(R.id.service_req_button);
         menu = new PopupMenu(MapsActivity.this, Categories);
+        nvimg=findViewById(R.id.nav_view_img);
+
 
         //firebase
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -410,7 +404,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void change_menu(){
 
-        if(LogStat()<2){
+        if(LogStat()<=2){
+            nvimg.setVisibility(View.VISIBLE);
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu);
 
@@ -444,14 +439,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             View header = navigationView.getHeaderView(0);
 
-            Button signin=header.findViewById(R.id.drawer_h_signin);
-            Button signup=header.findViewById(R.id.drawer_h_signup);
+             signin=header.findViewById(R.id.drawer_h_signin);
+            signup=header.findViewById(R.id.drawer_h_signup);
             ConstraintLayout user=header.findViewById(R.id.user_inteface);
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
 
             user.setVisibility(View.VISIBLE);
             worker.setVisibility(View.GONE);
+            switch (multi_activity.lang){
 
+
+                case "en":
+
+
+                    signin.setText("SIGN IN");
+                    signup.setText("SIGN UP");
+
+
+                    break;
+                case "fr":
+
+
+                    signin.setText ("SE CONNECTER");
+                    signup.setText ("INSCRIPTION");
+                    break;
+            }
             signin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -466,6 +478,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
         }else{
+            nvimg.setVisibility(View.GONE);
+
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -494,6 +508,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             multi_activity.s="rate_us_page";
                             startActivity(new Intent(MapsActivity.this,multi_activity.class));
                             break;
+                        case R.id.task_item:
+                            startActivity(new Intent(MapsActivity.this,tasks.class));
+                            break;
+
 
                     }
                     drawer.closeDrawer(GravityCompat.START);
@@ -517,7 +535,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         Log.i("MapsActivity","merker clicked");
-        int tag=(Integer)marker.getTag();
+         tag=(Integer)marker.getTag();
         sendTo=IDs.get(tag);
         dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -530,6 +548,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         t.setText(users.get(tag).getEmail());
         t=dialog.findViewById(R.id.jobs_tv2);
         t.setText(users.get(tag).getJobsString());
+        t=(TextView)dialog.findViewById(R.id.sex_tv2);
+        t.setText(users.get(tag).getSex());
+        t=(TextView)dialog.findViewById(R.id.birthday_tv2);
+        t.setText(users.get(tag).getBirthday());
+        TextView Call,SMS;
+
+        Call=dialog.findViewById(R.id.task_tv);
+        Call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i=new Intent(Intent.ACTION_DIAL);
+                String s="tel:"+users.get(tag).getPhone();
+                i.setData(Uri.parse(s));
+                startActivity(i);
+            }
+        });
+        SMS=dialog.findViewById(R.id.SMS_button);
+        SMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i=new Intent(Intent.ACTION_VIEW,Uri.fromParts("sms",users.get(tag).getPhone(),null));
+                startActivity(i);
+            }
+        });
+
+
+
         dialog.findViewById(R.id.cancel_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -598,12 +644,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         d.setContentView(R.layout.request_popup);
         final Spinner spinner=d.findViewById(R.id.spinner);
         ArrayAdapter<String>adapter = new ArrayAdapter<String>(MapsActivity.this,
-                android.R.layout.simple_spinner_item,new String[]{"Plumber","Electrician"
-                ,"House painter","Builder","Air conditioner","Gardening","House work","Moving"});
-
+                android.R.layout.simple_spinner_item,new String[]{"plumber","electrician"
+                ,"House_painter","Builder","air_conditioner","gardening","housework","Moving"});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        if (sendTo!="global") spinner.setEnabled(false);
+        if (!sendTo.equals("global")) spinner.setEnabled(false);
         d.findViewById(R.id.cancel_button_req).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -628,6 +673,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("details").setValue(t.getText().toString());
                     ref.child("taked").setValue("not yet");
                     ref.child("watched").setValue(false);
+                    ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
+                    ref.child("accepterID").setValue("no one");
                 }else{
                     TextView t;
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(sendTo).push();
@@ -637,18 +684,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     t=d.findViewById(R.id.phone_Req);
                     ref.child("phone").setValue(t.getText().toString());
                     t=d.findViewById(R.id.date_Req);
-                    ref.child("date").setValue(t.getText().toString());
+                    String date=t.getText().toString();
+                    ref.child("date").setValue(date);
                     t=d.findViewById(R.id.details_Req);
                     ref.child("details").setValue(t.getText().toString());
                     ref.child("taked").setValue("not yet");
                     ref.child("watched").setValue(false);
+                    ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
+                    ref.child("accepterID").setValue("no one");
+
                 }
             }
         });
         d.setCanceledOnTouchOutside(false);
         d.show();
-
     }
+
 
 
     public LatLng getCourrentLocation(){
@@ -708,4 +759,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         super.onDestroy();
     }
+    public  void change_language(){
+        switch (multi_activity.lang){
+
+
+            case "en":
+
+                lunch_service_button.setText("SERVICE REQUEST");
+                /*signin.setText("SIGN IN");
+                signup.setText("SIGN UP");*/
+
+
+                break;
+            case "fr":
+
+                lunch_service_button.setText ("DEMANDE DE SERVICE");
+                /*signin.setText ("SE CONNECTER");
+                signup.setText ("INSCRIPTION");*/
+                break;
+        }
+    }
+
+
 }

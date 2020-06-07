@@ -174,7 +174,7 @@
             app:layout_constraintTop_toBottomOf="@+id/image_container_popup" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/task_tv"
             android:layout_width="65dp"
             android:layout_height="20dp"
             android:background="@drawable/white_stroke_button"
@@ -186,12 +186,12 @@
             android:textColor="@android:color/white"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView4"
+            app:layout_constraintEnd_toStartOf="@+id/SMS_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/username_popup" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/SMS_button"
             android:layout_width="65dp"
             android:layout_height="20dp"
             android:background="@drawable/white_stroke_button"
@@ -204,7 +204,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
+            app:layout_constraintStart_toEndOf="@+id/task_tv"
             app:layout_constraintTop_toBottomOf="@+id/username_popup" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
