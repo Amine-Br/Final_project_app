@@ -26,19 +26,19 @@
         android:id="@+id/sex_tv2"
         android:layout_width="110dp"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
         android:text="TextView"
+        android:textAlignment="center"
         android:textColor="#3E4958"
-        app:layout_constraintBottom_toTopOf="@+id/birthday_tv2"
+        app:layout_constraintBottom_toBottomOf="@+id/sex_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/sex_tv"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/sex_tv" />
 
     <TextView
         android:id="@+id/birthday_tv"
-        android:layout_width="60dp"
-        android:layout_height="20dp"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="3dp"
         android:layout_marginTop="10dp"
         android:text="Birthday:"
@@ -50,16 +50,15 @@
 
     <TextView
         android:id="@+id/birthday_tv2"
-        android:layout_width="110dp"
+        android:layout_width="80dp"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
+        android:text="11/06/1999"
         android:textColor="#3E4958"
-        app:layout_constraintBottom_toTopOf="@+id/email_tv2"
+        app:layout_constraintBottom_toBottomOf="@+id/birthday_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/birthday_tv"
-        app:layout_constraintTop_toBottomOf="@+id/sex_tv2" />
+        app:layout_constraintTop_toTopOf="@+id/birthday_tv" />
 
     <TextView
         android:id="@+id/email_tv"
@@ -78,16 +77,16 @@
         android:id="@+id/email_tv2"
         android:layout_width="110dp"
         android:layout_height="20dp"
-        android:layout_marginTop="10dp"
         android:drawablePadding="5dp"
         android:text="User mail"
+        android:textAlignment="center"
         android:textColor="#3E4958"
         android:textSize="12sp"
-        app:layout_constraintBottom_toTopOf="@+id/jobs_tv2"
+        app:layout_constraintBottom_toBottomOf="@+id/email_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/email_tv"
-        app:layout_constraintTop_toBottomOf="@+id/birthday_tv2" />
+        app:layout_constraintTop_toTopOf="@+id/email_tv" />
 
     <TextView
         android:id="@+id/jobs_tv"
@@ -95,7 +94,7 @@
         android:layout_height="20dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="10dp"
-        android:text="Jobs!"
+        android:text="Jobs:"
         android:textColor="#3E4958"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
@@ -105,15 +104,16 @@
         android:id="@+id/jobs_tv2"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
         android:drawablePadding="5dp"
         android:text="job1,job2,job3..."
+        android:textAlignment="center"
         android:textColor="#3E4958"
         android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/jobs_tv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.1"
         app:layout_constraintStart_toEndOf="@+id/jobs_tv"
-        app:layout_constraintTop_toBottomOf="@+id/email_tv2" />
+        app:layout_constraintTop_toTopOf="@+id/jobs_tv" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -228,7 +228,7 @@
         android:layout_height="20dp"
         android:background="@drawable/orange_button"
         android:gravity="center"
-        android:text="Prechedule"
+        android:text="request"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
