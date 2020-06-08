@@ -1,5 +1,7 @@
 package com.example.projet_final;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
@@ -43,6 +46,7 @@ import static java.lang.Thread.sleep;
 public class sign_up extends AppCompatActivity {
 
     private String code,codeSent;
+    private ArrayList<String> usedPhone;
 
     //View
     private AlertDialog alertDialog;
@@ -59,6 +63,7 @@ public class sign_up extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private ValueEventListener valueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +87,7 @@ public class sign_up extends AppCompatActivity {
     private void init(){
 
         Log.i("sign_up","init");
+        usedPhone=new ArrayList<>();
 
         ///View
         signup_tv=findViewById(R.id.sign_up_tv);
@@ -112,6 +118,20 @@ public class sign_up extends AppCompatActivity {
         mAuth= FirebaseAuth.getInstance();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mReference= mFirebaseDatabase.getReference();
+        valueEventListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usedPhone.clear();
+                for (DataSnapshot phones : dataSnapshot.getChildren()) {
+                    usedPhone.add(phones.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
 
         //mCallbacks
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -168,28 +188,11 @@ public class sign_up extends AppCompatActivity {
             //Toast.makeText(sign_up.this,"Please Enter phone",Toast.LENGTH_SHORT);
             Log.i("confirmData","phone invalid");
             return false;
-        }/*else if (!(phone.getText().toString().charAt(0)=='0' && (phone.getText().toString().charAt(1)=='5' || phone.getText().toString().charAt(1)=='6' || phone.getText().toString().charAt(1)=='7') &&  phone.getText().toString().length()==10)){
-            phone.setError("conferm your phone");
+        }
+        if(usedPhone.contains(phone.getText().toString())){
+            phone.setError("thisphone is used");
             return false;
-        }*//*else{
-            mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("Users").hasChild(phone.getText().toString())){
-                        phone.setError("this phone has used");
-                        phoneUsed=true;
-                    }else{
-                        phoneUsed=true;
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-            if(phoneUsed) return false;
-        }*/
+        }
         Log.i("confirmData","phone valid");
         if(!email.getText().toString().isEmpty()){
             Log.i("confirmData","mail m3amar");
@@ -198,65 +201,30 @@ public class sign_up extends AppCompatActivity {
                 //Toast.makeText(sign_up.this,"Please Enter correct email",Toast.LENGTH_SHORT);
                 Log.i("confirmData","mail invalid");
                 return false;
-            }/*else{
-                mReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.child("Users").hasChild(email.getText().toString())){
-                            email.setError("this email has used");
-                            emailUsed=true;
-                        }else{
-                            emailUsed=true;
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-                if(emailUsed) return false;
-
-            }*/
+            }
         }
         Log.i("confirmData","mail valid");
-        /*if (pass.getText().toString().isEmpty()){
-            pass.setError("Please Enter password");
-            //Toast.makeText(sign_up.this,"Please Enter password",Toast.LENGTH_SHORT);
-            Log.i("confirmData","pass invalid");
-            return false;
-        }
-        Log.i("confirmData","pass valid");
-        if (confpass.getText().toString().isEmpty()){
-            if (!pass.getText().toString().isEmpty()){
-                confpass.setError("Please confirm your password");
-                //Toast.makeText(sign_up.this,"Please confirm your password",Toast.LENGTH_SHORT);
-                Log.i("confirmData","confpass inconf");
-                return false;
-            }
-        }else{
-            if (!confpass.getText().toString().equals(pass.getText().toString())){
-                confpass.setError("password and confirm password are not the same");
-                //Toast.makeText(sign_up.this,"password and confirm password are not the same",Toast.LENGTH_SHORT);
-                Log.i("confirmData","confpass note same");
-                return  false;
-            }
-        }*/
         if(birthday.getText().toString().isEmpty()){
             birthday.setError("Please Enter your birthday");
             return false;
         }
-        Log.i("confirmData","confpass same");
-        Log.i("confirmData","sex valid");
-        Log.i("sign_up","data confermed");
         return true;
     }
 
     private void saveData(FirebaseUser currentUser){
         String userID=currentUser.getUid();
         mReference.child("usedPhone").child(phone.getText().toString()).setValue(true);
-        RadioButton sex=(RadioButton) findViewById(groupsex.getCheckedRadioButtonId());
-
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(userID).push();
+        ref.child("Latitude").setValue(0);
+        ref.child("Longitude").setValue(0);
+        ref.child("job").setValue("no job");
+        ref.child("phone").setValue("0000000000");
+        ref.child("date").setValue("0000000000");
+        ref.child("details").setValue("aaaaaaaaaaaaaaa");
+        ref.child("taked").setValue("not yet");
+        ref.child("watched").setValue(true);
+        ref.child("senderID").setValue(userID);
+        ref.child("accepterID").setValue("no one");
         //set Values
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
@@ -353,15 +321,20 @@ public class sign_up extends AppCompatActivity {
                         if (task.isSuccessful()) {
 
                             Log.i("sign_up","sign_up secsseful");
-
                             saveData(mAuth.getCurrentUser());
-                            /*if (!email.getText().toString().isEmpty()){
-                               // signInWithEmailAndPassword(email.getText().toString(),pass.getText().toString());
-                                link(EmailAuthProvider.getCredential(email.getText().toString(),pass.getText().toString()));
-                                //mAuth.signOut();
-                            }*/
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
+                            //stopService(userService);
+                            Intent workerService=new Intent(sign_up.this,WorkerService.class);
+                            Intent userService=new Intent(sign_up.this,UserService.class);
+                            workerService.putExtra("workerID",mAuth.getCurrentUser().getUid());
+                            if(isMyServiceRunning(UserService.class)){
+                                stopService(userService);
+                            }
+                            userService.putExtra("userID",mAuth.getCurrentUser().getUid());
+                            startService(workerService);
+                            startService(userService);
                             startActivity(map);
+                            finish();
 
                         } else {
 
@@ -372,35 +345,6 @@ public class sign_up extends AppCompatActivity {
                 });
     }
 
-    public void link(AuthCredential credential){
-        mAuth.getCurrentUser().linkWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = task.getResult().getUser();
-
-                            Log.i("sign_up","link secsseful");
-
-                        } else {
-
-                            Log.i("sign_up","link not secsseful");
-
-                        }
-                    }
-                });
-    }
-
-
-
-
-
-
-
-
-
-
-
 
     //Activity lifecycle
 
@@ -408,6 +352,7 @@ public class sign_up extends AppCompatActivity {
     protected void onStart() {
         Log.i("sign_up","onStart");
         super.onStart();
+        mReference.child("usedPhone").addValueEventListener(valueEventListener);
     }
 
     @Override
@@ -420,6 +365,7 @@ public class sign_up extends AppCompatActivity {
     protected void onStop() {
         Log.i("sign_up","onStop");
         super.onStop();
+        mReference.child("usedPhone").removeEventListener(valueEventListener);
     }
 
     @Override
@@ -433,6 +379,7 @@ public class sign_up extends AppCompatActivity {
         Log.i("sign_up","onDestroy");
         super.onDestroy();
     }
+
     public  void change_language(){
         switch (MapsActivity.lang){
 
@@ -483,5 +430,15 @@ public class sign_up extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

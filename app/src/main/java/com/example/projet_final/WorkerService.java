@@ -24,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
@@ -75,7 +76,7 @@ public class WorkerService extends Service {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            done.countDown();
                         }
                     });
                     try {
@@ -108,7 +109,7 @@ public class WorkerService extends Service {
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            done.countDown();
                         }
                     });
                     try {
@@ -137,8 +138,6 @@ public class WorkerService extends Service {
             notLoc.setLongitude(allNotificationGlobal.get(i).getLongitude());
             distance=correntLoc.distanceTo(notLoc);
             final CountDownLatch done=new CountDownLatch(1);
-
-            //final boolean haveChilde=false;
             final int finalI = i;
             databaseReferenceSpes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -161,7 +160,6 @@ public class WorkerService extends Service {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             final CountDownLatch done2=new CountDownLatch(1);
             DatabaseReference userRef=FirebaseDatabase.getInstance().getReference().child("users").child(workerID);
             userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -170,18 +168,26 @@ public class WorkerService extends Service {
                     user =dataSnapshot.getValue(User.class);
                     done2.countDown();
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    done2.countDown();
                 }
             });
-
             try {
                 done2.await();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            if(distance<=10 && allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild /*&& user.jabs().get(allNotificationGlobal.get(i).getJob())*/){
+            if(user==null){
+                Log.i("workerGlobal","null");
+            }else{
+                Log.i("workerGlobal","userIDJob="+user.getJobsString());
+            }
+            Log.i("workerGlobal","");
+            HashMap<String,Boolean> Hm=user.jabs();
+            boolean sameJob=Hm.get(allNotificationGlobal.get(i).getJob());
+            if(distance<=10 && allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild && sameJob ){
                 databaseReferenceSpes.child(notificationIDGlobal.get(i)).setValue(allNotificationGlobal.get(i));
             }
             haveChild=false;
@@ -207,7 +213,6 @@ public class WorkerService extends Service {
                     NotificationManagerCompat.from(this).notify(IdForNot,builder.build());
                     IdForNot++;
                     databaseReferenceSpes.child(notificationID.get(i)).child("watched").setValue(true);
-
                 DatabaseReference tasckRef=FirebaseDatabase.getInstance().getReference().child("task").child(workerID).child(notificationID.get(i));
                 Geocoder geocoder=new Geocoder(WorkerService.this, Locale.getDefault());
                 List<Address> addresses = null;
@@ -217,15 +222,12 @@ public class WorkerService extends Service {
                     e.printStackTrace();
                 }
                 if(addresses!=null) {
-                    String city = addresses.get(0).getAddressLine(0);
-                    String state = addresses.get(0).getAddressLine(1);
-                    String country = addresses.get(0).getAddressLine(2);
-                    tasckRef.setValue(country + "," + state + "," + country + "at:" + allNotification.get(i).getDate());
+                    String city = addresses.get(0).getLocality();
+                    String state = addresses.get(0).getAdminArea();
+                    String country = addresses.get(0).getCountryName();
+                    tasckRef.setValue(country + "," + state + "," + city + " at:" + allNotification.get(i).getDate());
                 }else{
-                    String city = addresses.get(0).getAddressLine(0);
-                    String state = addresses.get(0).getAddressLine(1);
-                    String country = addresses.get(0).getAddressLine(2);
-                    tasckRef.setValue(country + "," + state + "," + country + "at:" + allNotification.get(i).getDate());
+                    tasckRef.setValue("null addres");
                 }
             }
         }

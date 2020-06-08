@@ -12,7 +12,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -324,16 +326,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void serviceLocation() {
+        saveL=new Intent(this, com.example.projet_final.saveLocation.class);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
+        }
+        if(isMyServiceRunning(saveLocation.class)){
+            stopService(saveL);
         }
         if(LogStat()==3){
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
-            saveL=new Intent(this, com.example.projet_final.saveLocation.class);
+
             startService(saveL);
         }else{
-
         }
 
 
@@ -707,6 +712,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(LogStat()==1){
             mAuth.signInAnonymously();
         }
+        if(!isMyServiceRunning(UserService.class)){
+            Intent intent=new Intent(MapsActivity.this,UserService.class);
+            intent.putExtra("userID",mAuth.getCurrentUser().getUid());
+            startService(intent);
+        }
     }
 
     @Override
@@ -814,6 +824,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         editor.putString("lang",lang);
         editor.apply();
         //
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,15 +24,20 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String codeSent,code;
+    private String codeSent,code,errorCode;
     private AlertDialog alertDialog;
+    private ArrayList<String> usedPhone;
 
     //view
     private EditText phone;
@@ -42,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mReference;
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private ValueEventListener valueEventListener;
 
 
 
@@ -59,19 +67,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void  init(){
-
-        Log.i("MainActivity","init");
+        usedPhone=new ArrayList<>();
         //view
-        phone=(EditText)findViewById(R.id.ph_et);
+        phone=findViewById(R.id.ph_et);
         phone_tv=findViewById(R.id.ph_tv);
-        signin=(Button)findViewById(R.id.button_sign_in);
-        signup=(TextView)findViewById(R.id.sign_up_tv);
+        signin=findViewById(R.id.button_sign_in);
+        signup=findViewById(R.id.sign_up_tv);
         signin_tv=findViewById(R.id.sign_in_tv);
         welcome=findViewById(R.id.welcome_tv);
         info=findViewById(R.id.info_tv);
         //firebase
         mAuth=FirebaseAuth.getInstance();
-        mReference= FirebaseDatabase.getInstance().getReference();
+        mReference= FirebaseDatabase.getInstance().getReference().child("usedPhone");
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
             public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
@@ -93,7 +100,20 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("code","onCodeSend:end;   codeSent="+codeSent+"    s="+s);
             }
         };
+        valueEventListener=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usedPhone.clear();
+                for (DataSnapshot phones : dataSnapshot.getChildren()) {
+                    usedPhone.add(phones.getKey());
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
     }
 
     public void clicksignup(){
@@ -128,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     }
+                }else{
+
                 }
 
 
@@ -150,21 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 mCallbacks          // OnVerificationStateChangedCallbacks
         );
 
-
-    }
-
-    private void logInWithEmailAndPassword(String email,String password){
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    startActivity(new Intent(MainActivity.this,MapsActivity.class));
-                    finish();
-                }else{
-
-                }
-            }
-        });
 
     }
 
@@ -197,10 +204,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean confData(){
-
-        Log.i("MainActivity","data confermed");
-
-        return true;
+        if(usedPhone.contains(phone.getText().toString())){
+            return true;
+        }else{
+            phone.setError(errorCode);
+            return false;
+        }
     }
 
     private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
@@ -214,10 +223,16 @@ public class MainActivity extends AppCompatActivity {
                             //saveData(mAuth.getCurrentUser());
                             Log.i("code","signIn  credential; "+credential);
                             Intent map=new Intent(MainActivity.this,MapsActivity.class);
+                            Intent workerService=new Intent(MainActivity.this,WorkerService.class);
+                            Intent userService=new Intent(MainActivity.this,UserService.class);
+                            workerService.putExtra("workerID",mAuth.getCurrentUser().getUid());
+                            if(isMyServiceRunning(UserService.class)){
+                                stopService(userService);
+                            }
+                            userService.putExtra("userID",mAuth.getCurrentUser().getUid());
+                            startService(workerService);
+                            startService(userService);
                             startActivity(map);
-                            Intent servic=new Intent(MainActivity.this,WorkerService.class);
-                            servic.putExtra("workerID",mAuth.getCurrentUser().getUid());
-                            startService(servic);
                             finish();
 
                         } else {
@@ -251,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         Log.i("MainActivity","onStart");
         super.onStart();
+        mReference.addValueEventListener(valueEventListener);
     }
 
     @Override
@@ -263,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         Log.i("MainActivity","onStop");
         super.onStop();
+        mReference.removeEventListener(valueEventListener);
     }
 
     @Override
@@ -287,8 +304,7 @@ public class MainActivity extends AppCompatActivity {
                 signin.setText("SIGN IN");
                 info.setText("Don’t have an account?");
                 signup.setText("Sign up");
-
-
+                errorCode="phone error";
                 break;
             case "fr":
                 signin_tv.setText("Se Connecter");
@@ -297,9 +313,18 @@ public class MainActivity extends AppCompatActivity {
                 signin.setText("SE CONNECTER");
                 info.setText("Vous n'avez pas de compte?");
                 signup.setText("s'inscrire");
-
+                errorCode="nemuro pas correct";
                 break;
         }
     }
 
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
