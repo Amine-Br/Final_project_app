@@ -813,6 +813,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("lang",lang);
         editor.apply();
+        //
     }
 
 
