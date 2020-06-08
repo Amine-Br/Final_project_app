@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseListOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,7 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
+/**/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -126,7 +125,6 @@ public class tasks extends AppCompatActivity {
 
     }
     public void itemclicklistview(){
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -153,7 +151,6 @@ public class tasks extends AppCompatActivity {
                     t.setVisibility(View.GONE);
                     t=d.findViewById(R.id.send_request_button);
                     t.setVisibility(View.GONE);
-
                 }else{
                     t=d.findViewById(R.id.cancel_button);
                     t.setOnClickListener(cancel);
