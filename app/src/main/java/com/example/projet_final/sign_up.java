@@ -434,7 +434,7 @@ public class sign_up extends AppCompatActivity {
         super.onDestroy();
     }
     public  void change_language(){
-        switch (multi_activity.lang){
+        switch (MapsActivity.lang){
 
             case "en":
                 signup_tv.setText("Sign Up");

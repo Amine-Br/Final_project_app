@@ -11,8 +11,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -21,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -82,6 +85,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private String sendTo="global";
     private ImageView nvimg;
     private int tag;
+    private View header;
+    private Menu nav_menu ;
+    static String lang="en";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +105,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         change_menu();
         menuRedy();
+        loadlang();
         change_language();
     }
 
@@ -114,9 +121,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
+        nav_menu=navigationView.getMenu();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        lunch_service_button = findViewById(R.id.service_req_button);
+        lunch_service_button = (Button) findViewById(R.id.service_req_button);
         menu = new PopupMenu(MapsActivity.this, Categories);
         nvimg=findViewById(R.id.nav_view_img);
 
@@ -437,7 +445,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             );
 
-            View header = navigationView.getHeaderView(0);
+             header = navigationView.getHeaderView(0);
 
              signin=header.findViewById(R.id.drawer_h_signin);
             signup=header.findViewById(R.id.drawer_h_signup);
@@ -446,24 +454,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             user.setVisibility(View.VISIBLE);
             worker.setVisibility(View.GONE);
-            switch (multi_activity.lang){
 
-
-                case "en":
-
-
-                    signin.setText("SIGN IN");
-                    signup.setText("SIGN UP");
-
-
-                    break;
-                case "fr":
-
-
-                    signin.setText ("SE CONNECTER");
-                    signup.setText ("INSCRIPTION");
-                    break;
-            }
             signin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -732,11 +723,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
         }
+        change_language();
 
     }
 
     @Override
     protected void onStop() {
+        savelang();
         Log.i("MapsActivity","onStop");
         super.onStop();
 
@@ -744,12 +737,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onPause() {
+        savelang();
         Log.i("MapsActivity","onPause");
         super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        savelang();
 
         Log.i("MapsActivity","onDestroy");
 
@@ -760,25 +755,67 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onDestroy();
     }
     public  void change_language(){
-        switch (multi_activity.lang){
+        switch (MapsActivity.lang){
 
 
             case "en":
 
                 lunch_service_button.setText("SERVICE REQUEST");
-                /*signin.setText("SIGN IN");
-                signup.setText("SIGN UP");*/
-
+                signin.setText("SIGN IN");
+                signup.setText("SIGN UP");
+                if(LogStat()<=2) {
+                    nav_menu.findItem(R.id.change_lang_item).setTitle("Change Language");
+                    nav_menu.findItem(R.id.about_us_item).setTitle("About Us");
+                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Rate Us");
+                }else {
+                    nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
+                    nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
+                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
+                    nav_menu.findItem(R.id.Profile_item).setTitle("Profile");
+                    nav_menu.findItem(R.id.sign_out_item).setTitle("Sign out");
+                    nav_menu.findItem(R.id.task_item).setTitle("Tasks");
+                }
 
                 break;
             case "fr":
 
                 lunch_service_button.setText ("DEMANDE DE SERVICE");
-                /*signin.setText ("SE CONNECTER");
-                signup.setText ("INSCRIPTION");*/
+                signin.setText ("SE CONNECTER");
+                signup.setText ("INSCRIPTION");
+                if(LogStat()<=2) {
+                    nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
+                    nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
+                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
+                }else {
+                    nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
+                    nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
+                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
+                    nav_menu.findItem(R.id.Profile_item).setTitle("Profil");
+                    nav_menu.findItem(R.id.sign_out_item).setTitle("Déconnexion");
+                    nav_menu.findItem(R.id.task_item).setTitle("Tâches");
+                }
+
+
                 break;
         }
     }
+    public void loadlang(){
+        try{
+            SharedPreferences sharedPref = getSharedPreferences("My_Languages", Activity.MODE_PRIVATE);
+            lang = sharedPref.getString("lang",lang);
+        }
+        catch (Exception e){
+            lang="en";
+        }
+    }
+    void savelang(){
+        SharedPreferences sharedPref = getSharedPreferences("My_Languages", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("lang",lang);
+        editor.apply();
+    }
+
+
 
 
 }

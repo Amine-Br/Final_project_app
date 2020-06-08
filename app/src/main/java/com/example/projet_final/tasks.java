@@ -132,7 +132,7 @@ public class tasks extends AppCompatActivity {
         super.onStart();
     }
     public  void change_language(){
-        switch (multi_activity.lang){
+        switch (MapsActivity.lang){
 
             case "en":
 

@@ -22,7 +22,7 @@ public class multi_activity extends AppCompatActivity {
     private Button rate_us_button;
     private ConstraintLayout rate_us_layout;
     static String s="nothing";
-    static String lang="en";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +62,10 @@ public class multi_activity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position){
                     case 0:
-                        lang="en";
+                        MapsActivity.lang="en";
                         break;
                     case 1:
-                        lang="fr";
+                        MapsActivity.lang="fr";
                         break;
 
                 }
@@ -158,7 +158,7 @@ public class multi_activity extends AppCompatActivity {
         }
     }
     public  void change_language(){
-        switch (multi_activity.lang){
+        switch (MapsActivity.lang){
 
             case "en":
 

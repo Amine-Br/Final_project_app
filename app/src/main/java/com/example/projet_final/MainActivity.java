@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
     public  void change_language(){
-        switch (multi_activity.lang){
+        switch (MapsActivity.lang){
 
             case "en":
                 //signup,phone_tv,signin_tv,welcome,info,signin
