@@ -124,8 +124,6 @@ public class UserService extends Service {
             if(!arrayList.get(i).iswatched()){
                 Log.i("UserService",arrayList.get(i).getAccID());
                 Intent intent = new Intent(UserService.this, notif_click.class);
-                PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
-                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"channel_ID")
                         .setSmallIcon(R.drawable.ic_work_black_24dp)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -150,11 +148,15 @@ public class UserService extends Service {
                     e.printStackTrace();
                 }
                 if(arrayList.get(i).isAccpet()){
-                    intent.putExtra("user_name", user.getUser_name());
-                    intent.putExtra("sex", user.getSex());
-                    intent.putExtra("Birthday", user.getBirthday());
-                    intent.putExtra("email", user.getEmail());
-                    intent.putExtra("jobs", user.getJobsString());
+                    Bundle bundle=new Bundle();
+                    bundle.putString("user_name", user.getUser_name());
+                    bundle.putString("sex", user.getSex());
+                    bundle.putString("Birthday", user.getBirthday());
+                    bundle.putString("email", user.getEmail());
+                    bundle.putString("jobs", user.getJobsString());
+                    intent.putExtras(bundle);
+                    PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
+                            0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     builder.setContentText("accepted").setContentTitle("your request is accepted").setContentIntent(contentIntent);
                 }
                 else{

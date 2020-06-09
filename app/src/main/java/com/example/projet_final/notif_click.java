@@ -43,11 +43,12 @@ public class notif_click extends AppCompatActivity {
     }
 
     public void getInfoFromNot(){
-        String user_name=getIntent().getStringExtra("user_name");
-        String sex=getIntent().getStringExtra("sex");
-        String Birthday=getIntent().getStringExtra("Birthday");
-        String email=getIntent().getStringExtra("email");
-        String jobs=getIntent().getStringExtra("jobs");
+        Bundle bundle=getIntent().getExtras();
+        String user_name=bundle.getString("user_name");
+        String sex=bundle.getString("sex");
+        String Birthday=bundle.getString("Birthday");
+        String email=bundle.getString("email");
+        String jobs=bundle.getString("jobs");
         Log.i("notifa",user_name);
         Dialog dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
@@ -63,7 +64,7 @@ public class notif_click extends AppCompatActivity {
         t.setText(email);
         t=dialog.findViewById(R.id.jobs_tv2);
         t.setText(jobs);
-        Button b=dialog.findViewById(R.id.prechedule_bitton);
+        TextView b=dialog.findViewById(R.id.prechedule_bitton);
         b.setVisibility(View.GONE);
         dialog.setCanceledOnTouchOutside(false);
         b=dialog.findViewById(R.id.cancel_button);
