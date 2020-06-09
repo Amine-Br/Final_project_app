@@ -22,7 +22,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-/**/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -49,7 +48,6 @@ public class tasks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tasks);
         init();
-        final CountDownLatch done=new CountDownLatch(1);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -61,22 +59,13 @@ public class tasks extends AppCompatActivity {
                     notification = notifications.getValue(Notification.class);
                     Hm.put(notifications.getKey(),notification);
                 }
-                done.countDown();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                done.countDown();
             }
 
         });
-        try {
-            done.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        final CountDownLatch done2=new CountDownLatch(1);
         getterref=FirebaseDatabase.getInstance().getReference().child("spesfReq");
         getterref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -87,7 +76,6 @@ public class tasks extends AppCompatActivity {
                     userID.add(data.getKey());
                     userDataSnapshot.add(data);
                 }
-                done2.countDown();
             }
 
             @Override
@@ -95,11 +83,6 @@ public class tasks extends AppCompatActivity {
 
             }
         });
-        try {
-            done2.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         fill_listview();
         itemclicklistview();
 
@@ -171,6 +154,12 @@ public class tasks extends AppCompatActivity {
             public void onClick(View v) {
                 if(notification.getJob().equals("no job")) {
                     reference.child(itemRef.getKey()).child("taked").setValue("cancel");
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accpet").setValue(false);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("watched").setValue(false);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accID").setValue(mAuth.getCurrentUser().getUid());
                 }else{
                     itemRef.removeValue();
                 }
@@ -181,15 +170,30 @@ public class tasks extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 reference.child(itemRef.getKey()).child("taked").setValue("accepted");
-                FirebaseDatabase.getInstance().getReference().child("GlobalReq").child(itemRef.getKey()).removeValue();
-                for(int i=0;i<userID.size();i++){
-                    if(userDataSnapshot.get(i).hasChild(itemRef.getKey())){
-                        if(!userID.get(i).equals(mAuth.getCurrentUser().getUid())) {
-                            FirebaseDatabase.getInstance().getReference().child("spesfReq").child(userID.get(i)).child(itemRef.getKey()).removeValue();
-                            try {
-                                FirebaseDatabase.getInstance().getReference().child("task").child(userID.get(i)).child(itemRef.getKey()).removeValue();
-                            }catch (Exception e){
-                                //don t have this childe
+                if(notification.getJob().equals("no job")){
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accpet").setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("watched").setValue(false);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accID").setValue(mAuth.getCurrentUser().getUid());
+                }else{
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accpet").setValue(true);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("watched").setValue(false);
+                    FirebaseDatabase.getInstance().getReference().child("resulttReq").child(notification.getSenderID()).child(itemRef.getKey())
+                            .child("accID").setValue(mAuth.getCurrentUser().getUid());
+                    FirebaseDatabase.getInstance().getReference().child("GlobalReq").child(itemRef.getKey()).removeValue();
+                    for(int i=0;i<userID.size();i++){
+                        if(userDataSnapshot.get(i).hasChild(itemRef.getKey())){
+                            if(!userID.get(i).equals(mAuth.getCurrentUser().getUid())) {
+                                FirebaseDatabase.getInstance().getReference().child("spesfReq").child(userID.get(i)).child(itemRef.getKey()).removeValue();
+                                try {
+                                    FirebaseDatabase.getInstance().getReference().child("task").child(userID.get(i)).child(itemRef.getKey()).removeValue();
+                                }catch (Exception e){
+                                    //don t have this childe
+                                }
                             }
                         }
                     }

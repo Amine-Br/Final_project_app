@@ -33,7 +33,7 @@ public class WorkerService extends Service {
     private static int IdForNot=0;
     private Thread thread1,thread2;
     private boolean whileCon=true;
-    private String workerID;
+    private static String workerID;
     private DatabaseReference databaseReferenceSpes,databaseReferenceGlobal,databaseReferenceSpesWorker;
     private boolean haveChild=false,haveChilsGlobal;
     private ArrayList<Notification> allNotification,allNotificationGlobal;
@@ -87,6 +87,11 @@ public class WorkerService extends Service {
                     notify_spec();
                     allNotification.clear();
                     notificationID.clear();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -120,12 +125,17 @@ public class WorkerService extends Service {
                     notify_global();
                     allNotificationGlobal.clear();
                     notificationIDGlobal.clear();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
         thread1.start();
         thread2.start();
-        return START_REDELIVER_INTENT;
+        return START_STICKY;
     }
 
     private void notify_global() {
@@ -209,7 +219,6 @@ public class WorkerService extends Service {
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true);
-
                     NotificationManagerCompat.from(this).notify(IdForNot,builder.build());
                     IdForNot++;
                     databaseReferenceSpes.child(notificationID.get(i)).child("watched").setValue(true);

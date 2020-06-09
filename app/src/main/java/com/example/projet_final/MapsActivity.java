@@ -75,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Intent saveL;
     private DatabaseReference mReference;
     private ArrayList<User> users;
-    private Dialog dialog;
+    private Dialog dialog,d;
     private String flter = "no_filter";
     private PopupMenu menu;
     private SupportMapFragment supportMapFragment;
@@ -90,6 +90,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private View header;
     private Menu nav_menu ;
     static String lang="en";
+    private TextView t1,t;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +115,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void init() {
         Log.i("MapsActivity", "init");
-
         users = new ArrayList<>();
         IDs = new ArrayList<>();
 
@@ -144,6 +145,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 p.show();*/
 
         menu.getMenuInflater().inflate(R.menu.categories_menu, menu.getMenu());
+
         menu.getMenu().findItem(R.id.no_filter).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -314,11 +316,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         for(int i=0;i<users.size();i++){
             Hm=users.get(i).jabs();
             if(Hm.get(flter)) {
-                    m = mMap.addMarker(new MarkerOptions()
-                            .title(users.get(i).getUser_name())
-                            .position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())));
+                m = mMap.addMarker(new MarkerOptions()
+                        .title(users.get(i).getUser_name())
+                        .position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())));
 
-                    m.setTag(i);
+                m.setTag(i);
 
             }
         }
@@ -333,15 +335,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(isMyServiceRunning(saveLocation.class)){
             stopService(saveL);
         }
+        if(!isMyServiceRunning(UserService.class)){
+            Intent intent=new Intent(MapsActivity.this,UserService.class);
+            intent.putExtra("userID",mAuth.getCurrentUser().getUid());
+            startService(intent);
+        }
         if(LogStat()==3){
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
-
             startService(saveL);
         }else{
         }
-
-
 
     }
 
@@ -399,6 +403,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Categories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                change_menu_lang();
                 menu.show();
             }
         });
@@ -423,36 +428,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             navigationView.inflateMenu(R.menu.drawer_menu);
 
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-                                                                 @Override
-                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                             switch (item.getItemId()) {
-
-                                     case R.id.change_lang_item:
-                                          multi_activity.s="language_page";
-                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                                          break;
-
-                                     case R.id.about_us_item:
-                                          multi_activity.s="about_us_page";
-                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                                          break;
-
-                                     case R.id.Rate_us_item:
-                                          multi_activity.s="rate_us_page";
-                                          startActivity(new Intent(MapsActivity.this,multi_activity.class));
-                                          break;
-                                                    }
-                             drawer.closeDrawer(GravityCompat.START);
-                             return true; }
-            }
-
-
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.change_lang_item:
+                            multi_activity.s="language_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                        case R.id.about_us_item:
+                            multi_activity.s="about_us_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                        case R.id.Rate_us_item:
+                            multi_activity.s="rate_us_page";
+                            startActivity(new Intent(MapsActivity.this,multi_activity.class));
+                            break;
+                    }
+                    drawer.closeDrawer(GravityCompat.START);
+                    return true; }
+                }
             );
 
-             header = navigationView.getHeaderView(0);
+            header = navigationView.getHeaderView(0);
 
-             signin=header.findViewById(R.id.drawer_h_signin);
+            signin=header.findViewById(R.id.drawer_h_signin);
             signup=header.findViewById(R.id.drawer_h_signup);
             ConstraintLayout user=header.findViewById(R.id.user_inteface);
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
@@ -492,7 +492,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         case R.id.sign_out_item:
                             Toast.makeText(MapsActivity.this,"clicked",Toast.LENGTH_SHORT);
                             Log.i("MapsActivity","sign_out");
-                            //stopService(saveL);
                             mAuth.signOut();
                             recreate();
                             break;
@@ -515,7 +514,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
 
-            View header = navigationView.getHeaderView(0);
+            header = navigationView.getHeaderView(0);
 
 
             ConstraintLayout user=header.findViewById(R.id.user_inteface);
@@ -531,12 +530,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         Log.i("MapsActivity","merker clicked");
-         tag=(Integer)marker.getTag();
+        tag=(Integer)marker.getTag();
         sendTo=IDs.get(tag);
         dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.activity_popup);
-        TextView t=dialog.findViewById(R.id.username_popup);
+        t=dialog.findViewById(R.id.username_popup);
         t.setText(users.get(tag).getUser_name());
         /*t=(TextView) dialog.findViewById(R.id.user_phone_popup);
         t.setText(users.get(tag).getPhone());*/
@@ -586,6 +585,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dialog.dismiss();
             }
         });
+        change_dialog_lang();
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
         return false;
@@ -635,15 +635,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     private void showReqDialog(){
-        final Dialog d=new Dialog(MapsActivity.this);
+        d=new Dialog(MapsActivity.this);
         d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         d.setContentView(R.layout.request_popup);
-        final Spinner spinner=d.findViewById(R.id.spinner);
-        ArrayAdapter<String>adapter = new ArrayAdapter<String>(MapsActivity.this,
-                android.R.layout.simple_spinner_item,new String[]{"plumber","electrician"
-                ,"House_painter","Builder","air_conditioner","gardening","housework","Moving"});
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinner=d.findViewById(R.id.spinner);
+        if(MapsActivity.lang.equals("en")) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,
+                    android.R.layout.simple_spinner_item, new String[]{"plumber", "electrician"
+                    , "House_painter", "Builder", "air_conditioner", "gardening", "housework", "Moving"});
+            spinner.setAdapter(adapter);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        }else{
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MapsActivity.this,
+                    android.R.layout.simple_spinner_item, new String[]{"plombier", "électricien"
+                    , "Peintre en bâtiment", "constructeur", "climatisation", "jardinage", "travaux ménagers", "Déplacement"});
+            spinner.setAdapter(adapter);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        }
+
         if (!sendTo.equals("global")) spinner.setEnabled(false);
         d.findViewById(R.id.cancel_button_req).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -656,7 +667,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 if(sendTo.equals("global")){
-                    TextView t;
+
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("GlobalReq").push();
                     ref.child("Latitude").setValue(getCourrentLocation().latitude);
                     ref.child("Longitude").setValue(getCourrentLocation().longitude);
@@ -672,7 +683,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
                     ref.child("accepterID").setValue("no one");
                 }else{
-                    TextView t;
+
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(sendTo).push();
                     ref.child("Latitude").setValue(getCourrentLocation().latitude);
                     ref.child("Longitude").setValue(getCourrentLocation().longitude);
@@ -692,11 +703,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+        change_d_lang();
         d.setCanceledOnTouchOutside(false);
         d.show();
     }
-
-
 
     public LatLng getCourrentLocation(){
         return new LatLng(36.672496,2.793588);
@@ -711,12 +721,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onStart();
         if(LogStat()==1){
             mAuth.signInAnonymously();
-        }
-        if(!isMyServiceRunning(UserService.class)){
             Intent intent=new Intent(MapsActivity.this,UserService.class);
-            intent.putExtra("userID",mAuth.getCurrentUser().getUid());
             startService(intent);
         }
+
     }
 
     @Override
@@ -764,6 +772,128 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         super.onDestroy();
     }
+    public void change_menu_lang(){
+        switch (MapsActivity.lang){
+
+
+            case "en":
+
+
+                menu.getMenu().findItem(R.id.no_filter).setTitle("cancel filter");
+
+                menu.getMenu().findItem(R.id.Plumber).setTitle("plumber");
+
+                menu.getMenu().findItem(R.id.Electrician).setTitle("electrician");
+
+                menu.getMenu().findItem(R.id.House_painter).setTitle("House_painter");
+
+                menu.getMenu().findItem(R.id.Builder).setTitle("Builder");
+
+                menu.getMenu().findItem(R.id.Air_conditioner).setTitle("air_conditioner");
+
+                menu.getMenu().findItem(R.id.Gardening).setTitle("gardening");
+
+                menu.getMenu().findItem(R.id.House_work).setTitle("housework");
+
+                menu.getMenu().findItem(R.id.Moving).setTitle("Moving");
+
+
+                break;
+            case "fr":
+                menu.getMenu().findItem(R.id.no_filter).setTitle("annuler le filtre");
+
+                menu.getMenu().findItem(R.id.Plumber).setTitle("plombier");
+
+                menu.getMenu().findItem(R.id.Electrician).setTitle("électricien");
+
+                menu.getMenu().findItem(R.id.House_painter).setTitle("Peintre en bâtiment");
+
+                menu.getMenu().findItem(R.id.Builder).setTitle("constructeur");
+
+                menu.getMenu().findItem(R.id.Air_conditioner).setTitle("climatisation");
+
+                menu.getMenu().findItem(R.id.Gardening).setTitle("jardinage");
+
+                menu.getMenu().findItem(R.id.House_work).setTitle("travaux ménagers");
+
+                menu.getMenu().findItem(R.id.Moving).setTitle("Déplacement");
+                break;
+        }
+
+
+    }
+    public void change_d_lang(){
+        switch (MapsActivity.lang){
+
+
+            case "en":
+
+                t=d.findViewById(R.id.phone_num);
+                t.setText("Phone number:");
+                t=d.findViewById(R.id.service_type);
+                t.setText("Type of service::");
+                t=d.findViewById(R.id.date_service);
+                t.setText("Date:");
+                t=d.findViewById(R.id.cancel_button_req);
+                t.setText("Cancel");
+                t=d.findViewById(R.id.send_request_button);
+                t.setText("Send");
+
+
+                break;
+            case "fr":
+
+                t = d.findViewById (R.id.phone_num);
+                t.setText ("Numéro de téléphone:");
+                t = d.findViewById (R.id.service_type);
+                t.setText ("Type de service :");
+                t = d.findViewById (R.id.date_service);
+                t.setText ("Date:");
+                t = d.findViewById (R.id.cancel_button_req);
+                t.setText ("Annuler");
+                t = d.findViewById (R.id.send_request_button);
+                t.setText ("Envoyer");
+                break;
+        }
+
+    }
+    public  void change_dialog_lang(){
+        switch (MapsActivity.lang){
+
+
+            case "en":
+
+                t=dialog.findViewById(R.id.sex_tv);
+                t.setText("SEX:");
+                t=dialog.findViewById(R.id.birthday_tv);
+                t.setText("Birthday:");
+                t=dialog.findViewById(R.id.jobs_tv);
+                t.setText("Jobs:");
+                t=dialog.findViewById(R.id.cancel_button);
+                t.setText("cancel");
+                t=dialog.findViewById(R.id.prechedule_bitton);
+                t.setText("request");
+                t=dialog.findViewById(R.id.task_tv);
+                t.setText("Call");
+
+                break;
+            case "fr":
+
+                t1 = dialog.findViewById(R.id.sex_tv);
+                t1.setText ("SEXE:");
+                t1 = dialog.findViewById(R.id.birthday_tv);
+                t1.setText ("date de naissance:");
+                t1 = dialog.findViewById(R.id.jobs_tv);
+                t1.setText ("Travaux:");
+                t1 = dialog.findViewById (R.id.cancel_button);
+                t1.setText ("annuler");
+                t1 = dialog.findViewById (R.id.prechedule_bitton);
+                t1.setText ("demande");
+                t1 = dialog.findViewById (R.id.task_tv);
+                t1.setText ("Appel");
+                break;
+        }
+    }
     public  void change_language(){
         switch (MapsActivity.lang){
 
@@ -771,9 +901,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             case "en":
 
                 lunch_service_button.setText("SERVICE REQUEST");
-                signin.setText("SIGN IN");
-                signup.setText("SIGN UP");
                 if(LogStat()<=2) {
+                    signin.setText("SIGN IN");
+                    signup.setText("SIGN UP");
                     nav_menu.findItem(R.id.change_lang_item).setTitle("Change Language");
                     nav_menu.findItem(R.id.about_us_item).setTitle("About Us");
                     nav_menu.findItem(R.id.Rate_us_item).setTitle("Rate Us");
@@ -786,17 +916,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     nav_menu.findItem(R.id.task_item).setTitle("Tasks");
                 }
 
+
+
                 break;
             case "fr":
 
                 lunch_service_button.setText ("DEMANDE DE SERVICE");
-                signin.setText ("SE CONNECTER");
-                signup.setText ("INSCRIPTION");
                 if(LogStat()<=2) {
+                    signin.setText ("SE CONNECTER");
+                    signup.setText ("INSCRIPTION");
                     nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
                     nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
                     nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
-                }else {
+                }else{
                     nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
                     nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
                     nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
@@ -804,7 +936,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     nav_menu.findItem(R.id.sign_out_item).setTitle("Déconnexion");
                     nav_menu.findItem(R.id.task_item).setTitle("Tâches");
                 }
-
 
                 break;
         }

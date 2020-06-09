@@ -268,8 +268,6 @@ public class User {
         return jobs.toString();
     }
 
-
-
 }
 
 

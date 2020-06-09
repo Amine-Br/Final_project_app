@@ -234,7 +234,6 @@ public class MainActivity extends AppCompatActivity {
                             startService(userService);
                             startActivity(map);
                             finish();
-
                         } else {
                             Log.i("code","signIn not succ; ");
                         }

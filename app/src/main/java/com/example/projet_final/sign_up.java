@@ -236,8 +236,6 @@ public class sign_up extends AppCompatActivity {
             mReference.child("users").child(userID).child("sex").setValue("Female");
             mReference.child("users").child(userID).child("icone").setValue("gs://finalprojectapp-153c6.appspot.com/default/default_women_img.png");
         }
-
-
         //set email
         if (!email.getText().toString().isEmpty()){
             mReference.child("users").child(userID).child("email").setValue(email.getText().toString());
