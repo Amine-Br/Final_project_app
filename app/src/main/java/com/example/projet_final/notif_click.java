@@ -32,10 +32,11 @@ public class notif_click extends AppCompatActivity {
         setContentView(R.layout.activity_notif_click);
         final CountDownLatch done=new CountDownLatch(1);
         users=new HashMap<>();
-        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.i("notifa","onDatachang");
+                users.clear();
                 for(DataSnapshot user: dataSnapshot.getChildren()){
                     users.put(user.getKey(),user.getValue(User.class));
                 }
@@ -59,28 +60,6 @@ public class notif_click extends AppCompatActivity {
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        final CountDownLatch done=new CountDownLatch(1);
-        users=new HashMap<>();
-        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i("notifa","onDatachang");
-                for(DataSnapshot user: dataSnapshot.getChildren()){
-                    users.put(user.getKey(),user.getValue(User.class));
-                }
-                done.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                done.countDown();
-            }
-        });
-        try {
-            done.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         getInfoFromNot();
     }
 
