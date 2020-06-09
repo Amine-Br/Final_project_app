@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,34 +19,26 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
 public class notif_click extends AppCompatActivity {
     private User user;
+    private HashMap<String,User> users;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif_click);
-        getInfoFromNot();
-    }
-
-    @Override
-    public void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        setIntent(intent);
-        getInfoFromNot();
-    }
-
-    public void getInfoFromNot(){
-        String s=getIntent().getStringExtra("key");
-        Dialog dialog=new Dialog(this);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         final CountDownLatch done=new CountDownLatch(1);
-
-        FirebaseDatabase.getInstance().getReference().child("users").child(s).addListenerForSingleValueEvent(new ValueEventListener() {
+        users=new HashMap<>();
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                user=dataSnapshot.getValue(User.class);
+                Log.i("notifa","onDatachang");
+                for(DataSnapshot user: dataSnapshot.getChildren()){
+                    users.put(user.getKey(),user.getValue(User.class));
+                }
                 done.countDown();
             }
 
@@ -59,6 +52,45 @@ public class notif_click extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        getInfoFromNot();
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        final CountDownLatch done=new CountDownLatch(1);
+        users=new HashMap<>();
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("notifa","onDatachang");
+                for(DataSnapshot user: dataSnapshot.getChildren()){
+                    users.put(user.getKey(),user.getValue(User.class));
+                }
+                done.countDown();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                done.countDown();
+            }
+        });
+        try {
+            done.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        getInfoFromNot();
+    }
+
+    public void getInfoFromNot(){
+        String s=getIntent().getStringExtra("key");
+        Log.i("notifa",s);
+        Dialog dialog=new Dialog(this);
+        user=users.get(s);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        Toast.makeText(this,"pass",Toast.LENGTH_LONG).show();
         dialog.setContentView(R.layout.activity_popup);
         TextView t=dialog.findViewById(R.id.username_popup);
         t.setText(user.getUser_name());

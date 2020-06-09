@@ -129,10 +129,9 @@ public class UserService extends Service {
                 NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"channel_ID")
                         .setSmallIcon(R.drawable.ic_work_black_24dp)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentIntent(contentIntent)
                         .setAutoCancel(true);
                 if(arrayList.get(i).isAccpet()){
-                    builder.setContentText("accepted").setContentTitle("your request is accepted");
+                    builder.setContentText("accepted").setContentTitle("your request is accepted").setContentIntent(contentIntent);
                 }
                 else{
                     builder.setContentText("rejected").setContentTitle("your request is rejected");
