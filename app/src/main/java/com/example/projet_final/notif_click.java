@@ -30,57 +30,39 @@ public class notif_click extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notif_click);
-        final CountDownLatch done=new CountDownLatch(1);
-        users=new HashMap<>();
-        FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.i("notifa","onDatachang");
-                users.clear();
-                for(DataSnapshot user: dataSnapshot.getChildren()){
-                    users.put(user.getKey(),user.getValue(User.class));
-                }
-                done.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                done.countDown();
-            }
-        });
-        try {
-            done.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Log.i("notifa","oncreate");
         getInfoFromNot();
     }
 
     @Override
     public void onNewIntent(Intent intent) {
+        Log.i("notifa","onNewIntent");
         super.onNewIntent(intent);
         setIntent(intent);
         getInfoFromNot();
     }
 
     public void getInfoFromNot(){
-        String s=getIntent().getStringExtra("key");
-        Log.i("notifa",s);
+        String user_name=getIntent().getStringExtra("user_name");
+        String sex=getIntent().getStringExtra("sex");
+        String Birthday=getIntent().getStringExtra("Birthday");
+        String email=getIntent().getStringExtra("email");
+        String jobs=getIntent().getStringExtra("jobs");
+        Log.i("notifa",user_name);
         Dialog dialog=new Dialog(this);
-        user=users.get(s);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Toast.makeText(this,"pass",Toast.LENGTH_LONG).show();
         dialog.setContentView(R.layout.activity_popup);
         TextView t=dialog.findViewById(R.id.username_popup);
-        t.setText(user.getUser_name());
+        t.setText(user_name);
         t=dialog.findViewById(R.id.sex_tv2);
-        t.setText(user.getSex());
+        t.setText(sex);
         t=dialog.findViewById(R.id.birthday_tv2);
-        t.setText(user.getBirthday());
+        t.setText(Birthday);
         t=dialog.findViewById(R.id.email_tv2);
-        t.setText(user.getEmail());
+        t.setText(email);
         t=dialog.findViewById(R.id.jobs_tv2);
-        t.setText(user.getJobsString());
+        t.setText(jobs);
         Button b=dialog.findViewById(R.id.prechedule_bitton);
         b.setVisibility(View.GONE);
         dialog.setCanceledOnTouchOutside(false);

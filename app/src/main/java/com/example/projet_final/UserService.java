@@ -31,6 +31,7 @@ import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 
 public class UserService extends Service {
 
+    private User user;
     private Thread thread;
     private boolean whileCon=true;
     private String userID;
@@ -123,14 +124,37 @@ public class UserService extends Service {
             if(!arrayList.get(i).iswatched()){
                 Log.i("UserService",arrayList.get(i).getAccID());
                 Intent intent = new Intent(UserService.this, notif_click.class);
-                intent.putExtra("key", arrayList.get(i).getAccID());
                 PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
                                 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"channel_ID")
                         .setSmallIcon(R.drawable.ic_work_black_24dp)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setAutoCancel(true);
+                final CountDownLatch done=new CountDownLatch(1);
+                FirebaseDatabase.getInstance().getReference().child("users").child(arrayList.get(i).getAccID()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.i("UserService","arrayList.get(i).getAccID()");
+                        user=dataSnapshot.getValue(User.class);
+                        done.countDown();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                try {
+                    done.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 if(arrayList.get(i).isAccpet()){
+                    intent.putExtra("user_name", user.getUser_name());
+                    intent.putExtra("sex", user.getSex());
+                    intent.putExtra("Birthday", user.getBirthday());
+                    intent.putExtra("email", user.getEmail());
+                    intent.putExtra("jobs", user.getJobsString());
                     builder.setContentText("accepted").setContentTitle("your request is accepted").setContentIntent(contentIntent);
                 }
                 else{
