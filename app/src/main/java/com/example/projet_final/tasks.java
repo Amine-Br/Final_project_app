@@ -41,6 +41,7 @@ public class tasks extends AppCompatActivity {
     private View.OnClickListener cancel,Confirm;
     private DatabaseReference itemRef;
     private Dialog d;
+    private TextView task,t;
 
 
     @Override
@@ -147,6 +148,7 @@ public class tasks extends AppCompatActivity {
 
     }
     private void init(){
+        task=findViewById(R.id.task_tv);
         userID=new ArrayList<>();
         userDataSnapshot=new ArrayList<>();
         cancel=new View.OnClickListener() {
@@ -211,6 +213,62 @@ public class tasks extends AppCompatActivity {
     protected void onStart() {
         firebaseListAdapter.startListening();
         super.onStart();
+    }
+    public void change_d_language(){
+        switch (MapsActivity.lang){
+
+            case "en":
+                t=d.findViewById(R.id.phone_num);
+                t.setText("Phone number:");
+                t=d.findViewById(R.id.service_type);
+                t.setText("Type of service:");
+                t=d.findViewById(R.id.date_service);
+                t.setText("Date:");
+                t=d.findViewById(R.id.details);
+
+                if(notification.getTaked().equals("not yet")){
+                    t=d.findViewById(R.id.cancel_button);
+                    t.setText("Cancel");
+                    t=d.findViewById(R.id.send_request_button);
+                    t.setText("Confirm");
+                }
+
+                break;
+            case "fr":
+                t = d.findViewById (R.id.phone_num);
+                t.setText ("Numéro de téléphone:");
+                t = d.findViewById (R.id.service_type);
+                t.setText ("Type de service:");
+                t = d.findViewById (R.id.date_service);
+                t.setText ("Date:");
+                t = d.findViewById (R.id.details);
+                t.setText ("Détails:");
+                if(notification.getTaked().equals("not yet")){
+                    t = d.findViewById (R.id.cancel_button);
+                    t.setText ("Annuler");
+                    t = d.findViewById (R.id.send_request_button);
+                    t.setText ("Confirmer");
+                }
+
+                break;
+        }
+
+    }
+    public  void change_language(){
+        switch (MapsActivity.lang){
+
+            case "en":
+
+                task.setText("New Tasks:");
+
+
+                break;
+            case "fr":
+
+                task.setText ("Nouvelles tâches:");
+
+                break;
+        }
     }
 
 }
