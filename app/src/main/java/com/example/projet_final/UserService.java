@@ -154,6 +154,7 @@ public class UserService extends Service {
                     bundle.putString("Birthday", user.getBirthday());
                     bundle.putString("email", user.getEmail());
                     bundle.putString("jobs", user.getJobsString());
+                    bundle.putString("phone",user.getPhone());
                     intent.putExtras(bundle);
                     PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(),
                             0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
