@@ -160,7 +160,6 @@ public class saveLocation extends Service {
                         }
                     });*/
 
-                    //SystemClock.sleep(1000);
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

@@ -34,7 +34,7 @@ public class UserService extends Service {
     private User user;
     private Thread thread;
     private boolean whileCon=true;
-    private String userID;
+    public  static String userID;
     private boolean haschild=false;
     private DatabaseReference databaseReferenceSpes,databaseReferenceGlobal;
     private ArrayList<resulttReq> arrayList;

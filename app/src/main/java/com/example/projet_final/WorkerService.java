@@ -298,20 +298,23 @@ public class WorkerService extends Service {
     }
 
     public LatLng getCourrentLocation(){
+        final CountDownLatch done=new CountDownLatch(1);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     if(location != null){
-
                         user_location = new LatLng(location.getLatitude(), location.getLongitude());
-
-
+                        done.countDown();
 
                     }
                 }
             });
-
+            try {
+                done.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return new LatLng(user_location.latitude,user_location.longitude);
     }
