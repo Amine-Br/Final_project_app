@@ -322,15 +322,10 @@ public class sign_up extends AppCompatActivity {
                             saveData(mAuth.getCurrentUser());
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
                             //stopService(userService);
-                            Intent workerService=new Intent(sign_up.this,WorkerService.class);
                             Intent userService=new Intent(sign_up.this,UserService.class);
-                            workerService.putExtra("workerID",mAuth.getCurrentUser().getUid());
                             if(isMyServiceRunning(UserService.class)){
                                 stopService(userService);
                             }
-                            userService.putExtra("userID",mAuth.getCurrentUser().getUid());
-                            startService(workerService);
-                            startService(userService);
                             startActivity(map);
                             finish();
 

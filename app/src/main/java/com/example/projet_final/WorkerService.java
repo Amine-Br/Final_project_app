@@ -1,9 +1,11 @@
 package com.example.projet_final;
 
+import android.Manifest;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,10 +14,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 
 public class WorkerService extends Service {
     private static int IdForNot=0;
@@ -46,6 +55,9 @@ public class WorkerService extends Service {
     private boolean readDataComplet=false;
     private int ondata=0,whileI=0,notI=0;
     private User user;
+    private int finalI2;
+    LatLng user_location;
+    private FusedLocationProviderClient mFusedLocationClient;
     public WorkerService() {
     }
 
@@ -148,11 +160,11 @@ public class WorkerService extends Service {
             notLoc.setLongitude(allNotificationGlobal.get(i).getLongitude());
             distance=correntLoc.distanceTo(notLoc);
             final CountDownLatch done=new CountDownLatch(1);
-            final int finalI = i;
+            finalI2 = i;
             databaseReferenceSpes.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChild(notificationIDGlobal.get(finalI))){
+                    if(dataSnapshot.hasChild(notificationIDGlobal.get(finalI2))){
                         haveChild=true;
                         done.countDown();
                     }else{
@@ -257,6 +269,7 @@ public class WorkerService extends Service {
     }
 
     private void init(){
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         databaseReferenceGlobal=FirebaseDatabase.getInstance().getReference().child("GlobalReq");
         databaseReferenceSpes= FirebaseDatabase.getInstance().getReference().child("spesfReq").child(workerID);
         valueEventListener=new ValueEventListener() {
@@ -285,7 +298,22 @@ public class WorkerService extends Service {
     }
 
     public LatLng getCourrentLocation(){
-        return new LatLng(36.672496,2.793588);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location != null){
+
+                        user_location = new LatLng(location.getLatitude(), location.getLongitude());
+
+
+
+                    }
+                }
+            });
+
+        }
+        return new LatLng(user_location.latitude,user_location.longitude);
     }
 
 

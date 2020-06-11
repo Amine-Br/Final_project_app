@@ -223,15 +223,10 @@ public class MainActivity extends AppCompatActivity {
                             //saveData(mAuth.getCurrentUser());
                             Log.i("code","signIn  credential; "+credential);
                             Intent map=new Intent(MainActivity.this,MapsActivity.class);
-                            Intent workerService=new Intent(MainActivity.this,WorkerService.class);
                             Intent userService=new Intent(MainActivity.this,UserService.class);
-                            workerService.putExtra("workerID",mAuth.getCurrentUser().getUid());
                             if(isMyServiceRunning(UserService.class)){
                                 stopService(userService);
                             }
-                            userService.putExtra("userID",mAuth.getCurrentUser().getUid());
-                            startService(workerService);
-                            startService(userService);
                             startActivity(map);
                             finish();
                         } else {

@@ -22,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,19 +36,23 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -111,6 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         menuRedy();
         loadlang();
         change_language();
+
     }
 
     private void init() {
@@ -274,38 +280,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()) {
-                    Location location = task.getResult();
-                    LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    if(location != null){
+
+                        LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
 
 
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
-                    CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(user_location)      // Sets the center of the map to user_location
-                            .zoom(10)                   // Sets the zoom to 15 (city zoom)
-                            .build();                   // Creates a CameraPosition from the builder
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    //mMap.setMyLocationEnabled(true);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(user_location)      // Sets the center of the map to user_location
+                                .zoom(10)                   // Sets the zoom to 15 (city zoom)
+                                .build();                   // Creates a CameraPosition from the builder
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
+                    }
                 }
-            }
-        });*/
+            });
+            mMap.setMyLocationEnabled(true);
+        }
 
-        serviceLocation();
+
+        service();
     }
 
     private void addMarkers() {
@@ -327,23 +326,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    public void serviceLocation() {
+    public void service() {
         saveL=new Intent(this, com.example.projet_final.saveLocation.class);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        if(isMyServiceRunning(saveLocation.class)){
-            stopService(saveL);
-        }
-        if(!isMyServiceRunning(UserService.class)){
+        if(LogStat()==2){
             Intent intent=new Intent(MapsActivity.this,UserService.class);
             intent.putExtra("userID",mAuth.getCurrentUser().getUid());
             startService(intent);
         }
         if(LogStat()==3){
+            Intent intent=new Intent(MapsActivity.this,UserService.class);
+            intent.putExtra("userID",mAuth.getCurrentUser().getUid());
+            startService(intent);
+            Intent intent2=new Intent(MapsActivity.this,WorkerService.class);
+            intent2.putExtra("workerID",mAuth.getCurrentUser().getUid());
+            startService(intent2);
+        }
+        if(LogStat()==3){
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
-            startService(saveL);
+           // startService(saveL);
         }else{
         }
 
@@ -718,12 +722,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onStart() {
         Log.i("MapsActivity","onStart");
+
         super.onStart();
         if(LogStat()==1){
-            mAuth.signInAnonymously();
-            Intent intent=new Intent(MapsActivity.this,UserService.class);
-            startService(intent);
+            mAuth.signInAnonymously().addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Intent intent = new Intent(MapsActivity.this, UserService.class);
+                        intent.putExtra("userID", mAuth.getCurrentUser().getUid());
+                        startService(intent);
+                    }
+                }
+            });
+
+
         }
+
 
     }
 
@@ -732,15 +747,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("MapsActivity","onResume");
 
         super.onResume();
-        if(mMap==null){
-            Log.i("MapsActivity","mMap=null");
-            supportMapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    mMap=googleMap;
-                }
-            });
-        }
+
         change_language();
 
     }
@@ -766,9 +773,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.i("MapsActivity","onDestroy");
 
-        if(LogStat()==3){
-            stopService(saveL);
-
+        if(isMyServiceRunning(saveLocation.class)){
+            Intent intent= new Intent(MapsActivity.this,saveLocation.class);
+            stopService(intent);
+        }
+        if(isMyServiceRunning(WorkerService.class)){
+            Intent intent= new Intent(MapsActivity.this,WorkerService.class);
+            stopService(intent);
+        }
+        if(isMyServiceRunning(UserService.class)){
+            Intent intent= new Intent(MapsActivity.this,UserService.class);
+            stopService(intent);
         }
         super.onDestroy();
     }
