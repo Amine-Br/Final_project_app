@@ -209,7 +209,7 @@ public class WorkerService extends Service {
             Log.i("workerGlobal","");
             HashMap<String,Boolean> Hm=user.jabs();
             boolean sameJob=Hm.get(allNotificationGlobal.get(i).getJob());
-            if(distance<=10 && allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild && sameJob ){
+            if(distance<=10000 && allNotificationGlobal.get(i).getTaked().equals("not yet") && !haveChild && sameJob ){
                 databaseReferenceSpes.child(notificationIDGlobal.get(i)).setValue(allNotificationGlobal.get(i));
             }
             haveChild=false;
@@ -238,7 +238,7 @@ public class WorkerService extends Service {
                 Geocoder geocoder=new Geocoder(WorkerService.this, Locale.getDefault());
                 List<Address> addresses = null;
                 try {
-                    addresses= geocoder.getFromLocation(getCourrentLocation().latitude,getCourrentLocation().longitude,1);
+                    addresses= geocoder.getFromLocation(allNotification.get(i).getLatitude(),allNotification.get(i).getLongitude(),1);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

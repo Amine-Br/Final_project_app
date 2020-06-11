@@ -97,6 +97,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     static String lang="en";
     private TextView t1,t;
     private Spinner spinner;
+    private LatLng user_location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -286,7 +287,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onSuccess(Location location) {
                     if(location != null){
 
-                        LatLng user_location = new LatLng(location.getLatitude(), location.getLongitude());
+                         user_location = new LatLng(location.getLatitude(), location.getLongitude());
 
 
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(user_location));
@@ -673,8 +674,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if(sendTo.equals("global")){
 
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("GlobalReq").push();
-                    ref.child("Latitude").setValue(getCourrentLocation().latitude);
-                    ref.child("Longitude").setValue(getCourrentLocation().longitude);
+                    ref.child("Latitude").setValue(user_location.latitude);
+                    ref.child("Longitude").setValue(user_location.longitude);
                     ref.child("job").setValue(spinner.getSelectedItem().toString());
                     t=d.findViewById(R.id.phone_Req);
                     ref.child("phone").setValue(t.getText().toString());
@@ -689,8 +690,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }else{
 
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(sendTo).push();
-                    ref.child("Latitude").setValue(getCourrentLocation().latitude);
-                    ref.child("Longitude").setValue(getCourrentLocation().longitude);
+                    ref.child("Latitude").setValue(user_location.latitude);
+                    ref.child("Longitude").setValue(user_location.longitude);
                     ref.child("job").setValue("no job");
                     t=d.findViewById(R.id.phone_Req);
                     ref.child("phone").setValue(t.getText().toString());
