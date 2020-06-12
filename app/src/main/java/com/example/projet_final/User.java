@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 public class User {
     private Bitmap bitmap;
@@ -40,20 +41,34 @@ public class User {
     private String icone="";
 
     public Uri getUri(){
-        final boolean[] end = {false};
+        final CountDownLatch done=new CountDownLatch(1);
         final Uri[] s = new Uri[1];
         StorageReference storageReference= FirebaseStorage.getInstance().getReference()
                 .child("default").child("default_men_img.png");
         storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
-                s[0] =task.getResult();
-                end[0] =true;
-                //return s;
+                if(task.isSuccessful()) {
+                    s[0] = task.getResult();
+                    done.countDown();
+                    //return s;
+                }else{
+                    done.countDown();
+                }
             }
         });
-        while (!end[0]){
-        }
+        /*storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                s[0]=uri;
+                done.countDown();
+            }
+        });*/
+        /*try {
+            done.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
         return s[0];
     }
 
@@ -218,6 +233,7 @@ public class User {
     public Bitmap getIconeBitmap() {
         //StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl(icone);
         final File file[] = new File[1];
+        final CountDownLatch done=new CountDownLatch(1);
         StorageReference storageReference= FirebaseStorage.getInstance().getReference()
                 .child("default").child("default_men_img.png");
 
@@ -231,10 +247,15 @@ public class User {
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     Log.i("bitmap","secc");
                     bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
-                    //return bitmap;
+                    done.countDown();
                 }
             });
-        bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+        //bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+        try {
+            done.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return bitmap;
     }
 

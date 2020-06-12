@@ -11,14 +11,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -52,9 +58,10 @@ public class notif_click extends AppCompatActivity {
         String Birthday=bundle.getString("Birthday");
         String email=bundle.getString("email");
         String jobs=bundle.getString("jobs");
+        String icone=bundle.getString("icone");
         final String phone=bundle.getString("phone");
         Log.i("notifa",user_name);
-         dialog=new Dialog(this);
+        dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         Toast.makeText(this,"pass",Toast.LENGTH_LONG).show();
         dialog.setContentView(R.layout.activity_popup);
@@ -68,6 +75,17 @@ public class notif_click extends AppCompatActivity {
         t.setText(email);
         t=dialog.findViewById(R.id.jobs_tv2);
         t.setText(jobs);
+        final Uri[] s = new Uri[1];
+        StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
+                .child("users_photo").child(icone);
+
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                s[0] =task.getResult();
+                Picasso.get().load(s[0]).into((ImageView) dialog.findViewById(R.id.user_image));
+            }
+        });
         TextView b=dialog.findViewById(R.id.prechedule_bitton);
         b.setVisibility(View.GONE);
         dialog.setCanceledOnTouchOutside(false);

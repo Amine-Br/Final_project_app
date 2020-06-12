@@ -98,11 +98,12 @@ public class Profile extends AppCompatActivity {
                 user_jobs.setText(user.getJobsString());
                 user_name.setText(user.getUser_name());
                 user_phone.setText(user.getPhone());
-                Bitmap bitmap=user.getIconeBitmap();
-                //user_image.setImageBitmap(bitmap);
+                /*Bitmap bitmap=user.getIconeBitmap();
+                user_image.setImageBitmap(bitmap);*/
                 final Uri[] s = new Uri[1];
-                StorageReference storageReference= FirebaseStorage.getInstance().getReference()
-                        .child("default").child("default_men_img.png");
+                StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
+                        .child("users_photo").child(user.getIcone());
+
                 storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
@@ -117,10 +118,6 @@ public class Profile extends AppCompatActivity {
 
             }
         });
-
-
-
-
     }
 
 

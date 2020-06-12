@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -44,6 +45,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -59,12 +62,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
@@ -98,6 +105,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView t1,t;
     private Spinner spinner;
     private LatLng user_location;
+    private User corentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +151,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mReference = FirebaseDatabase.getInstance().getReference("users");
-
     }
 
     private void menuRedy() {
@@ -319,6 +326,26 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 m = mMap.addMarker(new MarkerOptions()
                         .title(users.get(i).getUser_name())
                         .position(new LatLng(users.get(i).getLatitude(), users.get(i).getLongitude())));
+
+                final File file[] = new File[1];
+                StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                        .child("users_photo").child(users.get(i).getIcone());
+
+                try {
+                    file[0]=File.createTempFile("image","png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                final Marker finalM = m;
+                storageReference.getFile(file[0]).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.i("bitmap","secc");
+                        bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+                        Bitmap newbitmap=getResizedBitmap(bitmap,25,25);
+                        finalM.setIcon(BitmapDescriptorFactory.fromBitmap(newbitmap));
+                    }
+                });
 
                 m.setTag(i);
 
@@ -518,13 +545,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     return false;
                 }
             });
-
             header = navigationView.getHeaderView(0);
+            mReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    corentUser=dataSnapshot.getValue(User.class);
+                    final Uri[] s = new Uri[1];
+                    StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
+                            .child("users_photo").child(corentUser.getIcone());
 
+                    storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            s[0] =task.getResult();
+                            Picasso.get().load(s[0]).into((ImageView) header.findViewById(R.id.user_img_update_profile));
+                            TextView t=header.findViewById(R.id.drawer_h_tv2);
+                            t.setText(corentUser.getUser_name());
+                        }
+                    });
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
             ConstraintLayout user=header.findViewById(R.id.user_inteface);
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
-
             user.setVisibility(View.GONE);
             worker.setVisibility(View.VISIBLE);
 
@@ -553,7 +599,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         t=(TextView)dialog.findViewById(R.id.birthday_tv2);
         t.setText(users.get(tag).getBirthday());
         TextView Call,SMS;
+        final Uri[] s = new Uri[1];
+        StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
+                .child("users_photo").child(user.getIcone());
 
+        storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                s[0] =task.getResult();
+                Picasso.get().load(s[0]).into((ImageView) dialog.findViewById(R.id.user_image));
+            }
+        });
         Call=dialog.findViewById(R.id.task_tv);
         Call.setOnClickListener(new View.OnClickListener() {
             @Override

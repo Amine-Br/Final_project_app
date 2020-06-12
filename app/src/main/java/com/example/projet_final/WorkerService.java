@@ -306,7 +306,6 @@ public class WorkerService extends Service {
                     if(location != null){
                         user_location = new LatLng(location.getLatitude(), location.getLongitude());
                         done.countDown();
-
                     }
                 }
             });
