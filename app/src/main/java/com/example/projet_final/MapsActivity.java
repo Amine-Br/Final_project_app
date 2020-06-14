@@ -330,7 +330,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 final File file[] = new File[1];
                 StorageReference storageReference= FirebaseStorage.getInstance().getReference()
                         .child("users_photo").child(users.get(i).getIcone());
-
                 try {
                     file[0]=File.createTempFile("image","png");
                 } catch (IOException e) {
@@ -346,7 +345,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         finalM.setIcon(BitmapDescriptorFactory.fromBitmap(newbitmap));
                     }
                 });
-
                 m.setTag(i);
 
             }
@@ -743,6 +741,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("watched").setValue(false);
                     ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
                     ref.child("accepterID").setValue("no one");
+                    dialog.dismiss();
                 }else{
 
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(sendTo).push();
@@ -760,7 +759,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("watched").setValue(false);
                     ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
                     ref.child("accepterID").setValue("no one");
-
+                    dialog.dismiss();
                 }
             }
         });

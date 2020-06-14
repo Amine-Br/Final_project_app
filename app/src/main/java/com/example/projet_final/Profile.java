@@ -75,6 +75,7 @@ public class Profile extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(Profile.this,update_profile.class);
+                finish();
                 startActivity(intent);
             }
         });
@@ -108,10 +109,12 @@ public class Profile extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
                         s[0] =task.getResult();
+                        //user_image.setImageURI(s[0]);
                         Picasso.get().load(s[0]).into(user_image);
                     }
                 });
-                //Picasso.get().load(user.getUri()).into(user_image);
+
+
                 }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

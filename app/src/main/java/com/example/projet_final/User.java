@@ -219,14 +219,23 @@ public class User {
     public HashMap<String,Boolean> jabs(){
         HashMap<String,Boolean> Hm=new HashMap<String, Boolean>();
         Hm.put("no_filter",true);
+        Hm.put("annuler le filtre",true);
         Hm.put("Builder",Builder);
+        Hm.put("constructeur",Builder);
         Hm.put("House_painter",House_painter);
+        Hm.put("Peintre en bâtiment",House_painter);
         Hm.put("Moving",Moving);
+        Hm.put("Déplacement",Moving);
         Hm.put("air_conditioner",air_conditioner);
+        Hm.put("climatisation",air_conditioner);
         Hm.put("electrician",electrician);
+        Hm.put("électricien",electrician);
         Hm.put("gardening",gardening);
+        Hm.put("jardinage",gardening);
         Hm.put("housework",housework);
+        Hm.put("travaux ménagers",housework);
         Hm.put("plumber",plumber);
+        Hm.put("plombier",plumber);
         return Hm;
     }
 
