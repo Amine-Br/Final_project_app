@@ -373,7 +373,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(LogStat()==3){
             saveLocation.setMmap(mMap);
             saveLocation.setUserID(mAuth.getCurrentUser().getUid());
-           // startService(saveL);
+           startService(saveL);
         }else{
         }
 
@@ -599,7 +599,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView Call,SMS;
         final Uri[] s = new Uri[1];
         StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
-                .child("users_photo").child(user.getIcone());
+                .child("users_photo").child(users.get(tag).getIcone());
 
         storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
@@ -979,9 +979,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     nav_menu.findItem(R.id.about_us_item).setTitle("About Us");
                     nav_menu.findItem(R.id.Rate_us_item).setTitle("Rate Us");
                 }else {
-                    nav_menu.findItem(R.id.change_lang_item).setTitle("Changer de langue");
-                    nav_menu.findItem(R.id.about_us_item).setTitle("À propos de nous");
-                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Évaluez nous");
+                    nav_menu.findItem(R.id.change_lang_item).setTitle("Change Language");
+                    nav_menu.findItem(R.id.about_us_item).setTitle("About Us");
+                    nav_menu.findItem(R.id.Rate_us_item).setTitle("Rate Us");
                     nav_menu.findItem(R.id.Profile_item).setTitle("Profile");
                     nav_menu.findItem(R.id.sign_out_item).setTitle("Sign out");
                     nav_menu.findItem(R.id.task_item).setTitle("Tasks");

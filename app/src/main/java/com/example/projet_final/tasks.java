@@ -86,6 +86,7 @@ public class tasks extends AppCompatActivity {
         });
         fill_listview();
         itemclicklistview();
+        change_language();
 
     }
     public void fill_listview(){
@@ -200,6 +201,7 @@ public class tasks extends AppCompatActivity {
                         }
                     }
                 }
+                change_d_language();
                 d.dismiss();
             }
         };
