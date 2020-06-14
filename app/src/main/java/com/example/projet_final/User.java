@@ -270,30 +270,67 @@ public class User {
 
     public String getJobsString(){
         StringBuffer jobs=new StringBuffer();
-        if (Builder){
-            jobs.append("Builder-");
+        switch (MapsActivity.lang){
+
+            case "fr":
+
+                if (Builder){
+                    jobs.append("constructeur-");
+                }
+                if (House_painter){
+                    jobs.append("Peintre en bâtiment-");
+                }
+                if (Moving){
+                    jobs.append("Déplacement-");
+                }
+                if (air_conditioner){
+                    jobs.append("climatisation-");
+                }
+                if (electrician){
+                    jobs.append("électricien-");
+                }
+                if (gardening){
+                    jobs.append("jardinage-");
+                }
+                if (housework){
+                    jobs.append("travaux ménagers-");
+                }
+                if (plumber){
+                    jobs.append("plombier-");
+                }
+
+
+                break;
+            case "en":
+
+                if (Builder){
+                    jobs.append("Builder-");
+                }
+                if (House_painter){
+                    jobs.append("House_painter-");
+                }
+                if (Moving){
+                    jobs.append("Moving-");
+                }
+                if (air_conditioner){
+                    jobs.append("air_conditioner-");
+                }
+                if (electrician){
+                    jobs.append("electrician-");
+                }
+                if (gardening){
+                    jobs.append("gardening-");
+                }
+                if (housework){
+                    jobs.append("housework-");
+                }
+                if (plumber){
+                    jobs.append("plumber-");
+                }
+
+                break;
         }
-        if (House_painter){
-            jobs.append("House_painter-");
-        }
-        if (Moving){
-            jobs.append("Moving-");
-        }
-        if (air_conditioner){
-            jobs.append("air_conditioner-");
-        }
-        if (electrician){
-            jobs.append("electrician-");
-        }
-        if (gardening){
-            jobs.append("gardening-");
-        }
-        if (housework){
-            jobs.append("housework-");
-        }
-        if (plumber){
-            jobs.append("plumber-");
-        }
+
         jobs.deleteCharAt(jobs.length()-1);
         return jobs.toString();
     }
