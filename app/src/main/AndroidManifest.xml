@@ -32,7 +32,6 @@
         <activity android:name=".notif_click" android:launchMode="singleTask"></activity>
         <activity android:name=".update_profile" />
         <activity android:name=".tasks" />
-        <activity android:name=".popup" />
         <activity android:name=".Profile" />
         <activity android:name=".multi_activity" />
         <!--

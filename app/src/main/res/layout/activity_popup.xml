@@ -5,8 +5,7 @@
     android:layout_width="325dp"
     android:layout_height="200dp"
     android:layout_gravity="center"
-    android:background="@drawable/popupbgxml"
-    tools:context=".popup">
+    android:background="@drawable/popupbgxml">
 
 
     <TextView
