@@ -277,7 +277,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     user = ID.getValue(User.class);
                     users.add(user);
                 }
-                ;
+
                 addMarkers();
 
             }

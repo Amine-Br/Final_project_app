@@ -163,7 +163,7 @@ public class multi_activity extends AppCompatActivity {
             case "en":
 
 
-                about_us.setText("aboutus");
+                about_us.setText("This application was created for obtaining IT license, by Bouraoua Amine and Feddak Faycal Abdalghani under the supervision of Mrs. Khouloud Meskaldji.");
                 rate_us_tv.setText("what do you think about our application");
                 bad.setText("Bad");
                 excellent.setText("Excellent");
@@ -172,7 +172,7 @@ public class multi_activity extends AppCompatActivity {
 
                 break;
             case "fr":
-                about_us.setText ("à propos de nous");
+                about_us.setText ("Cette application a été créée pour l'obtention d'une licence informatique, par Bouraoua Amine et Feddak Faycal Abdalghani sous la supervision de Mme Khouloud Meskaldji.");
                 rate_us_tv.setText ("que pensez-vous de notre application");
                 bad.setText ("mauvaise");
                 excellent.setText ("Excellente");

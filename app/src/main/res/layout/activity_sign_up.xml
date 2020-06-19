@@ -281,7 +281,7 @@
 
             <CheckBox
                 android:id="@+id/CB_air_conditioner"
-                android:layout_width="125dp"
+                android:layout_width="128dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="air_conditioner"
@@ -296,11 +296,11 @@
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginEnd="58dp"
                 android:text="gardening"
                 android:textColor="@android:color/white"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/CB_air_conditioner"
                 app:layout_constraintTop_toBottomOf="@+id/CB_Builder" />
 
             <CheckBox
@@ -359,7 +359,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/SU_Button_sign_up"
-            app:srcCompat="@drawable/bottom" />
+            app:srcCompat="@drawable/bottomsignin" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
