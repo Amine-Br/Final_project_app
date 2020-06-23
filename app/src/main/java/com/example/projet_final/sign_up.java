@@ -1,6 +1,8 @@
 package com.example.projet_final;
 
 import android.app.ActivityManager;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -18,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,12 +42,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
-public class sign_up extends AppCompatActivity {
+public class sign_up extends AppCompatActivity{
 
     private String code,codeSent;
     private ArrayList<String> usedPhone;
@@ -51,8 +57,8 @@ public class sign_up extends AppCompatActivity {
     //View
     private AlertDialog alertDialog;
     private Button signup;
-    private EditText name,phone,email,birthday;
-    private TextView signup_tv,username_tv,birthday_tv,sex_tv,phone_tv,email_tv,jobs_tv;
+    private EditText name,phone,email;
+    private TextView signup_tv,username_tv,birthday_tv,sex_tv,phone_tv,email_tv,jobs_tv,birthday;
     private RadioButton male,female;
     private RadioGroup groupsex;
     private CheckBox CB_Builder,CB_air_conditioner,CB_electrician,CB_gardening,CB_House_painter,CB_housework,CB_Moving,CB_plumber;
@@ -79,9 +85,6 @@ public class sign_up extends AppCompatActivity {
             }
         });
         change_language();
-
-
-
     }
 
     private void init(){
@@ -104,7 +107,23 @@ public class sign_up extends AppCompatActivity {
         phone=(EditText)findViewById(R.id.SU_Phone);
         email=(EditText)findViewById(R.id.SU_Email);
         groupsex=(RadioGroup)findViewById(R.id.SU_SexGroup);
-        birthday=(EditText)findViewById(R.id.SU_Birthday);
+        birthday=findViewById(R.id.SU_Birthday);
+        birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c=Calendar.getInstance();
+                int mYear=c.get(Calendar.YEAR);
+                int mMonth=c.get(Calendar.MONTH);
+                int mDay=c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(sign_up.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            birthday.setText(year+"/"+month+"/"+(dayOfMonth+1));
+                    }
+                },mYear,mMonth,mDay);
+                datePickerDialog.show();
+            }
+        });
         CB_Builder=(CheckBox)findViewById(R.id.CB_Builder);
         CB_air_conditioner=(CheckBox)findViewById(R.id.CB_air_conditioner);
         CB_electrician=(CheckBox)findViewById(R.id.CB_electrician);
@@ -229,6 +248,9 @@ public class sign_up extends AppCompatActivity {
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
         mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
         mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
+        mReference.child("users").child(userID).child("rate").setValue(0);
+        mReference.child("users").child(userID).child("Latitude").setValue(0);
+        mReference.child("users").child(userID).child("Longitude").setValue(0);
         if(groupsex.getCheckedRadioButtonId()==R.id.SU_Male){
             mReference.child("users").child(userID).child("sex").setValue("Male");
             mReference.child("users").child(userID).child("icone").setValue("default_men_img.png");
@@ -321,7 +343,6 @@ public class sign_up extends AppCompatActivity {
                             Log.i("sign_up","sign_up secsseful");
                             saveData(mAuth.getCurrentUser());
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
-                            //stopService(userService);
                             Intent userService=new Intent(sign_up.this,UserService.class);
                             if(isMyServiceRunning(UserService.class)){
                                 stopService(userService);
@@ -435,3 +456,4 @@ public class sign_up extends AppCompatActivity {
         return false;
     }
 }
+

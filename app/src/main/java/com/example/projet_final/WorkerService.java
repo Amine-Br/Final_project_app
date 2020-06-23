@@ -43,16 +43,15 @@ public class WorkerService extends Service {
     private Thread thread1,thread2;
     private boolean whileCon=true;
     private static String workerID;
-    private DatabaseReference databaseReferenceSpes,databaseReferenceGlobal,databaseReferenceSpesWorker;
-    private boolean haveChild=false,haveChilsGlobal;
+    private DatabaseReference databaseReferenceSpes,databaseReferenceGlobal;
+    private boolean haveChild=false;
     private ArrayList<Notification> allNotification,allNotificationGlobal;
     private ArrayList<String> notificationID,notificationIDGlobal;
-    private ArrayList<String> needNotis,needNotisGlobal;
-    private ValueEventListener valueEventListener,valueEventListenerGlobal;
+    private ValueEventListener valueEventListener;
     private double distance;
     private Location correntLoc;
     private Location notLoc;
-    private boolean readDataComplet=false;
+
     private int ondata=0,whileI=0,notI=0;
     private User user;
     private int finalI2;
@@ -166,10 +165,8 @@ public class WorkerService extends Service {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if(dataSnapshot.hasChild(notificationIDGlobal.get(finalI2))){
                         haveChild=true;
-                        done.countDown();
-                    }else{
-                        done.countDown();
                     }
+                    done.countDown();
                 }
 
                 @Override

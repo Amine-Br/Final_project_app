@@ -2,6 +2,7 @@ package com.example.projet_final;
 
 import androidx.annotation.NonNull;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -13,7 +14,9 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,10 +35,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -57,6 +62,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,7 +76,9 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
@@ -86,19 +94,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private NavigationView navigationView;
     private Intent saveL;
     private DatabaseReference mReference;
-    private ArrayList<User> users;
     private Dialog dialog,d;
     private String flter = "no_filter";
     private PopupMenu menu;
     private SupportMapFragment supportMapFragment;
-    private ArrayList<String> IDs;
-    private User user;
-    private File file;
-    private Drawable drawable;
     private Bitmap bitmap;
     private String sendTo="global";
     private ImageView nvimg;
-    private int tag;
+    private String tag;
     private View header;
     private Menu nav_menu ;
     static String lang="en";
@@ -106,6 +109,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Spinner spinner;
     private LatLng user_location;
     private User corentUser;
+    private ChildEventListener childChang;
+    private HashMap<String,User> hashMap;
+    private HashMap<String,Marker> markers;
+    private ArrayList<String> usersID;
+    private Marker marker;
+    private File file[] = new File[1];
+    private String dateHour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +140,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void init() {
         Log.i("MapsActivity", "init");
-        users = new ArrayList<>();
-        IDs = new ArrayList<>();
+
+        //new
+        hashMap=new HashMap<>();
+        usersID=new ArrayList<>();
+        markers=new HashMap<>();
 
         //view
         Categories = (Button) findViewById(R.id.Category_button);
@@ -151,7 +164,130 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         mReference = FirebaseDatabase.getInstance().getReference("users");
+
+        childChang=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                hashMap.put(dataSnapshot.getKey(),dataSnapshot.getValue(User.class));
+                addNewMarker(dataSnapshot.getKey());
+                Log.i("childEv", "added : "+dataSnapshot.getKey()+ " val:"+dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.i("childEv", "changed : "+dataSnapshot.getKey()+ " val:"+dataSnapshot.getValue().toString());
+                hashMap.remove(dataSnapshot.getKey());
+                hashMap.put(dataSnapshot.getKey(),dataSnapshot.getValue(User.class));
+                markers.get(dataSnapshot.getKey()).setPosition(new LatLng(hashMap.get(dataSnapshot.getKey()).getLatitude(),hashMap.get(dataSnapshot.getKey()).getLongitude()));
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                Log.i("childEv", "removed : "+dataSnapshot.getKey());
+                hashMap.remove(dataSnapshot.getKey());
+                markers.get(dataSnapshot.getKey()).remove();
+                markers.remove(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+
+        /*firstTIme=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                User user;
+                for (DataSnapshot users : dataSnapshot.getChildren()) {
+                    user=users.getValue(User.class);
+                    Log.i("new","user name="+user.getUser_name()+"        key="+users.getKey());
+                    hashMap.put(users.getKey(),user);
+                    usersID.add(users.getKey());
+                }
+                addAllMarkers();
+                mReference.addChildEventListener(childChang);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };*/
     }
+
+    private void addNewMarker(String key) {
+        marker=mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(hashMap.get(key).getLatitude(),hashMap.get(key).getLongitude()))
+        );
+        StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                .child("users_photo").child(hashMap.get(key).getIcone());
+        try {
+            file[0]=File.createTempFile("image","png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        storageReference.getFile(file[0]).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                Log.i("bitmap","secc");
+                bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
+                //Bitmap newbitmap=getResizedBitmap(bitmap,25,25);
+                //marker.setIcon(BitmapDescriptorFactory.fromBitmap(newbitmap));
+
+            }
+        });
+        marker.setTag(key);
+        markers.put(key,marker);
+        if(!hashMap.get(key).jabs().get(flter)){
+            marker.setVisible(false);
+        }
+    }
+    private void filter(){
+        Marker marker;
+        for(Map.Entry me: markers.entrySet()){
+            marker= (Marker) me.getValue();
+            if(hashMap.get(me.getKey()).jabs().get(flter)){
+                marker.setVisible(true);
+            }else{
+                marker.setVisible(false);
+            }
+        }
+    }
+
+    /*private void addAllMarkers() {
+
+        for(int i=0;i<usersID.size();i++){
+            Log.i("new","i="+i+"  hashMap="+hashMap.get(usersID.get(i)).getUser_name());
+            marker=mMap.addMarker(new MarkerOptions()
+            .position(new LatLng(hashMap.get(usersID.get(i)).getLatitude(),hashMap.get(usersID.get(i)).getLongitude()))
+            );
+            StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+                    .child("users_photo").child(hashMap.get(usersID.get(i)).getIcone());
+            try {
+                file[0]=File.createTempFile("image","png");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            storageReference.getFile(file[0]).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.i("bitmap","secc  path="+file[0].getAbsolutePath());
+                    bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath(),new BitmapFactory.Options());
+                    //Bitmap newbitmap=getResizedBitmap(bitmap,35,35);
+                    //marker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+
+                }
+            });
+            marker.setTag(usersID.get(i));
+            markers.add(marker);
+        }
+    }*/
 
     private void menuRedy() {
         /*PopupMenu p=new PopupMenu(MapsActivity.this,Categories);
@@ -164,7 +300,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "no_filter";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -173,7 +309,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "plumber";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -182,7 +318,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "electrician";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -191,7 +327,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "House_painter";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -200,7 +336,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "Builder";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -209,7 +345,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "air_conditioner";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -218,7 +354,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "gardening";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -227,7 +363,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "housework";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -236,7 +372,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 flter = "Moving";
-                addMarkers();
+                filter();
                 return false;
             }
         });
@@ -266,7 +402,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("MapsActivity", "mapReady");
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mReference.addValueEventListener(new ValueEventListener() {
+        /*mReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 users.clear();
@@ -277,7 +413,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     user = ID.getValue(User.class);
                     users.add(user);
                 }
-                ;
                 addMarkers();
 
             }
@@ -286,7 +421,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        });*/
+        mReference.addChildEventListener(childChang);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -311,11 +447,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
         }
 
-
         service();
     }
 
-    private void addMarkers() {
+    /*private void addMarkers() {
         mMap.clear();
         Marker m;
 
@@ -343,6 +478,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         bitmap= BitmapFactory.decodeFile(file[0].getAbsolutePath());
                         Bitmap newbitmap=getResizedBitmap(bitmap,25,25);
                         finalM.setIcon(BitmapDescriptorFactory.fromBitmap(newbitmap));
+
                     }
                 });
                 m.setTag(i);
@@ -350,7 +486,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-    }
+    }*/
 
     public void service() {
         saveL=new Intent(this, com.example.projet_final.saveLocation.class);
@@ -404,6 +540,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (grantResults[i] != PackageManager.PERMISSION_GRANTED){
                         mPermissions=false;
                         Log.i("MapsActivity","not checked Permission");
+                        finish();
                         return;
                     }
                 }
@@ -544,6 +681,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             });
             header = navigationView.getHeaderView(0);
+            ConstraintLayout user=header.findViewById(R.id.user_inteface);
+            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
+            user.setVisibility(View.GONE);
+            worker.setVisibility(View.VISIBLE);
             mReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -567,10 +708,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 }
             });
-            ConstraintLayout user=header.findViewById(R.id.user_inteface);
-            ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
-            user.setVisibility(View.GONE);
-            worker.setVisibility(View.VISIBLE);
+
 
         }
 
@@ -579,27 +717,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMarkerClick(Marker marker) {
         Log.i("MapsActivity","merker clicked");
-        tag=(Integer)marker.getTag();
-        sendTo=IDs.get(tag);
+        tag=(String)marker.getTag();
+        sendTo=tag;
         dialog=new Dialog(this);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialog.setContentView(R.layout.activity_popup);
         t=dialog.findViewById(R.id.username_popup);
-        t.setText(users.get(tag).getUser_name());
-        /*t=(TextView) dialog.findViewById(R.id.user_phone_popup);
-        t.setText(users.get(tag).getPhone());*/
+        t.setText(hashMap.get(tag).getUser_name());
         t=dialog.findViewById(R.id.email_tv2);
-        t.setText(users.get(tag).getEmail());
+        t.setText(hashMap.get(tag).getEmail());
         t=dialog.findViewById(R.id.jobs_tv2);
-        t.setText(users.get(tag).getJobsString());
+        t.setText(hashMap.get(tag).getJobsString());
         t=(TextView)dialog.findViewById(R.id.sex_tv2);
-        t.setText(users.get(tag).getSex());
+        t.setText(hashMap.get(tag).getSex());
         t=(TextView)dialog.findViewById(R.id.birthday_tv2);
-        t.setText(users.get(tag).getBirthday());
+        t.setText(hashMap.get(tag).getBirthday());
         TextView Call,SMS;
         final Uri[] s = new Uri[1];
         StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
-                .child("users_photo").child(users.get(tag).getIcone());
+                .child("users_photo").child(hashMap.get(tag).getIcone());
 
         storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
@@ -613,7 +749,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(Intent.ACTION_DIAL);
-                String s="tel:"+users.get(tag).getPhone();
+                String s="tel:"+hashMap.get(tag).getPhone();
                 i.setData(Uri.parse(s));
                 startActivity(i);
             }
@@ -623,7 +759,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
 
-                Intent i=new Intent(Intent.ACTION_VIEW,Uri.fromParts("sms",users.get(tag).getPhone(),null));
+                Intent i=new Intent(Intent.ACTION_VIEW,Uri.fromParts("sms",hashMap.get(tag).getPhone(),null));
                 startActivity(i);
             }
         });
@@ -722,19 +858,45 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 d.dismiss();
             }
         });
+        final TextView tv;
+        tv=d.findViewById(R.id.date_Req);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c=Calendar.getInstance();
+                int mYear=c.get(Calendar.YEAR);
+                int mMonth=c.get(Calendar.MONTH);
+                int mDay=c.get(Calendar.DAY_OF_MONTH);
+                final int mHour=c.get(Calendar.HOUR_OF_DAY);
+                final int mMinute=c.get(Calendar.MINUTE);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(MapsActivity.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        dateHour=year+"/"+month+"/"+(dayOfMonth+1);
+                        TimePickerDialog timePickerDialog=new TimePickerDialog(MapsActivity.this,R.style.normalTimePickerDialog,new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                dateHour=dateHour+", "+hourOfDay+":"+minute;
+                                tv.setText(dateHour);
+                            }
+                        }, mHour, mMinute, false);
+                        timePickerDialog.show();
+                    }
+                },mYear,mMonth,mDay);
+                datePickerDialog.show();
+            }
+        });
         d.findViewById(R.id.send_request_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(sendTo.equals("global")){
-
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("GlobalReq").push();
                     ref.child("Latitude").setValue(user_location.latitude);
                     ref.child("Longitude").setValue(user_location.longitude);
                     ref.child("job").setValue(spinner.getSelectedItem().toString());
                     t=d.findViewById(R.id.phone_Req);
                     ref.child("phone").setValue(t.getText().toString());
-                    t=d.findViewById(R.id.date_Req);
-                    ref.child("date").setValue(t.getText().toString());
+                    ref.child("date").setValue(tv.getText().toString());
                     t=d.findViewById(R.id.details_Req);
                     ref.child("details").setValue(t.getText().toString());
                     ref.child("taked").setValue("not yet");
@@ -751,8 +913,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     t=d.findViewById(R.id.phone_Req);
                     ref.child("phone").setValue(t.getText().toString());
                     t=d.findViewById(R.id.date_Req);
-                    String date=t.getText().toString();
-                    ref.child("date").setValue(date);
+                    ref.child("date").setValue(tv.getText().toString());
                     t=d.findViewById(R.id.details_Req);
                     ref.child("details").setValue(t.getText().toString());
                     ref.child("taked").setValue("not yet");
@@ -843,6 +1004,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         super.onDestroy();
     }
+
     public void change_menu_lang(){
         switch (MapsActivity.lang){
 
@@ -893,6 +1055,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
     }
+
     public void change_d_lang(){
         switch (MapsActivity.lang){
 
@@ -928,6 +1091,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
+
     public  void change_dialog_lang(){
         switch (MapsActivity.lang){
 
@@ -965,6 +1129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
         }
     }
+
     public  void change_language(){
         switch (MapsActivity.lang){
 
@@ -1011,6 +1176,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 break;
         }
     }
+
     public void loadlang(){
         try{
             SharedPreferences sharedPref = getSharedPreferences("My_Languages", Activity.MODE_PRIVATE);
@@ -1020,6 +1186,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             lang="en";
         }
     }
+
     void savelang(){
         SharedPreferences sharedPref = getSharedPreferences("My_Languages", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();

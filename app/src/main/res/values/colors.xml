@@ -3,5 +3,6 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#000000</color>
+    <color name="neworenge">#f58b00</color>
     <color name="navigation_color">#6A6A69</color>
 </resources>

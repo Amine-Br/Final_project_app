@@ -87,7 +87,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/SU_User_Name" />
 
-            <EditText
+            <TextView
                 android:id="@+id/SU_Birthday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,6 +99,7 @@
                 android:background="@drawable/email"
                 android:ems="10"
                 android:inputType="datetime"
+                android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/SU_Text_Birthday" />

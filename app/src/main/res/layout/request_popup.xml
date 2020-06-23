@@ -80,7 +80,7 @@
         app:layout_constraintStart_toEndOf="@+id/service_type"
         app:layout_constraintTop_toBottomOf="@+id/phone_Req" />
 
-    <EditText
+    <TextView
         android:id="@+id/date_Req"
         android:layout_width="0dp"
         android:layout_height="35dp"

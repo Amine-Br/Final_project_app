@@ -39,6 +39,7 @@ public class User {
     private boolean plumber;
     private double Latitude,Longitude;
     private String icone="";
+    private int rate;
 
     public Uri getUri(){
         final CountDownLatch done=new CountDownLatch(1);
@@ -335,6 +336,13 @@ public class User {
         return jobs.toString();
     }
 
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
 }
 
 

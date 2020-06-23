@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -15,9 +16,11 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,11 +39,13 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.UUID;
 
 public class update_profile extends AppCompatActivity {
     private ImageView user_img_update_profile;
-    private EditText change_username,change_birthday;
+    private TextView change_birthday;
+    private EditText change_username;
     private CheckBox update_profile_CB_plumber,update_profile_CB_electrician,update_profile_CB_House_painter
             ,update_profile_CB_Builder,update_profile_CB_air_conditioner,update_profile_CB_gardening,update_profile_CB_housework
             ,update_profile_CB_Moving;
@@ -105,7 +110,7 @@ public class update_profile extends AppCompatActivity {
                 }
                 Intent intent=new Intent(update_profile.this,Profile.class);
                 startActivity(intent);
-                //finish();
+                finish();
 
 
             }
@@ -116,6 +121,22 @@ public class update_profile extends AppCompatActivity {
         user_img_update_profile=findViewById(R.id.user_img_update_profile);
         change_username=findViewById(R.id.change_username);
         change_birthday=findViewById(R.id.change_birthday);
+        change_birthday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c=Calendar.getInstance();
+                int mYear=c.get(Calendar.YEAR);
+                int mMonth=c.get(Calendar.MONTH);
+                int mDay=c.get(Calendar.DAY_OF_MONTH);
+                DatePickerDialog datePickerDialog=new DatePickerDialog(update_profile.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        change_birthday.setText(year+"/"+month+"/"+(dayOfMonth+1));
+                    }
+                },mYear,mMonth,mDay);
+                datePickerDialog.show();
+            }
+        });
         Male=findViewById(R.id.Male);
         Female=findViewById(R.id.Female);
         update_profile_CB_plumber=findViewById(R.id.update_profile_CB_plumber);

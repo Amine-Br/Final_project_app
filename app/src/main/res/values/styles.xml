@@ -1,6 +1,18 @@
 <resources>
 
     <!-- Base application theme. -->
+    <style name="spinnerDatePickerDialog" parent="android:Theme.Material.Dialog">
+        <item name="android:datePickerStyle">@style/spinnerDatePickerDialog</item>
+    </style>
+
+    <style name="normalTimePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/neworenge</item>
+    </style>
+
+    <style name="normalDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/neworenge</item>
+    </style>
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>

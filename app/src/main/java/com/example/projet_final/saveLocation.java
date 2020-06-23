@@ -137,16 +137,9 @@ public class saveLocation extends Service {
 
                     //save Location
                     if (ActivityCompat.checkSelfPermission(saveLocation.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(saveLocation.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        return;
-                    }
-                    /*mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                       return;
+                    }else {
+                    mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                         @Override
                         public void onComplete(@NonNull Task<Location> task) {
                             if (task.isSuccessful()) {
@@ -158,8 +151,8 @@ public class saveLocation extends Service {
 
                             }
                         }
-                    });*/
-
+                    });
+                    }
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -171,7 +164,7 @@ public class saveLocation extends Service {
         });
         saveL.start();
         notification();
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
@@ -179,7 +172,6 @@ public class saveLocation extends Service {
         Log.i("saveLocation","onDestroy");
         mStatus = false;
         saveL.interrupt();
-        mReference.child("users").child(userID).child("stat").setValue("offline");
         super.onDestroy();
     }
 
