@@ -95,7 +95,7 @@
                 android:drawablePadding="8dp"
                 android:ems="10"
                 android:inputType="phone"
-                android:paddingLeft="2dp"
+                android:paddingLeft="5dp"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
