@@ -16,16 +16,7 @@
         />
     </group>
 
-    <group
-        android:checkableBehavior="single"
-        android:id="@+id/group_divider4"
-        >
-        <item
-            android:id="@+id/about_us_item"
-            android:title="About Us"
-            android:icon="@drawable/menuitem_aboutus"
-            />
-    </group>
+
     <group
         android:checkableBehavior="single"
         android:id="@+id/group_divider5"
@@ -36,7 +27,16 @@
             android:icon="@drawable/menuitem_rateus"
             />
     </group>
-
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/group_divider4"
+        >
+        <item
+            android:id="@+id/about_us_item"
+            android:title="About Us"
+            android:icon="@drawable/menuitem_aboutus"
+            />
+    </group>
 
 
 

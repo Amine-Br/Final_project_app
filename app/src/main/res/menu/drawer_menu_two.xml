@@ -3,6 +3,15 @@
 
     >
     <group
+        android:checkableBehavior="single"
+        android:id="@+id/group_divider6"
+        >
+        <item
+            android:id="@+id/task_item"
+            android:icon="@drawable/menuitem_task"
+            android:title="Tasks" />
+    </group>
+    <group
     android:checkableBehavior="single"
     android:id="@+id/group_divider"
 
@@ -25,26 +34,8 @@
             android:icon="@drawable/menuitem_changelang"
             />
     </group>
-    <group
-    android:checkableBehavior="single"
-    android:id="@+id/group_divider3"
-    >
-    <item
-        android:id="@+id/sign_out_item"
-        android:title="Sign out"
-        android:icon="@drawable/menuitem_signout"
-        />
-    </group>
-    <group
-        android:checkableBehavior="single"
-        android:id="@+id/group_divider4"
-        >
-        <item
-            android:id="@+id/about_us_item"
-            android:title="About Us"
-            android:icon="@drawable/menuitem_aboutus"
-            />
-    </group>
+
+
     <group
         android:checkableBehavior="single"
         android:id="@+id/group_divider5"
@@ -55,15 +46,26 @@
             android:icon="@drawable/menuitem_rateus"
             />
     </group>
+
     <group
         android:checkableBehavior="single"
-        android:id="@+id/group_divider6"
+        android:id="@+id/group_divider4"
         >
         <item
-            android:id="@+id/task_item"
-            android:icon="@drawable/menuitem_task"
-            android:title="Tasks" />
+            android:id="@+id/about_us_item"
+            android:title="About Us"
+            android:icon="@drawable/menuitem_aboutus"
+            />
     </group>
 
-
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/group_divider3"
+        >
+        <item
+            android:id="@+id/sign_out_item"
+            android:title="Sign out"
+            android:icon="@drawable/menuitem_signout"
+            />
+    </group>
 </menu>
