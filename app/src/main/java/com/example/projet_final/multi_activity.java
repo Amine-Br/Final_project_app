@@ -59,8 +59,7 @@ public class multi_activity extends AppCompatActivity {
         excellent=findViewById(R.id.rateus_excellent);
         rate_us_layout=findViewById(R.id.rateus_layout);
         rate_us_button=findViewById(R.id.rateus_button);
-        databaseReference=FirebaseDatabase.getInstance().getReference().child("users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("rate");
+        databaseReference=FirebaseDatabase.getInstance().getReference().child("rate").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

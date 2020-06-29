@@ -224,7 +224,7 @@ public class WorkerService extends Service {
                     NotificationCompat.Builder builder=new NotificationCompat.Builder(this,"channel_ID")
                             .setSmallIcon(R.drawable.ic_work_black_24dp)
                             .setContentTitle("You have request for job")
-                            .setContentText("hellow")
+                            .setContentText("You have new request for job")
                             .setPriority(NotificationCompat.PRIORITY_HIGH)
                             .setContentIntent(pendingIntent)
                             .setAutoCancel(true);

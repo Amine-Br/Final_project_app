@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityManager;
+import android.app.usage.NetworkStats;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -50,8 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private PhoneAuthCredential credential;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private ValueEventListener valueEventListener;
-
-
+    private FirebaseUser oldAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         info=findViewById(R.id.info_tv);
         //firebase
         mAuth=FirebaseAuth.getInstance();
+        oldAuth=mAuth.getCurrentUser();
         mReference= FirebaseDatabase.getInstance().getReference().child("usedPhone");
         mCallbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -222,6 +223,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("code","signIn  succ; ");
                             //saveData(mAuth.getCurrentUser());
                             Log.i("code","signIn  credential; "+credential);
+                            //deletOldData();
                             Intent map=new Intent(MainActivity.this,MapsActivity.class);
                             Intent userService=new Intent(MainActivity.this,UserService.class);
                             if(isMyServiceRunning(UserService.class)){
@@ -320,5 +322,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void deletOldData() {
+        String ID=oldAuth.getUid();
+        oldAuth.delete();
+        try {
+            mReference.child("resulttReq").child(ID).removeValue();
+        }catch (Exception e){
+            //no child
+        }
+
     }
 }

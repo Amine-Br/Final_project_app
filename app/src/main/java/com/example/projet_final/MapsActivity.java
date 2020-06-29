@@ -116,6 +116,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker marker;
     private File file[] = new File[1];
     private String dateHour;
+    private ValueEventListener iconeLis,nameLis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,32 +201,47 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
 
-        /*firstTIme=new ValueEventListener() {
+        iconeLis=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                User user;
-                for (DataSnapshot users : dataSnapshot.getChildren()) {
-                    user=users.getValue(User.class);
-                    Log.i("new","user name="+user.getUser_name()+"        key="+users.getKey());
-                    hashMap.put(users.getKey(),user);
-                    usersID.add(users.getKey());
-                }
-                addAllMarkers();
-                mReference.addChildEventListener(childChang);
+                final Uri[] s = new Uri[1];
+                StorageReference storageReference= FirebaseStorage.getInstance().getReferenceFromUrl("gs://finalprojectapp-153c6.appspot.com/")
+                        .child("users_photo").child(dataSnapshot.getValue(String.class));
+
+                storageReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+                        s[0] = task.getResult();
+                        Picasso.get().load(s[0]).into((ImageView) header.findViewById(R.id.user_img_update_profile));
+                    }
+                });
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        nameLis=new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                TextView t=header.findViewById(R.id.drawer_h_tv2);
+                t.setText(dataSnapshot.getValue(String.class));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        };*/
+        };
     }
 
     private void addNewMarker(String key) {
         marker=mMap.addMarker(new MarkerOptions()
                 .position(new LatLng(hashMap.get(key).getLatitude(),hashMap.get(key).getLongitude()))
         );
-        StorageReference storageReference= FirebaseStorage.getInstance().getReference()
+        /*StorageReference storageReference= FirebaseStorage.getInstance().getReference()
                 .child("users_photo").child(hashMap.get(key).getIcone());
         try {
             file[0]=File.createTempFile("image","png");
@@ -241,7 +257,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //marker.setIcon(BitmapDescriptorFactory.fromBitmap(newbitmap));
 
             }
-        });
+        });*/
         marker.setTag(key);
         markers.put(key,marker);
         if(!hashMap.get(key).jabs().get(flter)){
@@ -423,7 +439,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });*/
         mReference.addChildEventListener(childChang);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
                 @Override
@@ -514,6 +529,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
     }
+
 
     private void checkPermissions() {
 
@@ -642,7 +658,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         }else{
             nvimg.setVisibility(View.GONE);
-
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.drawer_menu_two);
             navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -685,7 +700,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             ConstraintLayout worker=header.findViewById(R.id.worker_inteface);
             user.setVisibility(View.GONE);
             worker.setVisibility(View.VISIBLE);
-            mReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            /*mReference.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     corentUser=dataSnapshot.getValue(User.class);
@@ -707,8 +722,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
-            });
-
+            });*/
 
         }
 
@@ -872,7 +886,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 DatePickerDialog datePickerDialog=new DatePickerDialog(MapsActivity.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateHour=year+"/"+month+"/"+(dayOfMonth+1);
+                        dateHour=year+"/"+month+"/"+(dayOfMonth);
                         TimePickerDialog timePickerDialog=new TimePickerDialog(MapsActivity.this,R.style.normalTimePickerDialog,new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -949,13 +963,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Intent intent = new Intent(MapsActivity.this, UserService.class);
                         intent.putExtra("userID", mAuth.getCurrentUser().getUid());
                         startService(intent);
+                        FirebaseDatabase.getInstance().getReference().child("rate").child(mAuth.getCurrentUser().getUid()).setValue(0);
                     }
                 }
             });
-
-
         }
-
+        if(LogStat()==3){
+            mReference.child(mAuth.getCurrentUser().getUid()).child("icone").addValueEventListener(iconeLis);
+            mReference.child(mAuth.getCurrentUser().getUid()).child("user_name").addValueEventListener(nameLis);
+        }
 
     }
 
@@ -973,6 +989,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onStop() {
         savelang();
         Log.i("MapsActivity","onStop");
+        if(LogStat()==3){
+            mReference.child(mAuth.getCurrentUser().getUid()).child("icone").removeEventListener(iconeLis);
+            mReference.child(mAuth.getCurrentUser().getUid()).child("user_name").removeEventListener(nameLis);
+        }
         super.onStop();
 
     }

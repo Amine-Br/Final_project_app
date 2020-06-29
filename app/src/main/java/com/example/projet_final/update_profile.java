@@ -131,7 +131,7 @@ public class update_profile extends AppCompatActivity {
                 DatePickerDialog datePickerDialog=new DatePickerDialog(update_profile.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        change_birthday.setText(year+"/"+month+"/"+(dayOfMonth+1));
+                        change_birthday.setText(year+"/"+month+"/"+(dayOfMonth));
                     }
                 },mYear,mMonth,mDay);
                 datePickerDialog.show();

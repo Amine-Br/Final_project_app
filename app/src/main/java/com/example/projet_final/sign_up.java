@@ -65,6 +65,7 @@ public class sign_up extends AppCompatActivity{
 
     //FireBase
     private FirebaseAuth mAuth;
+    private FirebaseUser oldAuth;
     private DatabaseReference mReference;
     private FirebaseDatabase mFirebaseDatabase;
     private PhoneAuthCredential credential;
@@ -118,7 +119,7 @@ public class sign_up extends AppCompatActivity{
                 DatePickerDialog datePickerDialog=new DatePickerDialog(sign_up.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                            birthday.setText(year+"/"+month+"/"+(dayOfMonth+1));
+                            birthday.setText(year+"/"+(month+1)+"/"+(dayOfMonth));
                     }
                 },mYear,mMonth,mDay);
                 datePickerDialog.show();
@@ -134,6 +135,7 @@ public class sign_up extends AppCompatActivity{
         CB_plumber=(CheckBox)findViewById(R.id.CB_plumber);
 
         //Firebase
+        oldAuth=FirebaseAuth.getInstance().getCurrentUser();
         mAuth= FirebaseAuth.getInstance();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mReference= mFirebaseDatabase.getReference();
@@ -252,9 +254,11 @@ public class sign_up extends AppCompatActivity{
         mReference.child("users").child(userID).child("Latitude").setValue(0);
         mReference.child("users").child(userID).child("Longitude").setValue(0);
         if(groupsex.getCheckedRadioButtonId()==R.id.SU_Male){
+            Log.i("error1","male");
             mReference.child("users").child(userID).child("sex").setValue("Male");
             mReference.child("users").child(userID).child("icone").setValue("default_men_img.png");
         }else {
+            Log.i("error1","female");
             mReference.child("users").child(userID).child("sex").setValue("Female");
             mReference.child("users").child(userID).child("icone").setValue("default_women_img.png");
         }
@@ -305,6 +309,7 @@ public class sign_up extends AppCompatActivity{
             mReference.child("users").child(userID).child("plumber").setValue(false);
         }
 
+        mReference.child("rate").child(userID).setValue(0);
         Log.i("sign_up","data saved on firebase");
     }
 
@@ -339,7 +344,7 @@ public class sign_up extends AppCompatActivity{
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            //deletOldData();
                             Log.i("sign_up","sign_up secsseful");
                             saveData(mAuth.getCurrentUser());
                             Intent map=new Intent(sign_up.this,MapsActivity.class);
@@ -357,6 +362,17 @@ public class sign_up extends AppCompatActivity{
                         }
                     }
                 });
+    }
+
+    private void deletOldData() {
+        String ID=oldAuth.getUid();
+        oldAuth.delete();
+        try {
+            mReference.child("resulttReq").child(ID).removeValue();
+        }catch (Exception e){
+            //no child
+        }
+
     }
 
 

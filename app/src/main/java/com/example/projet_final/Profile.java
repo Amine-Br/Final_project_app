@@ -42,6 +42,7 @@ public class Profile extends AppCompatActivity {
     private String userID;
     private User user;
     private Uri s;
+    private ValueEventListener valueEventListener;
 
 
 
@@ -91,7 +92,7 @@ public class Profile extends AppCompatActivity {
         userID=mAuth.getCurrentUser().getUid();
         storageReference=FirebaseStorage.getInstance().getReference();
         mReference= FirebaseDatabase.getInstance().getReference().child("users").child(userID);
-        mReference.addValueEventListener(new ValueEventListener() {
+        valueEventListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 user=dataSnapshot.getValue(User.class);
@@ -115,10 +116,35 @@ public class Profile extends AppCompatActivity {
                 });
 
 
-                }
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        };
+        mReference.addListenerForSingleValueEvent(valueEventListener);
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mReference.removeEventListener(valueEventListener);
+                stopService(new Intent(Profile.this,WorkerService.class));
+                stopService(new Intent(Profile.this,saveLocation.class));
+                stopService(new Intent(Profile.this,UserService.class));
+                DatabaseReference mRef= FirebaseDatabase.getInstance().getReference();
+                mRef.child("users").child(userID).removeValue();
+                mRef.child("usedPhone").child(user.getPhone()).removeValue();
+                mRef.child("task").child(userID).removeValue();
+                mRef.child("spesfReq").child(userID).removeValue();
+                try{
+                    mReference.child("resulttReq").child(userID).removeValue();
+                }catch (Exception e){
+                    //no chlid
+                }
+                mAuth.getCurrentUser().delete();
+                mAuth.signOut();
+                //startActivity(new Intent(Profile.this,MapsActivity.class));
+                finish();
             }
         });
     }
