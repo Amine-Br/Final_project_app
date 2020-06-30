@@ -45,6 +45,7 @@ import java.util.UUID;
 public class update_profile extends AppCompatActivity {
     private ImageView user_img_update_profile;
     private TextView change_birthday;
+    private TextView changeimagetv,changeusernametv,changebirthdaytv,changesextv,changejobstv;
     private EditText change_username;
     private CheckBox update_profile_CB_plumber,update_profile_CB_electrician,update_profile_CB_House_painter
             ,update_profile_CB_Builder,update_profile_CB_air_conditioner,update_profile_CB_gardening,update_profile_CB_housework
@@ -65,6 +66,7 @@ public class update_profile extends AppCompatActivity {
         init();
         init_edit();
         button_click();
+        change_language();
     }
 
 
@@ -149,6 +151,11 @@ public class update_profile extends AppCompatActivity {
         update_profile_CB_Moving=findViewById(R.id.update_profile_CB_Moving);
         Update_profile_Cancel_button=findViewById(R.id.Update_profile_Cancel_button);
         Update_profile_Confirm_button=findViewById(R.id.Update_profile_Confirm_button);
+        changeimagetv=findViewById(R.id.change_img_tv);
+        changeusernametv=findViewById(R.id.changeusername);
+        changebirthdaytv=findViewById(R.id.changebirthday);
+        changesextv=findViewById(R.id.changesex);
+        changejobstv=findViewById(R.id.changejobs);
         user_img_update_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -258,4 +265,53 @@ public class update_profile extends AppCompatActivity {
         });
 
     }
+    public  void change_language(){
+        switch (MapsActivity.lang){
+
+            case "en":
+                changeimagetv.setText("Change Image");
+                changeusernametv.setText("Change User Name:");
+                changebirthdaytv.setText("Change Birthday:");
+                changesextv.setText("Change Sex:");
+                changejobstv.setText("Change Jobs:");
+                Male.setText("Male");
+                Female.setText("Female");
+                Update_profile_Cancel_button.setText("Cancel");
+                Update_profile_Confirm_button.setText("Confirm");
+                update_profile_CB_plumber.setText("plumber");
+                update_profile_CB_electrician.setText("electrician");
+                update_profile_CB_House_painter.setText("House_painter");
+                update_profile_CB_Builder.setText("Builder");
+                update_profile_CB_air_conditioner.setText("air_conditioner");
+                update_profile_CB_gardening.setText("gardening");
+                update_profile_CB_housework.setText("housework");
+                update_profile_CB_Moving.setText("Moving");
+
+
+
+                break;
+            case "fr":
+                changeimagetv.setText ("Changer l'image");
+                changeusernametv.setText ("Changer le nom d'utilisateur:");
+                changebirthdaytv.setText ("Modifier date de naissance:");
+                changesextv.setText ("Changer de sexe:");
+                changejobstv.setText ("Modifier les travaux:");
+                Male.setText ("Homme");
+                Female.setText ("Femme");
+                Update_profile_Cancel_button.setText ("Annuler");
+                Update_profile_Confirm_button.setText ("Confirmer");
+                update_profile_CB_plumber.setText ("plombier");
+                update_profile_CB_electrician.setText ("électricien");
+                update_profile_CB_House_painter.setText ("Peintre en bâtiment");
+                update_profile_CB_Builder.setText ("constructeur");
+                update_profile_CB_air_conditioner.setText ("climatisation");
+                update_profile_CB_gardening.setText ("jardinage");
+                update_profile_CB_housework.setText ("travaux ménagers");
+                update_profile_CB_Moving.setText ("Déplacement");
+
+
+                break;
+        }
+    }
+
 }
