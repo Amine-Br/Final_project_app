@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.i("MainActivity","log_in with phone");
 
-                        logInWithPhone(phone.getText().toString());
+                        logInWithPhone("+213"+phone.getText().toString().substring(1));
                     }else {
 
                         Log.i("MainActivity","log_in with email and password");
@@ -205,7 +205,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean confData(){
-        if(usedPhone.contains(phone.getText().toString())){
+        if(!verfNum(phone.getText().toString())){
+            phone.setError("please enter a valid phone number");
+            return false;
+        }
+        if(usedPhone.contains("+213"+phone.getText().toString().substring(1))){
             return true;
         }else{
             phone.setError(errorCode);
@@ -333,5 +337,17 @@ public class MainActivity extends AppCompatActivity {
             //no child
         }
 
+    }
+    private boolean verfNum(String Num){
+        if(!Num.substring(0,1).equals("0")){
+            return false;
+        }
+        if(!(Num.substring(1,2).equals("5") || Num.substring(1,2).equals("6") || Num.substring(1,2).equals("7"))){
+            return false;
+        }
+        if(Num.length()!=10){
+            return false;
+        }
+        return true;
     }
 }

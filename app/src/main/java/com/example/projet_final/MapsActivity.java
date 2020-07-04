@@ -146,7 +146,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         hashMap=new HashMap<>();
         usersID=new ArrayList<>();
         markers=new HashMap<>();
-
         //view
         Categories = (Button) findViewById(R.id.Category_button);
         humberger = (Button) findViewById(R.id.humberger_button);
@@ -886,7 +885,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 DatePickerDialog datePickerDialog=new DatePickerDialog(MapsActivity.this,R.style.normalDatePickerDialog,new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        dateHour=year+"/"+month+"/"+(dayOfMonth);
+                        dateHour=year+"/"+(month+1)+"/"+dayOfMonth;
                         TimePickerDialog timePickerDialog=new TimePickerDialog(MapsActivity.this,R.style.normalTimePickerDialog,new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -917,7 +916,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("watched").setValue(false);
                     ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
                     ref.child("accepterID").setValue("no one");
-                    dialog.dismiss();
+                    d.dismiss();
                 }else{
 
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(sendTo).push();
@@ -934,7 +933,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ref.child("watched").setValue(false);
                     ref.child("senderID").setValue(mAuth.getCurrentUser().getUid());
                     ref.child("accepterID").setValue("no one");
-                    dialog.dismiss();
+                    d.dismiss();
                 }
             }
         });

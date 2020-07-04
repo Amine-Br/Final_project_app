@@ -118,8 +118,8 @@ public class tasks extends AppCompatActivity {
                 Log.i("tasksAct","await");
                 Log.i("tasksAct","await end");
                 //thread.interrupt();
-                Toast toast = Toast.makeText(tasks.this, notification.getPhone(), Toast.LENGTH_SHORT);
-                toast.show();
+                //Toast toast = Toast.makeText(tasks.this, "abcdef".substring(0,2)+"123456".substring(3), Toast.LENGTH_SHORT);
+                //toast.show();
                 d=new Dialog(tasks.this);
                 d.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
                 d.setContentView(R.layout.tasks_popup);

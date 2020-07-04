@@ -188,7 +188,7 @@ public class sign_up extends AppCompatActivity{
     private void signUp() {
         Log.i("sign_up","send Config code");
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
-                    phone.getText().toString(),        // Phone number to verify
+                "+213"+phone.getText().toString().substring(1),        // Phone number to verify
                     60,                 // Timeout duration
                     TimeUnit.SECONDS,   // Unit of timeout
                     this,               // Activity (for callback binding)
@@ -198,7 +198,7 @@ public class sign_up extends AppCompatActivity{
 
     public boolean confirmData() {
         if (name.getText().toString().isEmpty()){
-            name.setError("Please Enter email");
+            name.setError("Please Enter username");
             //Toast.makeText(sign_up.this,"Please Enter email",Toast.LENGTH_SHORT);
             Log.i("confirmData","name invalid");
             return false;
@@ -210,8 +210,12 @@ public class sign_up extends AppCompatActivity{
             Log.i("confirmData","phone invalid");
             return false;
         }
-        if(usedPhone.contains(phone.getText().toString())){
-            phone.setError("thisphone is used");
+        if(!verfNum(phone.getText().toString())){
+            phone.setError("please enter a valid phone number");
+            return false;
+        }
+        if(usedPhone.contains("+213"+phone.getText().toString().substring(1))){
+            phone.setError("this phone is used");
             return false;
         }
         Log.i("confirmData","phone valid");
@@ -234,7 +238,7 @@ public class sign_up extends AppCompatActivity{
 
     private void saveData(FirebaseUser currentUser){
         String userID=currentUser.getUid();
-        mReference.child("usedPhone").child(phone.getText().toString()).setValue(true);
+        mReference.child("usedPhone").child("+213"+phone.getText().toString().substring(1)).setValue(true);
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("spesfReq").child(userID).push();
         ref.child("Latitude").setValue(0);
         ref.child("Longitude").setValue(0);
@@ -248,7 +252,7 @@ public class sign_up extends AppCompatActivity{
         ref.child("accepterID").setValue("no one");
         //set Values
         mReference.child("users").child(userID).child("user_name").setValue(name.getText().toString());
-        mReference.child("users").child(userID).child("phone").setValue(phone.getText().toString());
+        mReference.child("users").child(userID).child("phone").setValue("+213"+phone.getText().toString().substring(1));
         mReference.child("users").child(userID).child("birthday").setValue(birthday.getText().toString());
         mReference.child("users").child(userID).child("rate").setValue(0);
         mReference.child("users").child(userID).child("Latitude").setValue(0);
@@ -470,6 +474,19 @@ public class sign_up extends AppCompatActivity{
             }
         }
         return false;
+    }
+
+    private boolean verfNum(String Num){
+        if(!Num.substring(0,1).equals("0")){
+            return false;
+        }
+        if(!(Num.substring(1,2).equals("5") || Num.substring(1,2).equals("6") || Num.substring(1,2).equals("7"))){
+            return false;
+        }
+        if(Num.length()!=10){
+            return false;
+        }
+        return true;
     }
 }
 
